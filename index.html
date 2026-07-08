@@ -354,6 +354,37 @@
       font-variant-numeric: tabular-nums;
     }
 
+    .ranking-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .summary-card {
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft-2);
+    }
+
+    .summary-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 8px;
+      color: #111827;
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
     .daily-insights {
       display: grid;
       gap: 16px;
@@ -361,7 +392,7 @@
 
     .daily-metrics {
       display: grid;
-      grid-template-columns: repeat(3, minmax(180px, 1fr));
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
       gap: 14px;
     }
 
@@ -394,6 +425,12 @@
     .chart-grid {
       display: grid;
       grid-template-columns: minmax(0, 1.35fr) minmax(340px, .65fr);
+      gap: 16px;
+    }
+
+    .currency-pie-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
     }
 
@@ -528,6 +565,20 @@
     }
 
     .link:hover {
+      text-decoration: underline;
+    }
+
+    .uid-link {
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 800;
+      padding: 0;
+    }
+
+    .uid-link:hover {
       text-decoration: underline;
     }
 
@@ -743,8 +794,8 @@
       <div class="sidebar-title">渠道管理</div>
       <nav class="nav" id="nav">
         <button class="active" data-page="users">渠道用户管理</button>
-        <button data-page="daily">现货交易每日佣金统计</button>
-        <button data-page="spotStat">现货交易用户佣金统计</button>
+        <button data-page="daily">平台现货佣金汇总</button>
+        <button data-page="spotStat">用户现货佣金汇总</button>
         <button data-page="spotDetail">现货交易佣金明细</button>
         <button data-page="rwaBuy">RWA申购佣金明细</button>
         <button data-page="rwaBonus">RWA分红佣金明细</button>
@@ -792,7 +843,7 @@
       <section id="page-spotStat" class="page" style="margin-top: 18px;">
         <div class="page-head">
           <div>
-            <h1>现货交易用户佣金统计</h1>
+            <h1>用户现货佣金汇总</h1>
             <p class="sub">按现货交易用户维度汇总累计佣金，可继续查看用户详情与链路佣金详情。</p>
           </div>
         </div>
@@ -804,6 +855,11 @@
             </div>
           </div>
           <div id="spotStatRanking" class="ranking-list"></div>
+          <div class="ranking-summary">
+            <div class="summary-card"><span>新注册用户数（拉新数）</span><strong id="spotNewUsers">0</strong></div>
+            <div class="summary-card"><span>新入金用户数</span><strong id="spotDepositUsers">0</strong></div>
+            <div class="summary-card"><span>新首次交易用户数</span><strong id="spotFirstTradeUsers">0</strong></div>
+          </div>
         </div>
         <div class="card filters three">
           <div class="field"><label>交易用户搜索</label><input placeholder="请输入用户 UID 或邮箱"></div>
@@ -813,7 +869,7 @@
         <div class="card table-card">
           <div class="table-scroll">
             <table>
-              <thead><tr><th>交易用户昵称</th><th>UID</th><th>邮箱</th><th>上级代理</th><th>顶级代理</th><th>佣金</th><th>返佣比例</th><th>操作</th></tr></thead>
+              <thead><tr><th>交易用户昵称</th><th>UID</th><th>邮箱</th><th>上级代理</th><th>顶级代理</th><th>代理等级</th><th>VIP等级</th><th>佣金</th><th>返佣比例</th><th>操作</th></tr></thead>
               <tbody id="spotStatBody"></tbody>
             </table>
           </div>
@@ -857,27 +913,26 @@
       <section id="page-daily" class="page" style="margin-top: 18px;">
         <div class="page-head">
           <div>
-            <h1>现货交易每日佣金统计</h1>
+            <h1>平台现货佣金汇总</h1>
             <p class="sub">按日期和手续费币种统计现货交易佣金与平台收益。</p>
           </div>
         </div>
         <div class="card filters three">
-          <div class="field"><label>手续费币种搜索</label><select id="dailyCurrency"><option>SB</option><option>USDT</option><option>BTC</option><option>ETH</option></select></div>
+          <div class="field"><label>手续费币种搜索</label><select id="dailyCurrency"><option>全部</option><option>SB</option><option>USDT</option><option>BTC</option><option>ETH</option></select></div>
           <div class="field"><label>时间范围</label><div class="date-range"><input id="dailyStart" value="2026年7月1日"><span>至</span><input id="dailyEnd" value="2026年7月31日"></div></div>
           <div class="filter-actions"><button class="btn" id="dailySearch">搜索</button><button class="btn secondary" id="dailyReset">重置</button></div>
         </div>
         <div class="daily-insights">
           <div class="daily-metrics">
-            <div class="card daily-metric"><span id="dailyPartnerNativeTitle">合伙人佣金（SB）</span><strong id="dailyPartnerNative">0.0000</strong><small id="dailyPartnerNativeNote">按当前筛选汇总</small></div>
             <div class="card daily-metric"><span>合伙人佣金（USDT）</span><strong id="dailyPartnerUsdt">0.0000</strong><small id="dailyPartnerUsdtNote">按当前筛选汇总</small></div>
-            <div class="card daily-metric"><span id="dailyPlatformNativeTitle">平台收益（SB）</span><strong id="dailyPlatformNative">0.0000</strong><small id="dailyPlatformNativeNote">按当前筛选汇总</small></div>
+            <div class="card daily-metric"><span>平台收益（USDT）</span><strong id="dailyPlatformUsdt">0.0000</strong><small id="dailyPlatformUsdtNote">按当前筛选汇总</small></div>
           </div>
           <div class="chart-grid">
             <div class="card chart-card">
               <div class="chart-head">
                 <div>
                   <h2>每日趋势</h2>
-                  <p class="sub" id="dailyTrendSub">展示所选币种的合伙人佣金与平台收益随日期变化。</p>
+                  <p class="sub" id="dailyTrendSub">展示当前筛选下合伙人佣金与平台收益的 USDT 估值趋势。</p>
                 </div>
                 <div class="legend"><span><i class="dot"></i>合伙人佣金</span><span><i class="dot amber"></i>平台收益</span></div>
               </div>
@@ -887,17 +942,37 @@
               <div class="chart-head">
                 <div>
                   <h2>收益占比</h2>
-                  <p class="sub" id="dailyPieSub">展示合伙人佣金与平台收益占比。</p>
+                  <p class="sub" id="dailyPieSub">展示合伙人佣金与平台收益的 USDT 估值占比。</p>
                 </div>
               </div>
               <div id="dailyPieChart"></div>
+            </div>
+          </div>
+          <div class="currency-pie-grid">
+            <div class="card chart-card">
+              <div class="chart-head">
+                <div>
+                  <h2>佣金币种占比</h2>
+                  <p class="sub" id="dailyPartnerCurrencyPieSub">展示各手续费币种对应的合伙人佣金 USDT 估值占比。</p>
+                </div>
+              </div>
+              <div id="dailyPartnerCurrencyPieChart"></div>
+            </div>
+            <div class="card chart-card">
+              <div class="chart-head">
+                <div>
+                  <h2>手续费币种占比</h2>
+                  <p class="sub" id="dailyPlatformCurrencyPieSub">展示各手续费币种对应的平台收益 USDT 估值占比。</p>
+                </div>
+              </div>
+              <div id="dailyPlatformCurrencyPieChart"></div>
             </div>
           </div>
         </div>
         <div class="card table-card">
           <div class="table-scroll">
             <table>
-              <thead><tr><th>日期</th><th>手续费币种</th><th id="dailyPartnerNativeTh">合伙人佣金（SB）</th><th>合伙人佣金（USDT）</th><th id="dailyPlatformNativeTh">平台收益（SB）</th></tr></thead>
+              <thead><tr><th>日期</th><th>合伙人佣金（USDT估值）</th><th>平台收益（USDT估值）</th></tr></thead>
               <tbody id="dailyBody"></tbody>
             </table>
           </div>
@@ -1030,11 +1105,11 @@
     ];
 
     const spotStat = [
-      ["草莓人", "5345543", "sdsh@gmail.com", "7383873", "46364634", "60,045.766", "20%"],
-      ["苹果人", "5345544", "apple@gmail.com", "7383873", "46364634", "32,450.120", "18%"],
-      ["香蕉人", "5345545", "banana@gmail.com", "-", "46364634", "88,903.001", "30%"],
-      ["葡萄人", "5345546", "grape@gmail.com", "5345545", "46364634", "12,402.700", "12%"],
-      ["芒果人", "5345547", "mango@gmail.com", "5345545", "46364634", "9,880.430", "10%"]
+      ["草莓人", "5345543", "sdsh@gmail.com", "7383873", "46364634", "1级", "V4", "60,045.766", "20%", "128", "76", "53"],
+      ["苹果人", "5345544", "apple@gmail.com", "7383873", "46364634", "1级", "V3", "32,450.120", "18%", "96", "58", "41"],
+      ["香蕉人", "5345545", "banana@gmail.com", "-", "46364634", "1级", "V5", "88,903.001", "30%", "156", "92", "67"],
+      ["葡萄人", "5345546", "grape@gmail.com", "5345545", "46364634", "2级", "V2", "12,402.700", "12%", "43", "24", "18"],
+      ["芒果人", "5345547", "mango@gmail.com", "5345545", "46364634", "2级", "V2", "9,880.430", "10%", "38", "21", "15"]
     ];
 
     const spotDetail = [
@@ -1046,15 +1121,18 @@
     ];
 
     const daily = [
-      ["2026-07-02", "SB", "600.0000", "772,237.9232", "7,500.0000"],
+      ["2026-07-02", "SB", "600.0000", "772,237.9232", "9,654.0000"],
       ["2026-07-03", "USDT", "124,550.1200", "124,550.1200", "1,200.0000"],
-      ["2026-07-04", "SB", "420.5000", "512,044.0000", "5,300.0000"],
+      ["2026-07-04", "SB", "420.5000", "512,044.0000", "6,438.0000"],
       ["2026-07-05", "USDT", "98,120.4500", "98,120.4500", "950.0000"],
-      ["2026-07-06", "BTC", "0.7660", "47,904.3300", "0.1200"],
-      ["2026-07-07", "ETH", "12.8800", "38,120.8800", "1.6400"],
-      ["2026-07-08", "BTC", "0.5840", "36,412.5600", "0.0920"],
-      ["2026-07-09", "ETH", "9.4200", "27,884.7600", "1.1800"],
-      ["2026-07-10", "SB", "510.0000", "621,220.5000", "6,250.0000"]
+      ["2026-07-06", "BTC", "0.7660", "47,904.3300", "7,508.5200"],
+      ["2026-07-07", "ETH", "12.8800", "38,120.8800", "4,853.1200"],
+      ["2026-07-08", "BTC", "0.5840", "36,412.5600", "5,742.6400"],
+      ["2026-07-09", "ETH", "9.4200", "27,884.7600", "3,521.1200"],
+      ["2026-07-10", "SB", "510.0000", "621,220.5000", "7,812.0000"],
+      ["2026-07-11", "USDT", "143,880.3400", "143,880.3400", "1,430.0000"],
+      ["2026-07-12", "BTC", "0.4920", "30,897.6000", "4,810.4200"],
+      ["2026-07-13", "ETH", "14.2600", "42,130.0400", "5,368.7200"]
     ];
 
     const rwaBuy = [
@@ -1195,6 +1273,9 @@
     ];
 
     let expandedCommissionRows = new Set(["commission-self"]);
+    let activeDetailMode = "";
+    let activeDetailDirection = "up";
+    let activeDetailUid = profile.uid;
 
     function statusBadge(status) {
       const cls = status.includes("启用") || status === "已结算" ? "green" : status === "结算中" ? "blue" : status === "待结算" ? "amber" : status.includes("停用") ? "gray" : "gray";
@@ -1203,6 +1284,11 @@
 
     function renderRows(id, rows, map) {
       document.getElementById(id).innerHTML = rows.map(map).join("");
+    }
+
+    function uidLink(value, mode = "userDetail") {
+      if (!value || value === "-") return value;
+      return `<button class="uid-link mono" data-uid-jump="${value}" data-uid-mode="${mode}">${value}</button>`;
     }
 
     function renderUsers(rows = users) {
@@ -1219,7 +1305,7 @@
     function renderSpotStatTable() {
       renderRows("spotStatBody", spotStat, row => `
         <tr>
-          ${row.map((v, i) => `<td class="${[1, 2, 3, 4].includes(i) ? "mono" : ""}">${v}</td>`).join("")}
+          ${row.slice(0, 9).map((v, i) => `<td class="${[1, 2, 3, 4].includes(i) ? "mono" : ""}">${i === 1 || i === 3 || i === 4 ? uidLink(v) : v}</td>`).join("")}
           <td><div class="row-actions"><button class="link" data-detail="userDetail">查看用户详情</button><button class="link" data-detail="commissionUp">查看链路详情</button></div></td>
         </tr>
       `);
@@ -1244,20 +1330,30 @@
 
     function renderSpotStatRanking() {
       const ranking = [...spotStat]
-        .sort((a, b) => parseAmount(b[5]) - parseAmount(a[5]))
+        .filter(row => row[5] === "1级")
+        .sort((a, b) => parseAmount(b[7]) - parseAmount(a[7]))
         .slice(0, 5);
-      const max = Math.max(...ranking.map(row => parseAmount(row[5])), 1);
+      const max = Math.max(...ranking.map(row => parseAmount(row[7])), 1);
       document.getElementById("spotStatRanking").innerHTML = ranking.map((row, index) => {
-        const amount = parseAmount(row[5]);
+        const amount = parseAmount(row[7]);
         const percent = Math.max(4, amount / max * 100);
         return `
           <div class="ranking-row">
             <div class="ranking-user"><span class="rank-badge">${index + 1}</span><span>${row[0]}</span></div>
             <div class="progress-track"><div class="progress-fill" style="width: ${percent.toFixed(1)}%"></div></div>
-            <div class="ranking-value">${row[5]}</div>
+            <div class="ranking-value">${row[7]}</div>
           </div>
         `;
       }).join("");
+      const summary = spotStat.reduce((total, row) => {
+        total.newUsers += parseAmount(row[9]);
+        total.depositUsers += parseAmount(row[10]);
+        total.firstTradeUsers += parseAmount(row[11]);
+        return total;
+      }, { newUsers: 0, depositUsers: 0, firstTradeUsers: 0 });
+      document.getElementById("spotNewUsers").textContent = summary.newUsers.toLocaleString("en-US");
+      document.getElementById("spotDepositUsers").textContent = summary.depositUsers.toLocaleString("en-US");
+      document.getElementById("spotFirstTradeUsers").textContent = summary.firstTradeUsers.toLocaleString("en-US");
     }
 
     function filteredUsers() {
@@ -1286,18 +1382,8 @@
       });
     }
 
-    function activeDailyCurrency(rows) {
-      const selected = document.getElementById("dailyCurrency")?.value || "SB";
-      if (selected) return selected;
-      const currencies = Array.from(new Set(rows.map(row => row[1])));
-      return currencies.length === 1 ? currencies[0] : "原币";
-    }
-
     function renderDaily(rows) {
-      const currencyLabel = activeDailyCurrency(rows);
-      document.getElementById("dailyPartnerNativeTh").textContent = `合伙人佣金（${currencyLabel}）`;
-      document.getElementById("dailyPlatformNativeTh").textContent = `平台收益（${currencyLabel}）`;
-      renderRows("dailyBody", rows, row => `<tr><td>${row[0]}</td><td><span class="badge blue">${row[1]}</span></td><td class="mono">${row[2]}</td><td class="mono">${row[3]}</td><td class="mono">${row[4]}</td></tr>`);
+      renderRows("dailyBody", rows, row => `<tr><td>${row[0]}</td><td class="mono">${row[3]}</td><td class="mono">${row[4]}</td></tr>`);
       renderDailyInsights(rows);
     }
 
@@ -1323,42 +1409,52 @@
       const start = parseCnDate(document.getElementById("dailyStart").value);
       const end = parseCnDate(document.getElementById("dailyEnd").value);
       return daily.filter(row => {
-        const inCurrency = row[1] === currency;
+        const inCurrency = currency === "全部" || row[1] === currency;
         const inStart = !start || row[0] >= start;
         const inEnd = !end || row[0] <= end;
         return inCurrency && inStart && inEnd;
       });
     }
 
-    function selectedDailyLabel(rows) {
-      const currency = document.getElementById("dailyCurrency")?.value || "SB";
-      return `当前币种：${currency}`;
-    }
-
     function dailyTotals(rows) {
       return rows.reduce((total, row) => {
-        total.partnerNative += parseAmount(row[2]);
         total.partnerUsdt += parseAmount(row[3]);
-        total.platformNative += parseAmount(row[4]);
+        total.platformUsdt += parseAmount(row[4]);
         return total;
-      }, { partnerNative: 0, partnerUsdt: 0, platformNative: 0 });
+      }, { partnerUsdt: 0, platformUsdt: 0 });
+    }
+
+    function selectedDailyCurrencyLabel() {
+      return document.getElementById("dailyCurrency")?.value || "全部";
     }
 
     function renderDailyInsights(rows) {
       const totals = dailyTotals(rows);
-      const currencyLabel = activeDailyCurrency(rows);
-      document.getElementById("dailyPartnerNativeTitle").textContent = `合伙人佣金（${currencyLabel}）`;
-      document.getElementById("dailyPlatformNativeTitle").textContent = `平台收益（${currencyLabel}）`;
-      document.getElementById("dailyPartnerNative").textContent = formatAmount(totals.partnerNative);
       document.getElementById("dailyPartnerUsdt").textContent = formatAmount(totals.partnerUsdt);
-      document.getElementById("dailyPlatformNative").textContent = formatAmount(totals.platformNative);
-      document.getElementById("dailyPartnerNativeNote").textContent = rows.length ? `合伙人 ${currencyLabel} 佣金合计` : "暂无匹配数据";
-      document.getElementById("dailyPartnerUsdtNote").textContent = rows.length ? "合伙人 USDT 佣金合计" : "暂无匹配数据";
-      document.getElementById("dailyPlatformNativeNote").textContent = rows.length ? `平台 ${currencyLabel} 收益合计` : "暂无匹配数据";
-      document.getElementById("dailyTrendSub").textContent = rows.length ? `展示 ${currencyLabel} 的合伙人佣金与平台收益随日期变化。` : "暂无匹配数据。";
-      document.getElementById("dailyPieSub").textContent = rows.length ? `展示 ${currencyLabel} 合伙人佣金与平台收益占比。` : "暂无匹配数据。";
+      document.getElementById("dailyPlatformUsdt").textContent = formatAmount(totals.platformUsdt);
+      document.getElementById("dailyPartnerUsdtNote").textContent = rows.length ? "合伙人佣金 USDT 估值合计" : "暂无匹配数据";
+      document.getElementById("dailyPlatformUsdtNote").textContent = rows.length ? "平台收益 USDT 估值合计" : "暂无匹配数据";
+      const currencyLabel = selectedDailyCurrencyLabel();
+      const scopeText = currencyLabel === "全部" ? "全部币种" : currencyLabel;
+      document.getElementById("dailyTrendSub").textContent = rows.length ? `展示 ${scopeText} 的合伙人佣金与平台收益 USDT 估值趋势。` : "暂无匹配数据。";
+      document.getElementById("dailyPieSub").textContent = rows.length ? "展示合伙人佣金与平台收益的 USDT 估值占比。" : "暂无匹配数据。";
+      document.getElementById("dailyPartnerCurrencyPieSub").textContent = rows.length ? "展示各手续费币种对应的合伙人佣金 USDT 估值占比。" : "暂无匹配数据。";
+      document.getElementById("dailyPlatformCurrencyPieSub").textContent = rows.length ? "展示各手续费币种对应的平台收益 USDT 估值占比。" : "暂无匹配数据。";
       renderDailyTrendChart(rows);
       renderDailyPieChart(rows);
+      renderCurrencyPieChart("dailyPartnerCurrencyPieChart", rows, 3, "佣金币种占比");
+      renderCurrencyPieChart("dailyPlatformCurrencyPieChart", rows, 4, "手续费币种占比");
+    }
+
+    function dailyRowsByDate(rows) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        const current = grouped.get(row[0]) || { date: row[0], partnerUsdt: 0, platformUsdt: 0 };
+        current.partnerUsdt += parseAmount(row[3]);
+        current.platformUsdt += parseAmount(row[4]);
+        grouped.set(row[0], current);
+      });
+      return Array.from(grouped.values()).sort((a, b) => a.date.localeCompare(b.date));
     }
 
     function linePath(points) {
@@ -1375,12 +1471,13 @@
       const width = 760;
       const height = 280;
       const pad = { top: 18, right: 24, bottom: 48, left: 70 };
-      const partnerValues = rows.map(row => parseAmount(row[2]));
-      const platformValues = rows.map(row => parseAmount(row[4]));
+      const dateRows = dailyRowsByDate(rows);
+      const partnerValues = dateRows.map(row => row.partnerUsdt);
+      const platformValues = dateRows.map(row => row.platformUsdt);
       const max = Math.max(...partnerValues, ...platformValues, 1);
-      const xStep = rows.length > 1 ? (width - pad.left - pad.right) / (rows.length - 1) : 0;
+      const xStep = dateRows.length > 1 ? (width - pad.left - pad.right) / (dateRows.length - 1) : 0;
       const y = value => pad.top + (height - pad.top - pad.bottom) * (1 - value / max);
-      const x = index => rows.length > 1 ? pad.left + index * xStep : width / 2;
+      const x = index => dateRows.length > 1 ? pad.left + index * xStep : width / 2;
       const partnerPoints = partnerValues.map((value, index) => ({ x: x(index), y: y(value), value }));
       const platformPoints = platformValues.map((value, index) => ({ x: x(index), y: y(value), value }));
       const gridValues = [0, .25, .5, .75, 1].map(ratio => max * ratio);
@@ -1396,7 +1493,7 @@
           <path d="${linePath(platformPoints)}" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
           ${partnerPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#2563eb"><title>合伙人佣金 ${formatAmount(point.value)}</title></circle>`).join("")}
           ${platformPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#d97706"><title>平台收益 ${formatAmount(point.value)}</title></circle>`).join("")}
-          ${rows.map((row, index) => `<text x="${x(index)}" y="${height - 18}" text-anchor="middle" fill="#6b7280" font-size="11">${row[0].slice(5)}</text>`).join("")}
+          ${dateRows.map((row, index) => `<text x="${x(index)}" y="${height - 18}" text-anchor="middle" fill="#6b7280" font-size="11">${row.date.slice(5)}</text>`).join("")}
         </svg>
       `;
     }
@@ -1422,9 +1519,30 @@
 
       const totals = dailyTotals(rows);
       const entries = [
-        ["合伙人佣金", totals.partnerNative],
-        ["平台收益", totals.platformNative]
+        ["合伙人佣金", totals.partnerUsdt],
+        ["平台收益", totals.platformUsdt]
       ].filter(([, value]) => value > 0);
+      renderPieChart(target, entries, "收益占比饼图");
+    }
+
+    function currencyTotals(rows, valueIndex) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        grouped.set(row[1], (grouped.get(row[1]) || 0) + parseAmount(row[valueIndex]));
+      });
+      return Array.from(grouped.entries()).sort((a, b) => b[1] - a[1]);
+    }
+
+    function renderCurrencyPieChart(targetId, rows, valueIndex, label) {
+      const target = document.getElementById(targetId);
+      if (!rows.length) {
+        target.innerHTML = `<div class="chart-empty">暂无占比数据</div>`;
+        return;
+      }
+      renderPieChart(target, currencyTotals(rows, valueIndex), label);
+    }
+
+    function renderPieChart(target, entries, label) {
       const total = entries.reduce((sum, [, value]) => sum + value, 0);
       if (!entries.length || total <= 0) {
         target.innerHTML = `<div class="chart-empty">暂无占比数据</div>`;
@@ -1433,23 +1551,23 @@
 
       const colors = ["#2563eb", "#16a34a", "#d97706", "#7c3aed", "#0891b2"];
       let angle = 0;
-      const slices = entries.map(([currency, value], index) => {
+      const slices = entries.map(([name, value], index) => {
         const start = angle;
         const end = angle + value / total * 360;
         angle = end;
-        return { currency, value, start, end, color: colors[index % colors.length] };
+        return { name, value, start, end, color: colors[index % colors.length] };
       });
 
       target.innerHTML = `
         <div class="pie-layout">
-          <svg class="pie-chart" viewBox="0 0 220 220" role="img" aria-label="收益占比饼图">
-            ${slices.map(slice => `<path d="${pieSlicePath(110, 110, 92, slice.start, slice.end)}" fill="${slice.color}"><title>${slice.currency} ${formatAmount(slice.value)} (${(slice.value / total * 100).toFixed(1)}%)</title></path>`).join("")}
+          <svg class="pie-chart" viewBox="0 0 220 220" role="img" aria-label="${label}">
+            ${slices.map(slice => `<path d="${pieSlicePath(110, 110, 92, slice.start, slice.end)}" fill="${slice.color}"><title>${slice.name} ${formatAmount(slice.value)} (${(slice.value / total * 100).toFixed(1)}%)</title></path>`).join("")}
             <circle cx="110" cy="110" r="48" fill="#fff"></circle>
             <text x="110" y="106" text-anchor="middle" fill="#6b7280" font-size="12">合计</text>
             <text x="110" y="126" text-anchor="middle" fill="#111827" font-size="15" font-weight="700">${formatAmount(total, 2)}</text>
           </svg>
           <div class="pie-list">
-            ${slices.map(slice => `<div><span><i class="dot" style="background:${slice.color}"></i>${slice.currency}</span><strong>${(slice.value / total * 100).toFixed(1)}%</strong></div>`).join("")}
+            ${slices.map(slice => `<div><span><i class="dot" style="background:${slice.color}"></i>${slice.name}</span><strong>${(slice.value / total * 100).toFixed(1)}%</strong></div>`).join("")}
           </div>
         </div>
       `;
@@ -1469,18 +1587,44 @@
       document.getElementById("addressText").textContent = `https://platform.prototype.com/channel/${page}`;
     }
 
-    function profileHtml() {
+    function currentProfile(uid = profile.uid) {
+      const allRows = [
+        ...chainUp,
+        ...chainDown,
+        ...flattenChain(chainTree).map(item => item.row),
+        ...commissionChain,
+        ...flattenCommission(commissionTree).map(item => item.row)
+      ];
+      const row = allRows.find(item => item[2] === uid);
+      if (!row) return profile;
+      const isCommissionRow = row[3] === "合伙人" || row[3] === "直客";
+      return {
+        name: String(row[0]).replace("（本ID）", ""),
+        uid: row[2],
+        email: row[1],
+        vip: isCommissionRow ? row[5] : row[4],
+        identity: isCommissionRow ? row[3] : row[5],
+        level: `${isCommissionRow ? row[4] : row[3]}级`.replace("级级", "级"),
+        country: profile.country,
+        createdAt: profile.createdAt,
+        spotRatio: isCommissionRow ? profile.spotRatio : row[6],
+        rwaRatio: isCommissionRow ? profile.rwaRatio : row[7]
+      };
+    }
+
+    function profileHtml(uid = profile.uid) {
+      const current = currentProfile(uid);
       return [
-        ["用户名", profile.name],
-        ["UID", profile.uid],
-        ["邮箱", profile.email],
-        ["VIP等级", profile.vip],
-        ["身份", profile.identity],
-        ["层级", profile.level],
-        ["国家", profile.country],
-        ["注册时间", profile.createdAt],
-        ["现货返佣比例", profile.spotRatio],
-        ["RWA返佣比例", profile.rwaRatio]
+        ["用户名", current.name],
+        ["UID", current.uid],
+        ["邮箱", current.email],
+        ["VIP等级", current.vip],
+        ["身份", current.identity],
+        ["层级", current.level],
+        ["国家", current.country],
+        ["注册时间", current.createdAt],
+        ["现货返佣比例", current.spotRatio],
+        ["RWA返佣比例", current.rwaRatio]
       ].map(([label, value]) => `<div><span>${label}：</span>${value}</div>`).join("");
     }
 
@@ -1489,6 +1633,7 @@
         let value = v;
         if (options.statusIndex === i) value = statusBadge(v);
         if (options.currencyIndex === i) value = `<span class="badge blue">${v}</span>`;
+        if (options.uidIndex === i) value = uidLink(v, options.uidMode || "userDetail");
         if (options.tree && i === 0 && !String(v).includes("本ID")) value = `<span class="tree">${v}<span class="tri-up"></span></span>`;
         return `<td>${value}</td>`;
       }).join("")}</tr>`).join("");
@@ -1500,7 +1645,7 @@
     }
 
     function renderChainUpTable() {
-      detailTable(chainHeaders(), chainUp, { tree: true });
+      detailTable(chainHeaders(), chainUp, { tree: true, uidIndex: 2, uidMode: "chain" });
     }
 
     function flattenChain(nodes, depth = 0) {
@@ -1520,6 +1665,7 @@
         return `
           <tr class="${rowClass}" style="--indent: ${item.depth * 22}px">
             ${item.row.map((value, index) => {
+              if (index === 2) return `<td>${uidLink(value, "chain")}</td>`;
               if (index !== 0) return `<td>${value}</td>`;
               const triangle = hasChildren ? `<span class="${expanded ? "tri-down" : "tri-up"}"></span>` : "";
               return `<td><button class="tree-toggle" ${hasChildren ? `data-toggle-chain="${item.id}"` : "disabled"}>${value}${triangle}</button></td>`;
@@ -1549,7 +1695,7 @@
         const matchesKeyword = !normalized || row[0].toLowerCase().includes(normalized) || row[1].toLowerCase().includes(normalized) || row[2].includes(normalized);
         return matchesType && matchesKeyword;
       });
-      detailTable(commissionHeaders(), rows, { tree: true });
+      detailTable(commissionHeaders(), rows, { tree: true, uidIndex: 2, uidMode: "commission" });
     }
 
     function flattenCommission(nodes, depth = 0) {
@@ -1574,6 +1720,7 @@
         return `
           <tr class="${rowClass}" style="--indent: ${item.depth * 22}px">
             ${item.row.map((value, index) => {
+              if (index === 2) return `<td>${uidLink(value, "commission")}</td>`;
               if (index !== 0) return `<td>${value}</td>`;
               const triangle = hasChildren ? `<span class="${expanded ? "tri-down" : "tri-up"}"></span>` : "";
               return `<td><button class="tree-toggle" ${hasChildren ? `data-toggle-commission="${item.id}"` : "disabled"}>${value}${triangle}</button></td>`;
@@ -1588,6 +1735,7 @@
       const direction = document.getElementById("commissionDirection")?.value || "up";
       const userType = document.getElementById("commissionUserType")?.value || "全部";
       const keyword = document.getElementById("commissionKeyword")?.value || "";
+      activeDetailDirection = direction;
       if (direction === "down") {
         renderCommissionDownTable(userType, keyword);
       } else {
@@ -1595,12 +1743,31 @@
       }
     }
 
-    function openDetail(type) {
+    function refreshDetailProfile(uid) {
+      activeDetailUid = uid || profile.uid;
+      document.getElementById("profile").innerHTML = profileHtml(activeDetailUid);
+    }
+
+    function jumpWithinDetail(uid, mode) {
+      refreshDetailProfile(uid);
+      if (mode === "chain") {
+        renderChainView(document.getElementById("chainDirection")?.value || activeDetailDirection, document.getElementById("chainUserType")?.value || "全部");
+        return;
+      }
+      if (mode === "commission") {
+        renderCommissionView();
+        return;
+      }
+      openDetail("userDetail", { uid });
+    }
+
+    function openDetail(type, context = {}) {
       const modal = document.getElementById("detailModal");
       const title = document.getElementById("detailTitle");
       const sub = document.getElementById("detailSub");
       const filters = document.getElementById("detailFilters");
-      document.getElementById("profile").innerHTML = profileHtml();
+      activeDetailUid = context.uid || profile.uid;
+      document.getElementById("profile").innerHTML = profileHtml(activeDetailUid);
 
       const chainFilters = `
         <div class="field"><label>搜索代理</label><input placeholder="请输入 UID 或邮箱地址"></div>
@@ -1610,16 +1777,19 @@
       `;
 
       if (type === "chainUp" || type === "chainDown") {
+        activeDetailMode = "chain";
+        activeDetailDirection = type === "chainDown" ? "down" : "up";
         title.textContent = "代理链路详情";
         sub.textContent = type === "chainUp" ? "当前展示仅看上级链路。" : "当前展示仅看下级链路。";
         filters.innerHTML = chainFilters;
-        document.getElementById("chainDirection").value = type === "chainDown" ? "down" : "up";
+        document.getElementById("chainDirection").value = activeDetailDirection;
         document.getElementById("chainUserType").value = "全部";
         expandedChainRows = new Set(["self"]);
-        renderChainView(type === "chainDown" ? "down" : "up");
+        renderChainView(activeDetailDirection);
       }
 
       if (type === "invite") {
+        activeDetailMode = "invite";
         title.textContent = "邀请链接详情";
         sub.textContent = "查看该合伙人创建的邀请链接、比例和启停状态。";
         filters.innerHTML = `
@@ -1631,13 +1801,16 @@
       }
 
       if (type === "userDetail") {
+        activeDetailMode = "userDetail";
         title.textContent = "用户详情";
-        sub.textContent = "按日期展示该用户拉新、入金、首次交易和佣金表现。";
+        sub.textContent = context.uid ? `当前查看 UID ${context.uid} 的拉新、入金、首次交易和佣金表现。` : "按日期展示该用户拉新、入金、首次交易和佣金表现。";
         filters.innerHTML = `<div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div><div></div><div></div><button class="btn">搜索</button>`;
         detailTable(["日期", "新注册用户数（拉新数）", "新入金用户数", "新首次交易用户", "贡献佣金", "佣金"], userDetail);
       }
 
       if (type === "commissionUp") {
+        activeDetailMode = "commission";
+        activeDetailDirection = "up";
         title.textContent = "链路佣金详情";
         sub.textContent = "展示链路上代理的贡献佣金与佣金/手续费减免数据。";
         filters.innerHTML = `
@@ -1700,6 +1873,12 @@
         document.querySelectorAll(".modal").forEach(modal => modal.classList.remove("active"));
       }
 
+      const uidJump = event.target.closest("[data-uid-jump]");
+      if (uidJump) {
+        jumpWithinDetail(uidJump.dataset.uidJump, uidJump.dataset.uidMode || activeDetailMode);
+        return;
+      }
+
       if (event.target.id === "userSearch") {
         renderUsers(filteredUsers());
       }
@@ -1753,7 +1932,7 @@
     });
 
     document.getElementById("dailyReset").addEventListener("click", () => {
-      document.getElementById("dailyCurrency").value = "SB";
+      document.getElementById("dailyCurrency").value = "全部";
       document.getElementById("dailyStart").value = "2026年7月1日";
       document.getElementById("dailyEnd").value = "2026年7月31日";
       renderDaily(filteredDailyRows());
