@@ -856,23 +856,23 @@
           </div>
         </div>
         <div class="card ranking-card">
-          <div class="ranking-head">
-            <div>
-              <h2>顶级合伙人排行榜</h2>
-              <p class="sub">根据下方列表的佣金金额生成排名进度条。</p>
-            </div>
-          </div>
-          <div id="spotStatRanking" class="ranking-list"></div>
           <div class="ranking-summary">
             <div class="summary-card"><span>新注册用户数（拉新数）</span><strong id="spotNewUsers">0</strong></div>
             <div class="summary-card"><span>新入金用户数</span><strong id="spotDepositUsers">0</strong></div>
             <div class="summary-card"><span>新首次交易用户数</span><strong id="spotFirstTradeUsers">0</strong></div>
           </div>
+          <div class="ranking-head">
+            <div>
+              <h2>顶级合伙人排行榜</h2>
+              <p class="sub">根据顶级合伙人佣金金额生成排名进度条。</p>
+            </div>
+          </div>
+          <div id="spotStatRanking" class="ranking-list"></div>
         </div>
         <div class="card filters three">
           <div class="field"><label>交易用户搜索</label><input id="spotStatKeyword" placeholder="请输入用户 UID 或邮箱"></div>
           <div class="field"><label>代理等级</label><select id="spotStatAgentLevel"><option>全部</option><option>1级</option><option>2级</option></select></div>
-          <div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div>
+          <div class="field"><label>时间范围</label><div class="date-range"><input id="spotStatStart" value="2025年4月1日"><span>至</span><input id="spotStatEnd" value="2025年4月30日"></div></div>
           <div class="filter-actions"><button class="btn" id="spotStatSearch">搜索</button></div>
         </div>
         <div class="card table-card">
@@ -1115,11 +1115,11 @@
     ];
 
     const spotStat = [
-      ["草莓人", "5345543", "sdsh@gmail.com", "7383873", "46364634", "1级", "V4", "60,045.766", "20%", "128", "76", "53"],
-      ["苹果人", "5345544", "apple@gmail.com", "7383873", "46364634", "1级", "V3", "32,450.120", "18%", "96", "58", "41"],
-      ["香蕉人", "5345545", "banana@gmail.com", "-", "46364634", "1级", "V5", "88,903.001", "30%", "156", "92", "67"],
-      ["葡萄人", "5345546", "grape@gmail.com", "5345545", "46364634", "2级", "V2", "12,402.700", "12%", "43", "24", "18"],
-      ["芒果人", "5345547", "mango@gmail.com", "5345545", "46364634", "2级", "V2", "9,880.430", "10%", "38", "21", "15"]
+      ["草莓人", "5345543", "sdsh@gmail.com", "7383873", "46364634", "1级", "V4", "60,045.766", "20%", "128", "76", "53", "2025-04-03"],
+      ["苹果人", "5345544", "apple@gmail.com", "7383873", "46364634", "1级", "V3", "32,450.120", "18%", "96", "58", "41", "2025-04-08"],
+      ["香蕉人", "5345545", "banana@gmail.com", "-", "46364634", "1级", "V5", "88,903.001", "30%", "156", "92", "67", "2025-04-16"],
+      ["葡萄人", "5345546", "grape@gmail.com", "5345545", "46364634", "2级", "V2", "12,402.700", "12%", "43", "24", "18", "2025-04-21"],
+      ["芒果人", "5345547", "mango@gmail.com", "5345545", "46364634", "2级", "V2", "9,880.430", "10%", "38", "21", "15", "2025-04-26"]
     ];
 
     const spotDetail = [
@@ -1312,10 +1312,20 @@
       `);
     }
 
+    function spotStatRowsByTime() {
+      const start = parseCnDate(document.getElementById("spotStatStart")?.value || "");
+      const end = parseCnDate(document.getElementById("spotStatEnd")?.value || "");
+      return spotStat.filter(row => {
+        const inStart = !start || row[12] >= start;
+        const inEnd = !end || row[12] <= end;
+        return inStart && inEnd;
+      });
+    }
+
     function filteredSpotStatRows() {
       const keyword = document.getElementById("spotStatKeyword")?.value.trim().toLowerCase() || "";
       const agentLevel = document.getElementById("spotStatAgentLevel")?.value || "全部";
-      return spotStat.filter(row => {
+      return spotStatRowsByTime().filter(row => {
         const matchesKeyword = !keyword || row[0].toLowerCase().includes(keyword) || row[1].toLowerCase().includes(keyword) || row[2].toLowerCase().includes(keyword);
         const matchesAgentLevel = agentLevel === "全部" || row[5] === agentLevel;
         return matchesKeyword && matchesAgentLevel;
@@ -1329,7 +1339,7 @@
           <td><div class="row-actions"><button class="link" data-detail="userDetail">查看用户详情</button><button class="link" data-detail="commissionUp">查看链路详情</button></div></td>
         </tr>
       `);
-      renderSpotStatRanking(rows);
+      renderSpotStatRanking(spotStatRowsByTime());
     }
 
     function renderSpotDetailTable(rows = spotDetail) {
@@ -1348,7 +1358,7 @@
       renderRwaBonus(rwaBonus);
     }
 
-    function renderSpotStatRanking(rows = filteredSpotStatRows()) {
+    function renderSpotStatRanking(rows = spotStatRowsByTime()) {
       const ranking = [...rows]
         .filter(row => row[5] === "1级")
         .sort((a, b) => parseAmount(b[7]) - parseAmount(a[7]))
