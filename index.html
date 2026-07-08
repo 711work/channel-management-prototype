@@ -392,8 +392,12 @@
 
     .daily-metrics {
       display: grid;
-      grid-template-columns: repeat(2, minmax(220px, 1fr));
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
       gap: 14px;
+    }
+
+    .daily-metrics.summary-only {
+      grid-template-columns: repeat(2, minmax(220px, 1fr));
     }
 
     .daily-metric {
@@ -432,6 +436,10 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
+    }
+
+    .is-hidden {
+      display: none !important;
     }
 
     .chart-card {
@@ -850,7 +858,7 @@
         <div class="card ranking-card">
           <div class="ranking-head">
             <div>
-              <h2>用户佣金排名</h2>
+              <h2>顶级合伙人排行榜</h2>
               <p class="sub">根据下方列表的佣金金额生成排名进度条。</p>
             </div>
           </div>
@@ -862,9 +870,10 @@
           </div>
         </div>
         <div class="card filters three">
-          <div class="field"><label>交易用户搜索</label><input placeholder="请输入用户 UID 或邮箱"></div>
+          <div class="field"><label>交易用户搜索</label><input id="spotStatKeyword" placeholder="请输入用户 UID 或邮箱"></div>
+          <div class="field"><label>代理等级</label><select id="spotStatAgentLevel"><option>全部</option><option>1级</option><option>2级</option></select></div>
           <div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div>
-          <div class="filter-actions"><button class="btn">搜索</button></div>
+          <div class="filter-actions"><button class="btn" id="spotStatSearch">搜索</button></div>
         </div>
         <div class="card table-card">
           <div class="table-scroll">
@@ -923,9 +932,10 @@
           <div class="filter-actions"><button class="btn" id="dailySearch">搜索</button><button class="btn secondary" id="dailyReset">重置</button></div>
         </div>
         <div class="daily-insights">
-          <div class="daily-metrics">
+          <div class="daily-metrics summary-only" id="dailyMetrics">
+            <div class="card daily-metric is-hidden" id="dailyPartnerNativeCard"><span id="dailyPartnerNativeLabel">合伙人佣金</span><strong id="dailyPartnerNative">0.0000</strong><small id="dailyPartnerNativeNote">按当前筛选汇总</small></div>
             <div class="card daily-metric"><span>合伙人佣金（USDT）</span><strong id="dailyPartnerUsdt">0.0000</strong><small id="dailyPartnerUsdtNote">按当前筛选汇总</small></div>
-            <div class="card daily-metric"><span>平台收益（USDT）</span><strong id="dailyPlatformUsdt">0.0000</strong><small id="dailyPlatformUsdtNote">按当前筛选汇总</small></div>
+            <div class="card daily-metric"><span id="dailyPlatformLabel">平台收益（USDT）</span><strong id="dailyPlatformUsdt">0.0000</strong><small id="dailyPlatformUsdtNote">按当前筛选汇总</small></div>
           </div>
           <div class="chart-grid">
             <div class="card chart-card">
@@ -948,7 +958,7 @@
               <div id="dailyPieChart"></div>
             </div>
           </div>
-          <div class="currency-pie-grid">
+          <div class="currency-pie-grid" id="dailyCurrencyPieGrid">
             <div class="card chart-card">
               <div class="chart-head">
                 <div>
@@ -972,7 +982,7 @@
         <div class="card table-card">
           <div class="table-scroll">
             <table>
-              <thead><tr><th>日期</th><th>合伙人佣金（USDT估值）</th><th>平台收益（USDT估值）</th></tr></thead>
+              <thead id="dailyHead"><tr><th>日期</th><th>合伙人佣金（USDT估值）</th><th>平台收益（USDT估值）</th></tr></thead>
               <tbody id="dailyBody"></tbody>
             </table>
           </div>
@@ -1302,14 +1312,24 @@
       `);
     }
 
-    function renderSpotStatTable() {
-      renderRows("spotStatBody", spotStat, row => `
+    function filteredSpotStatRows() {
+      const keyword = document.getElementById("spotStatKeyword")?.value.trim().toLowerCase() || "";
+      const agentLevel = document.getElementById("spotStatAgentLevel")?.value || "全部";
+      return spotStat.filter(row => {
+        const matchesKeyword = !keyword || row[0].toLowerCase().includes(keyword) || row[1].toLowerCase().includes(keyword) || row[2].toLowerCase().includes(keyword);
+        const matchesAgentLevel = agentLevel === "全部" || row[5] === agentLevel;
+        return matchesKeyword && matchesAgentLevel;
+      });
+    }
+
+    function renderSpotStatTable(rows = filteredSpotStatRows()) {
+      renderRows("spotStatBody", rows, row => `
         <tr>
           ${row.slice(0, 9).map((v, i) => `<td class="${[1, 2, 3, 4].includes(i) ? "mono" : ""}">${i === 1 || i === 3 || i === 4 ? uidLink(v) : v}</td>`).join("")}
           <td><div class="row-actions"><button class="link" data-detail="userDetail">查看用户详情</button><button class="link" data-detail="commissionUp">查看链路详情</button></div></td>
         </tr>
       `);
-      renderSpotStatRanking();
+      renderSpotStatRanking(rows);
     }
 
     function renderSpotDetailTable(rows = spotDetail) {
@@ -1328,11 +1348,14 @@
       renderRwaBonus(rwaBonus);
     }
 
-    function renderSpotStatRanking() {
-      const ranking = [...spotStat]
+    function renderSpotStatRanking(rows = filteredSpotStatRows()) {
+      const ranking = [...rows]
         .filter(row => row[5] === "1级")
         .sort((a, b) => parseAmount(b[7]) - parseAmount(a[7]))
         .slice(0, 5);
+      if (!ranking.length) {
+        document.getElementById("spotStatRanking").innerHTML = `<div class="chart-empty">暂无顶级合伙人排名数据</div>`;
+      } else {
       const max = Math.max(...ranking.map(row => parseAmount(row[7])), 1);
       document.getElementById("spotStatRanking").innerHTML = ranking.map((row, index) => {
         const amount = parseAmount(row[7]);
@@ -1345,7 +1368,8 @@
           </div>
         `;
       }).join("");
-      const summary = spotStat.reduce((total, row) => {
+      }
+      const summary = rows.reduce((total, row) => {
         total.newUsers += parseAmount(row[9]);
         total.depositUsers += parseAmount(row[10]);
         total.firstTradeUsers += parseAmount(row[11]);
@@ -1383,7 +1407,15 @@
     }
 
     function renderDaily(rows) {
-      renderRows("dailyBody", rows, row => `<tr><td>${row[0]}</td><td class="mono">${row[3]}</td><td class="mono">${row[4]}</td></tr>`);
+      const currencyLabel = selectedDailyCurrencyLabel();
+      const isAllCurrency = currencyLabel === "全部";
+      document.getElementById("dailyHead").innerHTML = isAllCurrency
+        ? `<tr><th>日期</th><th>合伙人佣金（USDT估值）</th><th>平台收益（USDT估值）</th></tr>`
+        : `<tr><th>日期</th><th>手续费币种</th><th>合伙人佣金（${currencyLabel}）</th><th>合伙人佣金（USDT）</th><th>平台收益（${currencyLabel}）</th></tr>`;
+      renderRows("dailyBody", rows, row => {
+        if (isAllCurrency) return `<tr><td>${row[0]}</td><td class="mono">${row[3]}</td><td class="mono">${row[4]}</td></tr>`;
+        return `<tr><td>${row[0]}</td><td><span class="badge blue">${row[1]}</span></td><td class="mono">${row[2]}</td><td class="mono">${row[3]}</td><td class="mono">${row[4]}</td></tr>`;
+      });
       renderDailyInsights(rows);
     }
 
@@ -1418,10 +1450,11 @@
 
     function dailyTotals(rows) {
       return rows.reduce((total, row) => {
+        total.partnerNative += parseAmount(row[2]);
         total.partnerUsdt += parseAmount(row[3]);
         total.platformUsdt += parseAmount(row[4]);
         return total;
-      }, { partnerUsdt: 0, platformUsdt: 0 });
+      }, { partnerNative: 0, partnerUsdt: 0, platformUsdt: 0 });
     }
 
     function selectedDailyCurrencyLabel() {
@@ -1430,27 +1463,39 @@
 
     function renderDailyInsights(rows) {
       const totals = dailyTotals(rows);
+      const currencyLabel = selectedDailyCurrencyLabel();
+      const isAllCurrency = currencyLabel === "全部";
+      document.getElementById("dailyMetrics").classList.toggle("summary-only", isAllCurrency);
+      document.getElementById("dailyPartnerNativeCard").classList.toggle("is-hidden", isAllCurrency);
+      document.getElementById("dailyCurrencyPieGrid").classList.toggle("is-hidden", !isAllCurrency);
+      document.getElementById("dailyPartnerNativeLabel").textContent = `合伙人佣金（${currencyLabel}）`;
+      document.getElementById("dailyPartnerNative").textContent = formatAmount(totals.partnerNative);
+      document.getElementById("dailyPartnerNativeNote").textContent = rows.length ? `合伙人 ${currencyLabel} 佣金合计` : "暂无匹配数据";
+      document.getElementById("dailyPlatformLabel").textContent = isAllCurrency ? "平台收益（USDT）" : `平台收益（${currencyLabel}）`;
       document.getElementById("dailyPartnerUsdt").textContent = formatAmount(totals.partnerUsdt);
       document.getElementById("dailyPlatformUsdt").textContent = formatAmount(totals.platformUsdt);
-      document.getElementById("dailyPartnerUsdtNote").textContent = rows.length ? "合伙人佣金 USDT 估值合计" : "暂无匹配数据";
-      document.getElementById("dailyPlatformUsdtNote").textContent = rows.length ? "平台收益 USDT 估值合计" : "暂无匹配数据";
-      const currencyLabel = selectedDailyCurrencyLabel();
+      document.getElementById("dailyPartnerUsdtNote").textContent = rows.length ? (isAllCurrency ? "合伙人佣金 USDT 估值合计" : "合伙人 USDT 佣金合计") : "暂无匹配数据";
+      document.getElementById("dailyPlatformUsdtNote").textContent = rows.length ? (isAllCurrency ? "平台收益 USDT 估值合计" : `平台 ${currencyLabel} 收益合计`) : "暂无匹配数据";
       const scopeText = currencyLabel === "全部" ? "全部币种" : currencyLabel;
-      document.getElementById("dailyTrendSub").textContent = rows.length ? `展示 ${scopeText} 的合伙人佣金与平台收益 USDT 估值趋势。` : "暂无匹配数据。";
-      document.getElementById("dailyPieSub").textContent = rows.length ? "展示合伙人佣金与平台收益的 USDT 估值占比。" : "暂无匹配数据。";
-      document.getElementById("dailyPartnerCurrencyPieSub").textContent = rows.length ? "展示各手续费币种对应的合伙人佣金 USDT 估值占比。" : "暂无匹配数据。";
-      document.getElementById("dailyPlatformCurrencyPieSub").textContent = rows.length ? "展示各手续费币种对应的平台收益 USDT 估值占比。" : "暂无匹配数据。";
-      renderDailyTrendChart(rows);
-      renderDailyPieChart(rows);
-      renderCurrencyPieChart("dailyPartnerCurrencyPieChart", rows, 3, "佣金币种占比");
-      renderCurrencyPieChart("dailyPlatformCurrencyPieChart", rows, 4, "手续费币种占比");
+      document.getElementById("dailyTrendSub").textContent = rows.length ? (isAllCurrency ? "展示全部币种的合伙人佣金与平台收益 USDT 估值趋势。" : `展示 ${scopeText} 的合伙人佣金与平台收益随日期变化。`) : "暂无匹配数据。";
+      document.getElementById("dailyPieSub").textContent = rows.length ? (isAllCurrency ? "展示合伙人佣金与平台收益的 USDT 估值占比。" : `展示 ${scopeText} 合伙人佣金与平台收益占比。`) : "暂无匹配数据。";
+      if (isAllCurrency) {
+        document.getElementById("dailyPartnerCurrencyPieSub").textContent = rows.length ? "展示各手续费币种对应的合伙人佣金 USDT 估值占比。" : "暂无匹配数据。";
+        document.getElementById("dailyPlatformCurrencyPieSub").textContent = rows.length ? "展示各手续费币种对应的平台收益 USDT 估值占比。" : "暂无匹配数据。";
+      }
+      renderDailyTrendChart(rows, isAllCurrency);
+      renderDailyPieChart(rows, isAllCurrency);
+      if (isAllCurrency) {
+        renderCurrencyPieChart("dailyPartnerCurrencyPieChart", rows, 3, "佣金币种占比");
+        renderCurrencyPieChart("dailyPlatformCurrencyPieChart", rows, 4, "手续费币种占比");
+      }
     }
 
-    function dailyRowsByDate(rows) {
+    function dailyRowsByDate(rows, useUsdtValue = true) {
       const grouped = new Map();
       rows.forEach(row => {
         const current = grouped.get(row[0]) || { date: row[0], partnerUsdt: 0, platformUsdt: 0 };
-        current.partnerUsdt += parseAmount(row[3]);
+        current.partnerUsdt += parseAmount(row[useUsdtValue ? 3 : 2]);
         current.platformUsdt += parseAmount(row[4]);
         grouped.set(row[0], current);
       });
@@ -1461,7 +1506,7 @@
       return points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
     }
 
-    function renderDailyTrendChart(rows) {
+    function renderDailyTrendChart(rows, useUsdtValue = true) {
       const target = document.getElementById("dailyTrendChart");
       if (!rows.length) {
         target.innerHTML = `<div class="chart-empty">暂无趋势数据</div>`;
@@ -1471,7 +1516,7 @@
       const width = 760;
       const height = 280;
       const pad = { top: 18, right: 24, bottom: 48, left: 70 };
-      const dateRows = dailyRowsByDate(rows);
+      const dateRows = dailyRowsByDate(rows, useUsdtValue);
       const partnerValues = dateRows.map(row => row.partnerUsdt);
       const platformValues = dateRows.map(row => row.platformUsdt);
       const max = Math.max(...partnerValues, ...platformValues, 1);
@@ -1510,7 +1555,7 @@
       return `M ${cx} ${cy} L ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
     }
 
-    function renderDailyPieChart(rows) {
+    function renderDailyPieChart(rows, useUsdtValue = true) {
       const target = document.getElementById("dailyPieChart");
       if (!rows.length) {
         target.innerHTML = `<div class="chart-empty">暂无占比数据</div>`;
@@ -1519,7 +1564,7 @@
 
       const totals = dailyTotals(rows);
       const entries = [
-        ["合伙人佣金", totals.partnerUsdt],
+        ["合伙人佣金", useUsdtValue ? totals.partnerUsdt : totals.partnerNative],
         ["平台收益", totals.platformUsdt]
       ].filter(([, value]) => value > 0);
       renderPieChart(target, entries, "收益占比饼图");
@@ -1894,6 +1939,10 @@
         renderSpotDetailTable(filteredSpotDetail());
       }
 
+      if (event.target.id === "spotStatSearch") {
+        renderSpotStatTable(filteredSpotStatRows());
+      }
+
       if (event.target.id === "commissionSearch") {
         renderCommissionView();
       }
@@ -1912,6 +1961,10 @@
 
       if (["spotPairFilter", "spotFeeCurrencyFilter", "spotSourceFilter", "spotStatusFilter"].includes(event.target.id)) {
         renderSpotDetailTable(filteredSpotDetail());
+      }
+
+      if (event.target.id === "spotStatAgentLevel") {
+        renderSpotStatTable(filteredSpotStatRows());
       }
 
       if (event.target.id === "chainDirection") {
