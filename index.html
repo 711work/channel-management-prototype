@@ -287,6 +287,10 @@
       padding: 18px 20px;
     }
 
+    .spot-stat-summary {
+      margin: 18px 0;
+    }
+
     .ranking-head {
       display: flex;
       align-items: flex-start;
@@ -358,9 +362,6 @@
       display: grid;
       grid-template-columns: repeat(3, minmax(140px, 1fr));
       gap: 12px;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid var(--line);
     }
 
     .summary-card {
@@ -855,12 +856,12 @@
             <p class="sub">按现货交易用户维度汇总累计佣金，可继续查看用户详情与链路佣金详情。</p>
           </div>
         </div>
+        <div class="ranking-summary spot-stat-summary">
+          <div class="summary-card"><span>新注册用户数（拉新数）</span><strong id="spotNewUsers">0</strong></div>
+          <div class="summary-card"><span>新入金用户数</span><strong id="spotDepositUsers">0</strong></div>
+          <div class="summary-card"><span>新首次交易用户数</span><strong id="spotFirstTradeUsers">0</strong></div>
+        </div>
         <div class="card ranking-card">
-          <div class="ranking-summary">
-            <div class="summary-card"><span>新注册用户数（拉新数）</span><strong id="spotNewUsers">0</strong></div>
-            <div class="summary-card"><span>新入金用户数</span><strong id="spotDepositUsers">0</strong></div>
-            <div class="summary-card"><span>新首次交易用户数</span><strong id="spotFirstTradeUsers">0</strong></div>
-          </div>
           <div class="ranking-head">
             <div>
               <h2>顶级合伙人排行榜</h2>
