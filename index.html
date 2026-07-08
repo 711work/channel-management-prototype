@@ -1,0 +1,1793 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>渠道管理 - 高保真原型</title>
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --panel: #fff;
+      --line: #e5e7eb;
+      --line-strong: #d1d5db;
+      --text: #111827;
+      --muted: #6b7280;
+      --soft: #f3f4f6;
+      --soft-2: #f9fafb;
+      --primary: #1f2937;
+      --blue: #2563eb;
+      --green: #16a34a;
+      --amber: #d97706;
+      --red: #dc2626;
+      --shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 1px 3px rgba(16, 24, 40, .1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-width: 1220px;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, "Microsoft YaHei", sans-serif;
+      font-size: 14px;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .browser-bar {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 18px;
+      background: #e5e7eb;
+      border-bottom: 1px solid var(--line-strong);
+      color: var(--muted);
+      user-select: none;
+    }
+
+    .lights {
+      display: flex;
+      gap: 6px;
+    }
+
+    .light {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      display: block;
+    }
+
+    .red { background: #f87171; }
+    .yellow { background: #fbbf24; }
+    .green { background: #34d399; }
+
+    .address {
+      max-width: 720px;
+      flex: 1;
+      margin: 0 auto;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      background: #fff;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .75);
+      font-size: 12px;
+    }
+
+    .layout {
+      min-height: calc(100vh - 42px);
+      display: grid;
+      grid-template-columns: 260px 1fr;
+    }
+
+    .sidebar {
+      background: #fff;
+      border-right: 1px solid var(--line);
+      padding: 22px 16px;
+    }
+
+    .sidebar-title {
+      margin: 0 0 14px;
+      padding: 0 10px;
+      color: #9ca3af;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: grid;
+      gap: 4px;
+    }
+
+    .nav button {
+      width: 100%;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #374151;
+      padding: 11px 12px;
+      text-align: left;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .nav button:hover {
+      background: var(--soft-2);
+    }
+
+    .nav button.active {
+      border-right: 4px solid #111827;
+      background: var(--soft);
+      color: #111827;
+      font-weight: 800;
+    }
+
+    .main {
+      padding: 28px 32px 42px;
+      overflow: auto;
+    }
+
+    .page {
+      display: none;
+      gap: 18px;
+    }
+
+    .page.active {
+      display: grid;
+    }
+
+    .page-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    h1 {
+      margin: 0;
+      color: #111827;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .sub {
+      margin: 7px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 18px 20px;
+      padding: 22px;
+    }
+
+    .filters.five {
+      grid-template-columns: repeat(5, minmax(160px, 1fr));
+    }
+
+    .filters.three {
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      align-content: start;
+    }
+
+    label {
+      color: #4b5563;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .note {
+      color: var(--red);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    input,
+    select {
+      width: 100%;
+      height: 36px;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      background: #fff;
+      color: #111827;
+      padding: 0 10px;
+      outline: none;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #6b7280;
+      box-shadow: 0 0 0 3px rgba(107, 114, 128, .12);
+    }
+
+    .date-range {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .btn {
+      min-width: 92px;
+      height: 36px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 0 16px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+    }
+
+    .btn:hover {
+      background: #111827;
+    }
+
+    .btn.secondary {
+      border-color: var(--line-strong);
+      background: #fff;
+      color: #374151;
+    }
+
+    .btn.secondary:hover {
+      background: var(--soft);
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: end;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .table-card {
+      overflow: hidden;
+    }
+
+    .ranking-card {
+      padding: 18px 20px;
+    }
+
+    .ranking-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+
+    .ranking-head h2 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+
+    .ranking-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .ranking-row {
+      display: grid;
+      grid-template-columns: 160px 1fr 130px;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .ranking-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    .rank-badge {
+      width: 24px;
+      height: 24px;
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: var(--blue);
+      font-size: 12px;
+    }
+
+    .progress-track {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #eef2f7;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #2563eb, #16a34a);
+    }
+
+    .ranking-value {
+      text-align: right;
+      color: #111827;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .daily-insights {
+      display: grid;
+      gap: 16px;
+    }
+
+    .daily-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .daily-metric {
+      padding: 16px;
+    }
+
+    .daily-metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .daily-metric strong {
+      display: block;
+      margin-top: 8px;
+      color: #111827;
+      font-size: 24px;
+      line-height: 1.1;
+    }
+
+    .daily-metric small {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .chart-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(340px, .65fr);
+      gap: 16px;
+    }
+
+    .chart-card {
+      padding: 18px;
+    }
+
+    .chart-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .chart-head h2 {
+      margin: 0;
+      color: #111827;
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      display: inline-block;
+      background: var(--blue);
+    }
+
+    .dot.amber {
+      background: var(--amber);
+    }
+
+    .chart-empty {
+      display: grid;
+      min-height: 230px;
+      place-items: center;
+      color: var(--muted);
+      border: 1px dashed var(--line-strong);
+      border-radius: 8px;
+      background: var(--soft-2);
+    }
+
+    .line-chart {
+      width: 100%;
+      min-height: 260px;
+    }
+
+    .pie-layout {
+      display: grid;
+      grid-template-columns: 210px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .pie-chart {
+      width: 210px;
+      height: 210px;
+    }
+
+    .pie-list {
+      display: grid;
+      gap: 10px;
+      color: #374151;
+      font-size: 12px;
+    }
+
+    .pie-list div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 980px;
+      border-collapse: collapse;
+      white-space: nowrap;
+      font-size: 13px;
+    }
+
+    th {
+      background: var(--soft-2);
+      color: #4b5563;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: left;
+    }
+
+    th,
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f1f3;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: #fafafa;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .link {
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font-weight: 700;
+      padding: 0;
+    }
+
+    .link:hover {
+      text-decoration: underline;
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 3px 9px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .badge.green {
+      background: #ecfdf3;
+      color: var(--green);
+    }
+
+    .badge.gray {
+      background: #f3f4f6;
+      color: #4b5563;
+    }
+
+    .badge.blue {
+      background: #eff6ff;
+      color: var(--blue);
+    }
+
+    .badge.amber {
+      background: #fffbeb;
+      color: var(--amber);
+    }
+
+    .badge.red {
+      background: #fef2f2;
+      color: var(--red);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: rgba(17, 24, 39, .56);
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .dialog {
+      width: min(1180px, 96vw);
+      max-height: 90vh;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 24px 72px rgba(17, 24, 39, .28);
+    }
+
+    .dialog.form {
+      width: 560px;
+      grid-template-rows: auto 1fr;
+    }
+
+    .dialog-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .close {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: #6b7280;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .close:hover {
+      background: var(--soft);
+      color: #111827;
+    }
+
+    .profile {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--line);
+      background: var(--soft-2);
+    }
+
+    .profile div {
+      color: #374151;
+      font-size: 13px;
+    }
+
+    .profile span {
+      color: var(--muted);
+      margin-right: 6px;
+    }
+
+    .dialog-body {
+      overflow: auto;
+      padding: 20px 24px 24px;
+    }
+
+    .dialog-filters {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr 1fr auto;
+      gap: 14px;
+      align-items: end;
+      margin-bottom: 16px;
+    }
+
+    .tree {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tree-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      padding: 0;
+      font-weight: 700;
+    }
+
+    .tree-toggle:disabled {
+      cursor: default;
+      font-weight: 400;
+    }
+
+    .child-row td:first-child {
+      padding-left: calc(16px + var(--indent, 0px));
+    }
+
+    .self-row {
+      background: #eff6ff;
+    }
+
+    .tri-up,
+    .tri-down {
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      opacity: .75;
+    }
+
+    .tri-up {
+      border-bottom: 8px solid #cbd5e1;
+    }
+
+    .tri-down {
+      border-top: 8px solid #cbd5e1;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 18px;
+      padding: 24px;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 0 24px 24px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="browser-bar">
+    <div class="lights">
+      <span class="light red"></span>
+      <span class="light yellow"></span>
+      <span class="light green"></span>
+    </div>
+    <div class="address">
+      <span id="addressText">https://platform.prototype.com/channel/users</span>
+      <span>☆</span>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-title">渠道管理</div>
+      <nav class="nav" id="nav">
+        <button class="active" data-page="users">渠道用户管理</button>
+        <button data-page="daily">现货交易每日佣金统计</button>
+        <button data-page="spotStat">现货交易用户佣金统计</button>
+        <button data-page="spotDetail">现货交易佣金明细</button>
+        <button data-page="rwaBuy">RWA申购佣金明细</button>
+        <button data-page="rwaBonus">RWA分红佣金明细</button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <section id="page-users" class="page active">
+        <div class="page-head">
+          <div>
+            <h1>渠道用户管理</h1>
+            <p class="sub">支持按 UID、邮箱、状态、用户类型和注册时间筛选。渠道等级可进入代理链路详情。</p>
+          </div>
+          <div class="toolbar">
+            <button class="btn" data-modal="addPartner">新增合伙人</button>
+          </div>
+        </div>
+
+        <div class="card filters five">
+          <div class="field"><label>UID / 邮箱搜索</label><input id="userKeyword" placeholder="请输入 UID 或邮箱"></div>
+          <div class="field"><label>状态</label><select id="userStatusFilter"><option>全部</option><option>启用</option><option>停用</option></select></div>
+          <div class="field"><label>用户类型</label><select id="userTypeFilter"><option>全部</option><option>合伙人</option><option>直客</option></select></div>
+          <div class="field">
+            <label>注册时间</label>
+            <div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div>
+          </div>
+          <div class="filter-actions"><button class="btn" id="userSearch">搜索</button><button class="btn secondary" id="userReset">重置</button></div>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>用户名</th><th>UID</th><th>邮箱</th><th>注册时间</th><th>成为代理时间</th><th>用户类型</th>
+                  <th>渠道等级</th><th>VIP等级</th><th>现货佣金/手续费减免</th><th>RWA返佣比例</th><th>状态</th><th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="usersBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-spotStat" class="page" style="margin-top: 18px;">
+        <div class="page-head">
+          <div>
+            <h1>现货交易用户佣金统计</h1>
+            <p class="sub">按现货交易用户维度汇总累计佣金，可继续查看用户详情与链路佣金详情。</p>
+          </div>
+        </div>
+        <div class="card ranking-card">
+          <div class="ranking-head">
+            <div>
+              <h2>用户佣金排名</h2>
+              <p class="sub">根据下方列表的佣金金额生成排名进度条。</p>
+            </div>
+          </div>
+          <div id="spotStatRanking" class="ranking-list"></div>
+        </div>
+        <div class="card filters three">
+          <div class="field"><label>交易用户搜索</label><input placeholder="请输入用户 UID 或邮箱"></div>
+          <div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div>
+          <div class="filter-actions"><button class="btn">搜索</button></div>
+        </div>
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>交易用户昵称</th><th>UID</th><th>邮箱</th><th>上级代理</th><th>顶级代理</th><th>佣金</th><th>返佣比例</th><th>操作</th></tr></thead>
+              <tbody id="spotStatBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-spotDetail" class="page" style="margin-top: 18px;">
+        <div class="page-head">
+          <div>
+            <h1>现货交易佣金明细</h1>
+            <p class="sub">查询现货交易产生的佣金，区分下级贡献与自返佣来源。</p>
+          </div>
+        </div>
+        <div class="card filters five">
+          <div class="field"><label>合伙人搜索</label><input placeholder="请输入用户 UID 或邮箱"><span class="note">* 指收到佣金的合伙人用户</span></div>
+          <div class="field"><label>交易用户搜索</label><input placeholder="请输入用户 UID 或邮箱"><span class="note">* 指代理体系中发生交易的用户</span></div>
+          <div class="field"><label>交易币对查询</label><select id="spotPairFilter"><option>全部</option><option>BTC/USDT</option><option>ETH/USDT</option><option>SOL/USDT</option></select></div>
+          <div class="field"><label>手续费币种查询</label><select id="spotFeeCurrencyFilter"><option>全部</option><option>BTC</option><option>ETH</option><option>USDT</option></select></div>
+          <div class="field"><label>佣金来源查询</label><select id="spotSourceFilter"><option>全部</option><option>下级贡献</option><option>自返佣</option></select></div>
+          <div class="field"><label>现货交易订单号</label><input placeholder="请输入现货交易订单号"><span class="note">* 通过用户的现货订单号搜索明细</span></div>
+          <div class="field"><label>结算批次号</label><input placeholder="请输入结算批次号"><span class="note">* 通过佣金的结算批次号搜索相关明细</span></div>
+          <div class="field"><label>佣金状态</label><select id="spotStatusFilter"><option>全部</option><option>待结算</option><option>已结算</option></select></div>
+          <div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div>
+          <div class="filter-actions"><button class="btn" id="spotDetailSearch">搜索</button></div>
+        </div>
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table style="min-width: 1380px;">
+              <thead>
+                <tr>
+                  <th>合伙人UID</th><th>交易用户UID</th><th>交易币对</th><th>交易订单号</th><th>结算批次号</th><th>交易时间</th>
+                  <th>手续费币种</th><th>手续费数量</th><th>佣金</th><th>返佣比例</th><th>上级代理</th><th>顶级代理</th><th>佣金来源</th><th>佣金状态</th>
+                </tr>
+              </thead>
+              <tbody id="spotDetailBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-daily" class="page" style="margin-top: 18px;">
+        <div class="page-head">
+          <div>
+            <h1>现货交易每日佣金统计</h1>
+            <p class="sub">按日期和手续费币种统计现货交易佣金与平台收益。</p>
+          </div>
+        </div>
+        <div class="card filters three">
+          <div class="field"><label>手续费币种搜索</label><select id="dailyCurrency"><option>SB</option><option>USDT</option><option>BTC</option><option>ETH</option></select></div>
+          <div class="field"><label>时间范围</label><div class="date-range"><input id="dailyStart" value="2026年7月1日"><span>至</span><input id="dailyEnd" value="2026年7月31日"></div></div>
+          <div class="filter-actions"><button class="btn" id="dailySearch">搜索</button><button class="btn secondary" id="dailyReset">重置</button></div>
+        </div>
+        <div class="daily-insights">
+          <div class="daily-metrics">
+            <div class="card daily-metric"><span id="dailyPartnerNativeTitle">合伙人佣金（SB）</span><strong id="dailyPartnerNative">0.0000</strong><small id="dailyPartnerNativeNote">按当前筛选汇总</small></div>
+            <div class="card daily-metric"><span>合伙人佣金（USDT）</span><strong id="dailyPartnerUsdt">0.0000</strong><small id="dailyPartnerUsdtNote">按当前筛选汇总</small></div>
+            <div class="card daily-metric"><span id="dailyPlatformNativeTitle">平台收益（SB）</span><strong id="dailyPlatformNative">0.0000</strong><small id="dailyPlatformNativeNote">按当前筛选汇总</small></div>
+          </div>
+          <div class="chart-grid">
+            <div class="card chart-card">
+              <div class="chart-head">
+                <div>
+                  <h2>每日趋势</h2>
+                  <p class="sub" id="dailyTrendSub">展示所选币种的合伙人佣金与平台收益随日期变化。</p>
+                </div>
+                <div class="legend"><span><i class="dot"></i>合伙人佣金</span><span><i class="dot amber"></i>平台收益</span></div>
+              </div>
+              <div id="dailyTrendChart"></div>
+            </div>
+            <div class="card chart-card">
+              <div class="chart-head">
+                <div>
+                  <h2>收益占比</h2>
+                  <p class="sub" id="dailyPieSub">展示合伙人佣金与平台收益占比。</p>
+                </div>
+              </div>
+              <div id="dailyPieChart"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>日期</th><th>手续费币种</th><th id="dailyPartnerNativeTh">合伙人佣金（SB）</th><th>合伙人佣金（USDT）</th><th id="dailyPlatformNativeTh">平台收益（SB）</th></tr></thead>
+              <tbody id="dailyBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-rwaBuy" class="page" style="margin-top: 18px;">
+        <div class="page-head">
+          <div>
+            <h1>RWA申购佣金明细</h1>
+            <p class="sub">搜索维度：项目、用户、申购订单号、结算批次号、佣金状态。</p>
+          </div>
+          <button class="btn">实时结算</button>
+        </div>
+        <div class="card filters five">
+          <div class="field"><label>项目搜索</label><input placeholder="请输入项目名称或项目ID"></div>
+          <div class="field"><label>合伙人搜索</label><input placeholder="请输入用户 UID 或邮箱"><span class="note">* 指收到佣金的合伙人用户</span></div>
+          <div class="field"><label>申购用户搜索</label><input placeholder="请输入用户 UID 或邮箱"><span class="note">* 指代理体系中申购发生的用户</span></div>
+          <div class="field"><label>申购订单号搜索</label><input placeholder="请输入申购订单号"></div>
+          <div class="field"><label>结算批次号搜索</label><input placeholder="请输入结算批次号"></div>
+          <div class="field"><label>佣金状态</label><select id="rwaBuyStatus"><option>全部</option><option>待结算</option><option>结算中</option><option>已结算</option></select></div>
+          <div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div>
+          <div class="filter-actions"><button class="btn" id="rwaBuySearch">搜索</button><button class="btn secondary" id="rwaBuyReset">重置</button></div>
+        </div>
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table style="min-width: 1320px;">
+              <thead><tr><th>合伙人UID</th><th>申购用户UID</th><th>项目名称</th><th>项目ID</th><th>申购订单号</th><th>结算批次号</th><th>交易时间</th><th>申购订单金额</th><th>佣金</th><th>返佣比例（级差）</th><th>上级代理</th><th>顶级代理</th><th>佣金状态</th></tr></thead>
+              <tbody id="rwaBuyBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-rwaBonus" class="page" style="margin-top: 18px;">
+        <div class="page-head">
+          <div>
+            <h1>RWA分红佣金明细</h1>
+            <p class="sub">支持按分红批次、收益类型、币种、佣金状态组合筛选。</p>
+          </div>
+          <button class="btn">实时结算</button>
+        </div>
+        <div class="card filters five">
+          <div class="field"><label>项目搜索</label><input placeholder="请输入项目名称或项目ID"></div>
+          <div class="field"><label>合伙人搜索</label><input placeholder="请输入用户 UID 或邮箱"><span class="note">* 指收到佣金的合伙人用户</span></div>
+          <div class="field"><label>质押用户搜索</label><input placeholder="请输入用户 UID 或邮箱"><span class="note">* 指代理体系中质押发生的用户</span></div>
+          <div class="field"><label>分红批次号搜索</label><input placeholder="例如 2026-06"></div>
+          <div class="field"><label>结算批次号搜索</label><input placeholder="请输入结算批次号"></div>
+          <div class="field"><label>收益类型</label><select id="rwaBonusType"><option>全部</option><option>固定收益</option><option>浮动收益</option></select></div>
+          <div class="field"><label>币种</label><select id="rwaBonusCurrency"><option>全部</option><option>RT</option><option>USDT</option></select></div>
+          <div class="field"><label>佣金状态</label><select id="rwaBonusStatus"><option>全部</option><option>待结算</option><option>结算中</option><option>已结算</option></select></div>
+          <div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div>
+          <div class="filter-actions"><button class="btn" id="rwaBonusSearch">搜索</button><button class="btn secondary" id="rwaBonusReset">重置</button></div>
+        </div>
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table style="min-width: 1460px;">
+              <thead><tr><th>合伙人UID</th><th>质押用户UID</th><th>项目名称</th><th>项目ID</th><th>分红统计时间</th><th>分红批次</th><th>结算批次号</th><th>币种</th><th>该用户质押总数</th><th>项目质押总数</th><th>合伙人佣金池总数量</th><th>合伙人权重</th><th>佣金</th><th>收益类型</th><th>佣金状态</th></tr></thead>
+              <tbody id="rwaBonusBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="detailModal" class="modal">
+    <div class="dialog">
+      <div class="dialog-head">
+        <div>
+          <h1 id="detailTitle">详情</h1>
+          <p id="detailSub" class="sub">查看当前用户的链路、邀请或佣金数据。</p>
+        </div>
+        <button class="close" data-close>&times;</button>
+      </div>
+      <div id="profile" class="profile"></div>
+      <div class="dialog-body">
+        <div id="detailFilters" class="dialog-filters"></div>
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table id="detailTable"></table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="formModal" class="modal">
+    <div class="dialog form">
+      <div class="dialog-head">
+        <div>
+          <h1 id="formTitle">设置平台顶级合伙人</h1>
+          <p class="sub">用于配置合伙人基础比例。</p>
+        </div>
+        <button class="close" data-close>&times;</button>
+      </div>
+      <div class="form-grid">
+        <div class="field"><label><span class="note">*</span> 合伙人搜索</label><input id="formUser" placeholder="请输入用户 UID 或邮箱"></div>
+        <div class="field"><label><span class="note">*</span> 现货佣金比例（0-100）</label><input id="formSpot" placeholder="请输入现货佣金比例"></div>
+        <div class="field"><label>RWA佣金比例（0-100）</label><input id="formRwa" placeholder="请输入 RWA 佣金比例"></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn secondary" data-close>取消</button>
+        <button class="btn" data-close>确认</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const profile = {
+      name: "草莓人",
+      uid: "64634687",
+      email: "4663@gmail.com",
+      vip: "V4",
+      identity: "合伙人",
+      level: "5级",
+      country: "中国",
+      createdAt: "2026-06-24",
+      spotRatio: "30%",
+      rwaRatio: "30%"
+    };
+
+    const users = [
+      ["香蕉人", "53453545", "373@gmail.com", "2026-04-02 16:38:27", "2026-04-02", "合伙人", "1级", "V8", "30%", "40%", "启用"],
+      ["草莓人", "53453546", "strawberry@gmail.com", "2026-04-02 18:12:03", "2026-04-02", "合伙人", "5级", "V7", "30%", "40%", "启用"],
+      ["苹果人", "53453547", "apple@gmail.com", "2026-04-03 09:04:18", "2026-04-03", "合伙人", "2级", "V6", "25%", "30%", "启用"],
+      ["葡萄人", "53453548", "grape@gmail.com", "2026-04-05 13:21:45", "2026-04-05", "合伙人", "3级", "V5", "22%", "25%", "停用"],
+      ["西瓜直客", "53453999", "xgdirect@gmail.com", "2026-04-08 10:30:06", "-", "直客", "0级", "V2", "10%", "-", "启用"],
+      ["水蜜桃直客", "53453888", "peach@gmail.com", "2026-04-09 15:18:44", "-", "直客", "0级", "V1", "15%", "-", "启用"]
+    ];
+
+    const spotStat = [
+      ["草莓人", "5345543", "sdsh@gmail.com", "7383873", "46364634", "60,045.766", "20%"],
+      ["苹果人", "5345544", "apple@gmail.com", "7383873", "46364634", "32,450.120", "18%"],
+      ["香蕉人", "5345545", "banana@gmail.com", "-", "46364634", "88,903.001", "30%"],
+      ["葡萄人", "5345546", "grape@gmail.com", "5345545", "46364634", "12,402.700", "12%"],
+      ["芒果人", "5345547", "mango@gmail.com", "5345545", "46364634", "9,880.430", "10%"]
+    ];
+
+    const spotDetail = [
+      ["5345543", "737473434", "BTC/USDT", "3473477437", "-", "2026-04-01 15:45:23", "BTC", "0.766", "0.066", "5%", "46364634", "46364634", "下级贡献", "待结算"],
+      ["5345543", "737473434", "BTC/USDT", "3473477438", "2069957654951702528", "2026-04-01 15:45:23", "BTC", "0.766", "0.066", "5%", "46364634", "46364634", "自返佣", "已结算"],
+      ["5345544", "737473435", "ETH/USDT", "3473477441", "2069957654951702541", "2026-04-02 09:12:40", "ETH", "1.240", "0.088", "7%", "7383873", "46364634", "下级贡献", "已结算"],
+      ["5345545", "737473436", "SOL/USDT", "3473477449", "-", "2026-04-03 18:20:06", "USDT", "35.000", "2.100", "6%", "5345543", "46364634", "下级贡献", "待结算"],
+      ["5345546", "737473437", "BTC/USDT", "3473477460", "2069957654951702602", "2026-04-05 11:03:18", "BTC", "0.120", "0.006", "5%", "5345545", "46364634", "自返佣", "已结算"]
+    ];
+
+    const daily = [
+      ["2026-07-02", "SB", "600.0000", "772,237.9232", "7,500.0000"],
+      ["2026-07-03", "USDT", "124,550.1200", "124,550.1200", "1,200.0000"],
+      ["2026-07-04", "SB", "420.5000", "512,044.0000", "5,300.0000"],
+      ["2026-07-05", "USDT", "98,120.4500", "98,120.4500", "950.0000"],
+      ["2026-07-06", "BTC", "0.7660", "47,904.3300", "0.1200"],
+      ["2026-07-07", "ETH", "12.8800", "38,120.8800", "1.6400"],
+      ["2026-07-08", "BTC", "0.5840", "36,412.5600", "0.0920"],
+      ["2026-07-09", "ETH", "9.4200", "27,884.7600", "1.1800"],
+      ["2026-07-10", "SB", "510.0000", "621,220.5000", "6,250.0000"]
+    ];
+
+    const rwaBuy = [
+      ["5345543", "737473434", "RT国际船运", "23772372", "3473477437", "-", "2026-04-01 15:45:23", "5,000", "0.766", "2%", "7383873", "46364634", "待结算"],
+      ["5345543", "891238442", "RT深海远航", "23772375", "-", "-", "2026-04-03 11:20:00", "12,000", "1.840", "2%", "7383873", "46364634", "结算中"],
+      ["6124551", "901234771", "RT跨境冷链", "23772390", "3473477511", "2069957654951703123", "2026-04-05 09:12:30", "8,500", "1.250", "1.5%", "7412398", "46364634", "已结算"],
+      ["5345544", "737473440", "RT新能源仓储", "23772401", "3473477602", "-", "2026-04-06 17:05:11", "3,000", "0.460", "2%", "7383873", "46364634", "待结算"],
+      ["5345545", "737473441", "RT亚洲港口", "23772409", "3473477620", "2069957654951704188", "2026-04-07 14:32:56", "18,000", "2.700", "1.5%", "5345543", "46364634", "已结算"]
+    ];
+
+    const rwaBonus = [
+      ["5345543", "737473434", "RT国际船运", "73473643", "2026-04-01", "2026-03", "-", "RT", "5,000", "50,000", "10,000", "0.40", "50", "固定收益", "结算中"],
+      ["5345543", "812349112", "RT深海远航", "73473699", "2026-04-01", "2026-03", "-", "USDT", "15,000", "150,000", "25,000", "0.10", "120", "固定收益", "待结算"],
+      ["6124551", "901234771", "RT跨境冷链", "73473711", "2026-04-10", "2026-04", "2069412", "RT", "8,000", "80,000", "12,000", "0.50", "80", "浮动收益", "已结算"],
+      ["5345543", "737473434", "RT国际船运", "73473643", "2026-05-01", "2026-04", "-", "RT", "5,000", "52,000", "11,000", "0.38", "45", "固定收益", "待结算"],
+      ["5345545", "737473441", "RT亚洲港口", "73473726", "2026-05-01", "2026-04", "2069520", "USDT", "20,000", "220,000", "30,000", "0.18", "180", "浮动收益", "已结算"]
+    ];
+
+    const chainUp = [
+      ["香蕉人", "RT@gmail.com", "237634633", "1", "V1", "合伙人", "60%", "30%"],
+      ["苹果人", "RT@gmail.com", "237634634", "2", "V1", "合伙人", "40%", "30%"],
+      ["葡萄人", "RT@gmail.com", "237634635", "3", "V1", "合伙人", "30%", "30%"],
+      ["芒果人", "RT@gmail.com", "237634636", "4", "V1", "合伙人", "30%", "30%"],
+      ["草莓人（本ID）", "RT@gmail.com", "237634637", "5", "V1", "合伙人", "30%", "30%"]
+    ];
+
+    const chainDown = [
+      ["草莓人（本ID）", "RT@gmail.com", "237634637", "5", "V1", "合伙人", "60%", "30%"],
+      ["苹果人", "RT@gmail.com", "237634638", "6", "V1", "合伙人", "40%", "30%"],
+      ["葡萄人", "RT@gmail.com", "237634639", "6", "V1", "合伙人", "30%", "30%"],
+      ["荔枝人", "RT@gmail.com", "237634640", "7", "V1", "合伙人", "40%", "30%"],
+      ["空中人", "RT@gmail.com", "237634641", "7", "V1", "合伙人", "40%", "30%"],
+      ["芒果人", "RT@gmail.com", "237634642", "6", "V1", "直客", "0%", "-"],
+      ["橘子人", "RT@gmail.com", "237634643", "6", "V1", "直客", "0%", "-"]
+    ];
+
+    const chainTree = [
+      {
+        id: "self",
+        row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "5", "V1", "合伙人", "60%", "30%"],
+        children: [
+          {
+            id: "apple",
+            row: ["苹果人", "RT@gmail.com", "237634638", "6", "V1", "合伙人", "40%", "30%"],
+            children: [
+              {
+                id: "lychee",
+                row: ["荔枝人", "lychee@gmail.com", "237634644", "7", "V1", "合伙人", "40%", "30%"],
+                children: [
+                  { id: "kiwi", row: ["猕猴桃人", "kiwi@gmail.com", "237634650", "8", "V1", "直客", "12%", "-"], children: [] },
+                  { id: "plum", row: ["李子人", "plum@gmail.com", "237634651", "8", "V1", "直客", "8%", "-"], children: [] }
+                ]
+              },
+              { id: "longan", row: ["龙眼人", "longan@gmail.com", "237634645", "7", "V2", "直客", "10%", "-"], children: [] }
+            ]
+          },
+          {
+            id: "grape",
+            row: ["葡萄人", "RT@gmail.com", "237634639", "6", "V1", "合伙人", "30%", "30%"],
+            children: [
+              { id: "mango", row: ["芒果人", "mango@gmail.com", "237634646", "7", "V1", "合伙人", "30%", "30%"], children: [] },
+              { id: "melon", row: ["哈密瓜人", "melon@gmail.com", "237634647", "7", "V1", "直客", "15%", "-"], children: [] }
+            ]
+          },
+          {
+            id: "orange",
+            row: ["橘子人", "orange@gmail.com", "237634640", "6", "V1", "合伙人", "35%", "30%"],
+            children: [
+              { id: "pear", row: ["梨子人", "pear@gmail.com", "237634648", "7", "V1", "直客", "12%", "-"], children: [] },
+              { id: "lemon", row: ["柠檬人", "lemon@gmail.com", "237634649", "7", "V1", "直客", "10%", "-"], children: [] }
+            ]
+          },
+          { id: "direct-a", row: ["空中人", "sky@gmail.com", "237634641", "6", "V1", "直客", "10%", "-"], children: [] },
+          { id: "direct-b", row: ["橙子人", "direct-orange@gmail.com", "237634642", "6", "V1", "直客", "8%", "-"], children: [] }
+        ]
+      }
+    ];
+
+    let expandedChainRows = new Set(["self"]);
+
+    const inviteLinks = [
+      ["2026/07/03 11:30:57", "返佣30", "www.etz/join/626.com", "634747", "合伙人链接", "30%", "2026/07/06 11:30:57", "启用中"],
+      ["2026/07/04 09:11:20", "返佣25", "www.etz/join/928.com", "634928", "合伙人链接", "25%", "2026/07/08 09:11:20", "启用中"],
+      ["2026/07/04 12:30:05", "手续费20", "www.etz/join/620.com", "634620", "直客链接", "20%", "2026/07/09 12:30:05", "停用中"],
+      ["2026/07/05 10:00:21", "手续费15", "www.etz/join/615.com", "634615", "直客链接", "15%", "2026/07/10 10:00:21", "启用中"],
+      ["2026/07/06 14:45:00", "活动返佣35", "www.etz/join/635.com", "634635", "合伙人链接", "35%", "2026/07/12 14:45:00", "启用中"]
+    ];
+
+    const userDetail = [
+      ["2026-07-02", "500", "400", "300", "7,500.0000", "7,500.0000"],
+      ["2026-07-03", "460", "360", "288", "6,920.0000", "6,920.0000"],
+      ["2026-07-04", "520", "415", "310", "8,110.0000", "8,110.0000"],
+      ["2026-07-05", "505", "390", "302", "7,880.0000", "7,880.0000"],
+      ["2026-07-06", "488", "372", "291", "7,210.0000", "7,210.0000"]
+    ];
+
+    const commissionChain = [
+      ["香蕉人", "RT@gmail.com", "237634633", "合伙人", "5", "V1", "500.0000", "100.0000"],
+      ["苹果人", "RT@gmail.com", "237634634", "合伙人", "6", "V1", "500.0000", "100.0000"],
+      ["葡萄人", "RT@gmail.com", "237634635", "合伙人", "6", "V1", "500.0000", "100.0000"],
+      ["芒果人", "RT@gmail.com", "237634636", "合伙人", "7", "V1", "500.0000", "100.0000"],
+      ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "7", "V1", "500.0000", "100.0000"]
+    ];
+
+    const commissionTree = [
+      {
+        id: "commission-self",
+        row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "5", "V1", "1,250.0000", "100.0000"],
+        children: [
+          {
+            id: "commission-apple",
+            row: ["苹果人", "apple.agent@gmail.com", "237634638", "合伙人", "6", "V1", "820.0000", "80.0000"],
+            children: [
+              { id: "commission-lychee", row: ["荔枝人", "lychee.agent@gmail.com", "237634644", "合伙人", "7", "V2", "360.0000", "60.0000"], children: [] },
+              { id: "commission-longan", row: ["龙眼人", "longan.direct@gmail.com", "237634645", "直客", "7", "V1", "0.0000", "45.0000"], children: [] }
+            ]
+          },
+          {
+            id: "commission-grape",
+            row: ["葡萄人", "grape.agent@gmail.com", "237634639", "合伙人", "6", "V1", "620.0000", "70.0000"],
+            children: [
+              { id: "commission-mango", row: ["芒果人", "mango.agent@gmail.com", "237634646", "合伙人", "7", "V1", "280.0000", "50.0000"], children: [] },
+              { id: "commission-melon", row: ["哈密瓜人", "melon.direct@gmail.com", "237634647", "直客", "7", "V1", "0.0000", "38.0000"], children: [] }
+            ]
+          },
+          {
+            id: "commission-orange",
+            row: ["橘子人", "orange.agent@gmail.com", "237634640", "合伙人", "6", "V1", "540.0000", "68.0000"],
+            children: [
+              { id: "commission-pear", row: ["梨子人", "pear.direct@gmail.com", "237634648", "直客", "7", "V1", "0.0000", "42.0000"], children: [] },
+              { id: "commission-lemon", row: ["柠檬人", "lemon.direct@gmail.com", "237634649", "直客", "7", "V1", "0.0000", "35.0000"], children: [] }
+            ]
+          },
+          { id: "commission-sky", row: ["空中人", "sky.direct@gmail.com", "237634641", "直客", "6", "V1", "0.0000", "30.0000"], children: [] },
+          { id: "commission-direct-orange", row: ["橙子人", "direct-orange@gmail.com", "237634642", "直客", "6", "V1", "0.0000", "25.0000"], children: [] }
+        ]
+      }
+    ];
+
+    let expandedCommissionRows = new Set(["commission-self"]);
+
+    function statusBadge(status) {
+      const cls = status.includes("启用") || status === "已结算" ? "green" : status === "结算中" ? "blue" : status === "待结算" ? "amber" : status.includes("停用") ? "gray" : "gray";
+      return `<span class="badge ${cls}">${status}</span>`;
+    }
+
+    function renderRows(id, rows, map) {
+      document.getElementById(id).innerHTML = rows.map(map).join("");
+    }
+
+    function renderUsers(rows = users) {
+      renderRows("usersBody", rows, row => `
+        <tr>
+          <td>${row[0]}</td><td class="mono">${row[1]}</td><td class="mono">${row[2]}</td><td>${row[3]}</td><td>${row[4]}</td><td>${row[5]}</td>
+          <td><button class="link" data-detail="${row[6] === "1级" ? "chainUp" : "chainDown"}">${row[6]}（点击查看代理链路）</button></td>
+          <td>${row[7]}</td><td>${row[8]}</td><td>${row[9]}</td><td>${statusBadge(row[10])}</td>
+          <td><div class="row-actions"><button class="link">${row[10] === "启用" ? "停用" : "启用"}</button><button class="link" data-modal="editPartner">编辑比例</button><button class="link" data-detail="invite">链接详情</button></div></td>
+        </tr>
+      `);
+    }
+
+    function renderSpotStatTable() {
+      renderRows("spotStatBody", spotStat, row => `
+        <tr>
+          ${row.map((v, i) => `<td class="${[1, 2, 3, 4].includes(i) ? "mono" : ""}">${v}</td>`).join("")}
+          <td><div class="row-actions"><button class="link" data-detail="userDetail">查看用户详情</button><button class="link" data-detail="commissionUp">查看链路详情</button></div></td>
+        </tr>
+      `);
+      renderSpotStatRanking();
+    }
+
+    function renderSpotDetailTable(rows = spotDetail) {
+      renderRows("spotDetailBody", rows, row => `
+        <tr>${row.map((v, i) => `<td class="${[0, 1, 3, 4, 10, 11].includes(i) ? "mono" : ""}">${i === 13 ? statusBadge(v) : v}</td>`).join("")}</tr>
+      `);
+    }
+
+    function renderMainTables() {
+      renderUsers();
+      renderSpotStatTable();
+      renderSpotDetailTable();
+
+      renderDaily(filteredDailyRows());
+      renderRwaBuy(rwaBuy);
+      renderRwaBonus(rwaBonus);
+    }
+
+    function renderSpotStatRanking() {
+      const ranking = [...spotStat]
+        .sort((a, b) => parseAmount(b[5]) - parseAmount(a[5]))
+        .slice(0, 5);
+      const max = Math.max(...ranking.map(row => parseAmount(row[5])), 1);
+      document.getElementById("spotStatRanking").innerHTML = ranking.map((row, index) => {
+        const amount = parseAmount(row[5]);
+        const percent = Math.max(4, amount / max * 100);
+        return `
+          <div class="ranking-row">
+            <div class="ranking-user"><span class="rank-badge">${index + 1}</span><span>${row[0]}</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width: ${percent.toFixed(1)}%"></div></div>
+            <div class="ranking-value">${row[5]}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function filteredUsers() {
+      const keyword = document.getElementById("userKeyword").value.trim().toLowerCase();
+      const status = document.getElementById("userStatusFilter").value;
+      const type = document.getElementById("userTypeFilter").value;
+      return users.filter(row => {
+        const matchesKeyword = !keyword || row[1].toLowerCase().includes(keyword) || row[2].toLowerCase().includes(keyword);
+        const matchesStatus = status === "全部" || row[10] === status;
+        const matchesType = type === "全部" || row[5] === type;
+        return matchesKeyword && matchesStatus && matchesType;
+      });
+    }
+
+    function filteredSpotDetail() {
+      const pair = document.getElementById("spotPairFilter").value;
+      const feeCurrency = document.getElementById("spotFeeCurrencyFilter").value;
+      const source = document.getElementById("spotSourceFilter").value;
+      const status = document.getElementById("spotStatusFilter").value;
+      return spotDetail.filter(row => {
+        const matchesPair = pair === "全部" || row[2] === pair;
+        const matchesFeeCurrency = feeCurrency === "全部" || row[6] === feeCurrency;
+        const matchesSource = source === "全部" || row[12] === source;
+        const matchesStatus = status === "全部" || row[13] === status;
+        return matchesPair && matchesFeeCurrency && matchesSource && matchesStatus;
+      });
+    }
+
+    function activeDailyCurrency(rows) {
+      const selected = document.getElementById("dailyCurrency")?.value || "SB";
+      if (selected) return selected;
+      const currencies = Array.from(new Set(rows.map(row => row[1])));
+      return currencies.length === 1 ? currencies[0] : "原币";
+    }
+
+    function renderDaily(rows) {
+      const currencyLabel = activeDailyCurrency(rows);
+      document.getElementById("dailyPartnerNativeTh").textContent = `合伙人佣金（${currencyLabel}）`;
+      document.getElementById("dailyPlatformNativeTh").textContent = `平台收益（${currencyLabel}）`;
+      renderRows("dailyBody", rows, row => `<tr><td>${row[0]}</td><td><span class="badge blue">${row[1]}</span></td><td class="mono">${row[2]}</td><td class="mono">${row[3]}</td><td class="mono">${row[4]}</td></tr>`);
+      renderDailyInsights(rows);
+    }
+
+    function parseAmount(value) {
+      return Number(String(value).replace(/,/g, "")) || 0;
+    }
+
+    function formatAmount(value, digits = 4) {
+      return value.toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+    }
+
+    function parseCnDate(value) {
+      const match = String(value).match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+      if (match) {
+        const [, year, month, day] = match;
+        return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      }
+      return String(value).slice(0, 10);
+    }
+
+    function filteredDailyRows() {
+      const currency = document.getElementById("dailyCurrency").value;
+      const start = parseCnDate(document.getElementById("dailyStart").value);
+      const end = parseCnDate(document.getElementById("dailyEnd").value);
+      return daily.filter(row => {
+        const inCurrency = row[1] === currency;
+        const inStart = !start || row[0] >= start;
+        const inEnd = !end || row[0] <= end;
+        return inCurrency && inStart && inEnd;
+      });
+    }
+
+    function selectedDailyLabel(rows) {
+      const currency = document.getElementById("dailyCurrency")?.value || "SB";
+      return `当前币种：${currency}`;
+    }
+
+    function dailyTotals(rows) {
+      return rows.reduce((total, row) => {
+        total.partnerNative += parseAmount(row[2]);
+        total.partnerUsdt += parseAmount(row[3]);
+        total.platformNative += parseAmount(row[4]);
+        return total;
+      }, { partnerNative: 0, partnerUsdt: 0, platformNative: 0 });
+    }
+
+    function renderDailyInsights(rows) {
+      const totals = dailyTotals(rows);
+      const currencyLabel = activeDailyCurrency(rows);
+      document.getElementById("dailyPartnerNativeTitle").textContent = `合伙人佣金（${currencyLabel}）`;
+      document.getElementById("dailyPlatformNativeTitle").textContent = `平台收益（${currencyLabel}）`;
+      document.getElementById("dailyPartnerNative").textContent = formatAmount(totals.partnerNative);
+      document.getElementById("dailyPartnerUsdt").textContent = formatAmount(totals.partnerUsdt);
+      document.getElementById("dailyPlatformNative").textContent = formatAmount(totals.platformNative);
+      document.getElementById("dailyPartnerNativeNote").textContent = rows.length ? `合伙人 ${currencyLabel} 佣金合计` : "暂无匹配数据";
+      document.getElementById("dailyPartnerUsdtNote").textContent = rows.length ? "合伙人 USDT 佣金合计" : "暂无匹配数据";
+      document.getElementById("dailyPlatformNativeNote").textContent = rows.length ? `平台 ${currencyLabel} 收益合计` : "暂无匹配数据";
+      document.getElementById("dailyTrendSub").textContent = rows.length ? `展示 ${currencyLabel} 的合伙人佣金与平台收益随日期变化。` : "暂无匹配数据。";
+      document.getElementById("dailyPieSub").textContent = rows.length ? `展示 ${currencyLabel} 合伙人佣金与平台收益占比。` : "暂无匹配数据。";
+      renderDailyTrendChart(rows);
+      renderDailyPieChart(rows);
+    }
+
+    function linePath(points) {
+      return points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x.toFixed(1)} ${point.y.toFixed(1)}`).join(" ");
+    }
+
+    function renderDailyTrendChart(rows) {
+      const target = document.getElementById("dailyTrendChart");
+      if (!rows.length) {
+        target.innerHTML = `<div class="chart-empty">暂无趋势数据</div>`;
+        return;
+      }
+
+      const width = 760;
+      const height = 280;
+      const pad = { top: 18, right: 24, bottom: 48, left: 70 };
+      const partnerValues = rows.map(row => parseAmount(row[2]));
+      const platformValues = rows.map(row => parseAmount(row[4]));
+      const max = Math.max(...partnerValues, ...platformValues, 1);
+      const xStep = rows.length > 1 ? (width - pad.left - pad.right) / (rows.length - 1) : 0;
+      const y = value => pad.top + (height - pad.top - pad.bottom) * (1 - value / max);
+      const x = index => rows.length > 1 ? pad.left + index * xStep : width / 2;
+      const partnerPoints = partnerValues.map((value, index) => ({ x: x(index), y: y(value), value }));
+      const platformPoints = platformValues.map((value, index) => ({ x: x(index), y: y(value), value }));
+      const gridValues = [0, .25, .5, .75, 1].map(ratio => max * ratio);
+
+      target.innerHTML = `
+        <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="每日佣金走势图">
+          <rect x="0" y="0" width="${width}" height="${height}" fill="#fff"></rect>
+          ${gridValues.map(value => {
+            const gy = y(value);
+            return `<g><line x1="${pad.left}" y1="${gy}" x2="${width - pad.right}" y2="${gy}" stroke="#eef0f3"></line><text x="${pad.left - 10}" y="${gy + 4}" text-anchor="end" fill="#9ca3af" font-size="11">${Math.round(value).toLocaleString("en-US")}</text></g>`;
+          }).join("")}
+          <path d="${linePath(partnerPoints)}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="${linePath(platformPoints)}" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+          ${partnerPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#2563eb"><title>合伙人佣金 ${formatAmount(point.value)}</title></circle>`).join("")}
+          ${platformPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#d97706"><title>平台收益 ${formatAmount(point.value)}</title></circle>`).join("")}
+          ${rows.map((row, index) => `<text x="${x(index)}" y="${height - 18}" text-anchor="middle" fill="#6b7280" font-size="11">${row[0].slice(5)}</text>`).join("")}
+        </svg>
+      `;
+    }
+
+    function polarToCartesian(cx, cy, radius, angle) {
+      const radians = (angle - 90) * Math.PI / 180;
+      return { x: cx + radius * Math.cos(radians), y: cy + radius * Math.sin(radians) };
+    }
+
+    function pieSlicePath(cx, cy, radius, startAngle, endAngle) {
+      const start = polarToCartesian(cx, cy, radius, endAngle);
+      const end = polarToCartesian(cx, cy, radius, startAngle);
+      const largeArc = endAngle - startAngle <= 180 ? "0" : "1";
+      return `M ${cx} ${cy} L ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArc} 0 ${end.x} ${end.y} Z`;
+    }
+
+    function renderDailyPieChart(rows) {
+      const target = document.getElementById("dailyPieChart");
+      if (!rows.length) {
+        target.innerHTML = `<div class="chart-empty">暂无占比数据</div>`;
+        return;
+      }
+
+      const totals = dailyTotals(rows);
+      const entries = [
+        ["合伙人佣金", totals.partnerNative],
+        ["平台收益", totals.platformNative]
+      ].filter(([, value]) => value > 0);
+      const total = entries.reduce((sum, [, value]) => sum + value, 0);
+      if (!entries.length || total <= 0) {
+        target.innerHTML = `<div class="chart-empty">暂无占比数据</div>`;
+        return;
+      }
+
+      const colors = ["#2563eb", "#16a34a", "#d97706", "#7c3aed", "#0891b2"];
+      let angle = 0;
+      const slices = entries.map(([currency, value], index) => {
+        const start = angle;
+        const end = angle + value / total * 360;
+        angle = end;
+        return { currency, value, start, end, color: colors[index % colors.length] };
+      });
+
+      target.innerHTML = `
+        <div class="pie-layout">
+          <svg class="pie-chart" viewBox="0 0 220 220" role="img" aria-label="收益占比饼图">
+            ${slices.map(slice => `<path d="${pieSlicePath(110, 110, 92, slice.start, slice.end)}" fill="${slice.color}"><title>${slice.currency} ${formatAmount(slice.value)} (${(slice.value / total * 100).toFixed(1)}%)</title></path>`).join("")}
+            <circle cx="110" cy="110" r="48" fill="#fff"></circle>
+            <text x="110" y="106" text-anchor="middle" fill="#6b7280" font-size="12">合计</text>
+            <text x="110" y="126" text-anchor="middle" fill="#111827" font-size="15" font-weight="700">${formatAmount(total, 2)}</text>
+          </svg>
+          <div class="pie-list">
+            ${slices.map(slice => `<div><span><i class="dot" style="background:${slice.color}"></i>${slice.currency}</span><strong>${(slice.value / total * 100).toFixed(1)}%</strong></div>`).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderRwaBuy(rows) {
+      renderRows("rwaBuyBody", rows, row => `<tr>${row.map((v, i) => `<td class="${[0, 1, 3, 4, 5, 10, 11].includes(i) ? "mono" : ""}">${i === 12 ? statusBadge(v) : v}</td>`).join("")}</tr>`);
+    }
+
+    function renderRwaBonus(rows) {
+      renderRows("rwaBonusBody", rows, row => `<tr>${row.map((v, i) => `<td class="${[0, 1, 3, 6].includes(i) ? "mono" : ""}">${i === 7 ? `<span class="badge blue">${v}</span>` : i === 14 ? statusBadge(v) : v}</td>`).join("")}</tr>`);
+    }
+
+    function setPage(page) {
+      document.querySelectorAll(".page").forEach(item => item.classList.toggle("active", item.id === `page-${page}`));
+      document.querySelectorAll("[data-page]").forEach(item => item.classList.toggle("active", item.dataset.page === page));
+      document.getElementById("addressText").textContent = `https://platform.prototype.com/channel/${page}`;
+    }
+
+    function profileHtml() {
+      return [
+        ["用户名", profile.name],
+        ["UID", profile.uid],
+        ["邮箱", profile.email],
+        ["VIP等级", profile.vip],
+        ["身份", profile.identity],
+        ["层级", profile.level],
+        ["国家", profile.country],
+        ["注册时间", profile.createdAt],
+        ["现货返佣比例", profile.spotRatio],
+        ["RWA返佣比例", profile.rwaRatio]
+      ].map(([label, value]) => `<div><span>${label}：</span>${value}</div>`).join("");
+    }
+
+    function detailTable(headers, rows, options = {}) {
+      const body = rows.map((row, rowIndex) => `<tr>${row.map((v, i) => {
+        let value = v;
+        if (options.statusIndex === i) value = statusBadge(v);
+        if (options.currencyIndex === i) value = `<span class="badge blue">${v}</span>`;
+        if (options.tree && i === 0 && !String(v).includes("本ID")) value = `<span class="tree">${v}<span class="tri-up"></span></span>`;
+        return `<td>${value}</td>`;
+      }).join("")}</tr>`).join("");
+      document.getElementById("detailTable").innerHTML = `<thead><tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${body}</tbody>`;
+    }
+
+    function chainHeaders() {
+      return ["代理昵称", "邮箱", "UID", "代理层级", "VIP等级", "用户类型", "现货返佣/手续费减免比例", "RWA返佣比例"];
+    }
+
+    function renderChainUpTable() {
+      detailTable(chainHeaders(), chainUp, { tree: true });
+    }
+
+    function flattenChain(nodes, depth = 0) {
+      return nodes.flatMap(node => {
+        const current = [{ ...node, depth }];
+        if (!expandedChainRows.has(node.id)) return current;
+        return current.concat(flattenChain(node.children, depth + 1));
+      });
+    }
+
+    function renderChainDownTable(userType = "全部") {
+      const rows = flattenChain(chainTree).filter(item => userType === "全部" || item.row[5] === userType);
+      const body = rows.map(item => {
+        const hasChildren = item.children.length > 0;
+        const expanded = expandedChainRows.has(item.id);
+        const rowClass = item.id === "self" ? "self-row" : item.depth > 1 ? "child-row" : "";
+        return `
+          <tr class="${rowClass}" style="--indent: ${item.depth * 22}px">
+            ${item.row.map((value, index) => {
+              if (index !== 0) return `<td>${value}</td>`;
+              const triangle = hasChildren ? `<span class="${expanded ? "tri-down" : "tri-up"}"></span>` : "";
+              return `<td><button class="tree-toggle" ${hasChildren ? `data-toggle-chain="${item.id}"` : "disabled"}>${value}${triangle}</button></td>`;
+            }).join("")}
+          </tr>
+        `;
+      }).join("");
+      document.getElementById("detailTable").innerHTML = `<thead><tr>${chainHeaders().map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${body}</tbody>`;
+    }
+
+    function renderChainView(direction, userType = "全部") {
+      if (direction === "down") {
+        renderChainDownTable(userType);
+      } else {
+        renderChainUpTable();
+      }
+    }
+
+    function commissionHeaders() {
+      return ["代理昵称", "邮箱", "UID", "用户类型", "代理层级", "VIP等级", "贡献佣金", "佣金/手续费减免"];
+    }
+
+    function renderCommissionUpTable(userType = "全部", keyword = "") {
+      const normalized = keyword.trim().toLowerCase();
+      const rows = commissionChain.filter(row => {
+        const matchesType = userType === "全部" || row[3] === userType;
+        const matchesKeyword = !normalized || row[0].toLowerCase().includes(normalized) || row[1].toLowerCase().includes(normalized) || row[2].includes(normalized);
+        return matchesType && matchesKeyword;
+      });
+      detailTable(commissionHeaders(), rows, { tree: true });
+    }
+
+    function flattenCommission(nodes, depth = 0) {
+      return nodes.flatMap(node => {
+        const current = [{ ...node, depth }];
+        if (!expandedCommissionRows.has(node.id)) return current;
+        return current.concat(flattenCommission(node.children, depth + 1));
+      });
+    }
+
+    function renderCommissionDownTable(userType = "全部", keyword = "") {
+      const normalized = keyword.trim().toLowerCase();
+      const rows = flattenCommission(commissionTree).filter(item => {
+        const matchesType = userType === "全部" || item.row[3] === userType;
+        const matchesKeyword = !normalized || item.row[0].toLowerCase().includes(normalized) || item.row[1].toLowerCase().includes(normalized) || item.row[2].includes(normalized);
+        return matchesType && matchesKeyword;
+      });
+      const body = rows.map(item => {
+        const hasChildren = item.children.length > 0;
+        const expanded = expandedCommissionRows.has(item.id);
+        const rowClass = item.id === "commission-self" ? "self-row" : item.depth > 1 ? "child-row" : "";
+        return `
+          <tr class="${rowClass}" style="--indent: ${item.depth * 22}px">
+            ${item.row.map((value, index) => {
+              if (index !== 0) return `<td>${value}</td>`;
+              const triangle = hasChildren ? `<span class="${expanded ? "tri-down" : "tri-up"}"></span>` : "";
+              return `<td><button class="tree-toggle" ${hasChildren ? `data-toggle-commission="${item.id}"` : "disabled"}>${value}${triangle}</button></td>`;
+            }).join("")}
+          </tr>
+        `;
+      }).join("");
+      document.getElementById("detailTable").innerHTML = `<thead><tr>${commissionHeaders().map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${body}</tbody>`;
+    }
+
+    function renderCommissionView() {
+      const direction = document.getElementById("commissionDirection")?.value || "up";
+      const userType = document.getElementById("commissionUserType")?.value || "全部";
+      const keyword = document.getElementById("commissionKeyword")?.value || "";
+      if (direction === "down") {
+        renderCommissionDownTable(userType, keyword);
+      } else {
+        renderCommissionUpTable(userType, keyword);
+      }
+    }
+
+    function openDetail(type) {
+      const modal = document.getElementById("detailModal");
+      const title = document.getElementById("detailTitle");
+      const sub = document.getElementById("detailSub");
+      const filters = document.getElementById("detailFilters");
+      document.getElementById("profile").innerHTML = profileHtml();
+
+      const chainFilters = `
+        <div class="field"><label>搜索代理</label><input placeholder="请输入 UID 或邮箱地址"></div>
+        <div class="field"><label>列表筛选</label><select id="chainDirection"><option value="up">仅看上级</option><option value="down">仅看下级</option></select></div>
+        <div class="field"><label>用户类型</label><select id="chainUserType"><option>全部</option><option>合伙人</option><option>直客</option></select></div>
+        <button class="btn">搜索</button>
+      `;
+
+      if (type === "chainUp" || type === "chainDown") {
+        title.textContent = "代理链路详情";
+        sub.textContent = type === "chainUp" ? "当前展示仅看上级链路。" : "当前展示仅看下级链路。";
+        filters.innerHTML = chainFilters;
+        document.getElementById("chainDirection").value = type === "chainDown" ? "down" : "up";
+        document.getElementById("chainUserType").value = "全部";
+        expandedChainRows = new Set(["self"]);
+        renderChainView(type === "chainDown" ? "down" : "up");
+      }
+
+      if (type === "invite") {
+        title.textContent = "邀请链接详情";
+        sub.textContent = "查看该合伙人创建的邀请链接、比例和启停状态。";
+        filters.innerHTML = `
+          <div class="field"><label>链接类型</label><select><option>全部链接</option><option>合伙人链接</option><option>直客链接</option></select></div>
+          <div class="field"><label>链接状态</label><select><option>全部</option><option>启用中</option><option>停用中</option></select></div>
+          <div></div><button class="btn">搜索</button>
+        `;
+        detailTable(["创建时间", "链接名称", "邀请链接", "邀请码", "链接类型", "现货返佣/手续费减免比例", "失效时间", "状态", "操作"], inviteLinks.map(r => [...r, r[7] === "启用中" ? "停用" : "启用"]), { statusIndex: 7 });
+      }
+
+      if (type === "userDetail") {
+        title.textContent = "用户详情";
+        sub.textContent = "按日期展示该用户拉新、入金、首次交易和佣金表现。";
+        filters.innerHTML = `<div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div><div></div><div></div><button class="btn">搜索</button>`;
+        detailTable(["日期", "新注册用户数（拉新数）", "新入金用户数", "新首次交易用户", "贡献佣金", "佣金"], userDetail);
+      }
+
+      if (type === "commissionUp") {
+        title.textContent = "链路佣金详情";
+        sub.textContent = "展示链路上代理的贡献佣金与佣金/手续费减免数据。";
+        filters.innerHTML = `
+          <div class="field"><label>搜索代理</label><input id="commissionKeyword" placeholder="请输入 UID 或邮箱地址"></div>
+          <div class="field"><label>列表筛选</label><select id="commissionDirection"><option value="up">仅看上级</option><option value="down">仅看下级</option></select></div>
+          <div class="field"><label>用户类型</label><select id="commissionUserType"><option>全部</option><option>合伙人</option><option>直客</option></select></div>
+          <button class="btn" id="commissionSearch">搜索</button>
+        `;
+        expandedCommissionRows = new Set(["commission-self"]);
+        renderCommissionView();
+      }
+
+      modal.classList.add("active");
+    }
+
+    function openForm(type) {
+      document.getElementById("formTitle").textContent = type === "editPartner" ? "编辑平台顶级合伙人" : "设置平台顶级合伙人";
+      document.getElementById("formUser").value = type === "editPartner" ? "6235235" : "";
+      document.getElementById("formSpot").value = type === "editPartner" ? "50" : "";
+      document.getElementById("formRwa").value = "";
+      document.getElementById("formModal").classList.add("active");
+    }
+
+    document.addEventListener("click", event => {
+      const commissionToggle = event.target.closest("[data-toggle-commission]");
+      if (commissionToggle) {
+        const id = commissionToggle.dataset.toggleCommission;
+        if (expandedCommissionRows.has(id)) {
+          expandedCommissionRows.delete(id);
+        } else {
+          expandedCommissionRows.add(id);
+        }
+        renderCommissionView();
+        return;
+      }
+
+      const chainToggle = event.target.closest("[data-toggle-chain]");
+      if (chainToggle) {
+        const id = chainToggle.dataset.toggleChain;
+        if (expandedChainRows.has(id)) {
+          expandedChainRows.delete(id);
+        } else {
+          expandedChainRows.add(id);
+        }
+        const userType = document.getElementById("chainUserType")?.value || "全部";
+        renderChainDownTable(userType);
+        return;
+      }
+
+      const page = event.target.closest("[data-page]");
+      if (page) setPage(page.dataset.page);
+
+      const detail = event.target.closest("[data-detail]");
+      if (detail) openDetail(detail.dataset.detail);
+
+      const form = event.target.closest("[data-modal]");
+      if (form) openForm(form.dataset.modal);
+
+      if (event.target.closest("[data-close]")) {
+        document.querySelectorAll(".modal").forEach(modal => modal.classList.remove("active"));
+      }
+
+      if (event.target.id === "userSearch") {
+        renderUsers(filteredUsers());
+      }
+
+      if (event.target.id === "userReset") {
+        document.getElementById("userKeyword").value = "";
+        document.getElementById("userStatusFilter").value = "全部";
+        document.getElementById("userTypeFilter").value = "全部";
+        renderUsers(users);
+      }
+
+      if (event.target.id === "spotDetailSearch") {
+        renderSpotDetailTable(filteredSpotDetail());
+      }
+
+      if (event.target.id === "commissionSearch") {
+        renderCommissionView();
+      }
+    });
+
+    document.addEventListener("change", event => {
+      if (["commissionDirection", "commissionUserType"].includes(event.target.id)) {
+        const direction = document.getElementById("commissionDirection")?.value || "up";
+        document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的贡献佣金与手续费减免数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上级代理的贡献佣金与佣金/手续费减免数据。";
+        renderCommissionView();
+      }
+
+      if (["userStatusFilter", "userTypeFilter"].includes(event.target.id)) {
+        renderUsers(filteredUsers());
+      }
+
+      if (["spotPairFilter", "spotFeeCurrencyFilter", "spotSourceFilter", "spotStatusFilter"].includes(event.target.id)) {
+        renderSpotDetailTable(filteredSpotDetail());
+      }
+
+      if (event.target.id === "chainDirection") {
+        const userType = document.getElementById("chainUserType")?.value || "全部";
+        const direction = event.target.value;
+        document.getElementById("detailSub").textContent = direction === "down" ? "当前展示仅看下级链路。点击带三角的用户可平铺展开/收起下级用户。" : "当前展示仅看上级链路。";
+        renderChainView(direction, userType);
+      }
+
+      if (event.target.id === "chainUserType") {
+        const direction = document.getElementById("chainDirection")?.value || "up";
+        renderChainView(direction, event.target.value);
+      }
+    });
+
+    document.getElementById("dailySearch").addEventListener("click", () => {
+      renderDaily(filteredDailyRows());
+    });
+
+    document.getElementById("dailyReset").addEventListener("click", () => {
+      document.getElementById("dailyCurrency").value = "SB";
+      document.getElementById("dailyStart").value = "2026年7月1日";
+      document.getElementById("dailyEnd").value = "2026年7月31日";
+      renderDaily(filteredDailyRows());
+    });
+
+    document.getElementById("rwaBuySearch").addEventListener("click", () => {
+      const status = document.getElementById("rwaBuyStatus").value;
+      renderRwaBuy(status === "全部" ? rwaBuy : rwaBuy.filter(row => row[12] === status));
+    });
+
+    document.getElementById("rwaBuyReset").addEventListener("click", () => {
+      document.getElementById("rwaBuyStatus").value = "全部";
+      renderRwaBuy(rwaBuy);
+    });
+
+    document.getElementById("rwaBonusSearch").addEventListener("click", () => {
+      const type = document.getElementById("rwaBonusType").value;
+      const currency = document.getElementById("rwaBonusCurrency").value;
+      const status = document.getElementById("rwaBonusStatus").value;
+      let rows = rwaBonus;
+      if (type !== "全部") rows = rows.filter(row => row[13] === type);
+      if (currency !== "全部") rows = rows.filter(row => row[7] === currency);
+      if (status !== "全部") rows = rows.filter(row => row[14] === status);
+      renderRwaBonus(rows);
+    });
+
+    document.getElementById("rwaBonusReset").addEventListener("click", () => {
+      document.getElementById("rwaBonusType").value = "全部";
+      document.getElementById("rwaBonusCurrency").value = "全部";
+      document.getElementById("rwaBonusStatus").value = "全部";
+      renderRwaBonus(rwaBonus);
+    });
+
+    renderMainTables();
+  </script>
+</body>
+</html>
