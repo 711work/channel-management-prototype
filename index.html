@@ -433,10 +433,24 @@
       gap: 16px;
     }
 
+    .chart-grid.full-width {
+      grid-template-columns: 1fr;
+    }
+
     .currency-pie-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 16px;
+    }
+
+    .currency-pie-grid.single {
+      grid-template-columns: 1fr;
+    }
+
+    .summary-table-note {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 0 0 10px;
     }
 
     .is-hidden {
@@ -504,6 +518,11 @@
       min-height: 260px;
     }
 
+    .bar-chart {
+      width: 100%;
+      min-height: 260px;
+    }
+
     .pie-layout {
       display: grid;
       grid-template-columns: 210px 1fr;
@@ -528,6 +547,48 @@
       align-items: center;
       justify-content: space-between;
       gap: 12px;
+    }
+
+    .stat-list-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .stat-list-card {
+      padding: 18px;
+    }
+
+    .stat-list-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .stat-list-head h2 {
+      margin: 0;
+      color: #111827;
+      font-size: 15px;
+      line-height: 1.2;
+    }
+
+    .mini-table {
+      width: 100%;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .mini-table th,
+    .mini-table td {
+      height: 42px;
+      padding: 0 12px;
+    }
+
+    .mini-table th:last-child,
+    .mini-table td:last-child {
+      text-align: right;
     }
 
     .table-scroll {
@@ -806,7 +867,11 @@
         <button data-page="daily">平台现货佣金汇总</button>
         <button data-page="spotStat">用户现货佣金汇总</button>
         <button data-page="spotDetail">现货交易佣金明细</button>
+        <button class="hidden" data-page="rwaPlatformSummary">平台RWA申购佣金汇总</button>
+        <button class="hidden" data-page="rwaUserSummary">用户RWA申购佣金汇总</button>
         <button data-page="rwaBuy">RWA申购佣金明细</button>
+        <button class="hidden" data-page="rwaBonusPlatformSummary">平台RWA分红佣金汇总</button>
+        <button class="hidden" data-page="rwaBonusUserSummary">用户RWA分红佣金汇总</button>
         <button data-page="rwaBonus">RWA分红佣金明细</button>
       </nav>
     </aside>
@@ -871,7 +936,7 @@
           <div id="spotStatRanking" class="ranking-list"></div>
         </div>
         <div class="card filters three">
-          <div class="field"><label>交易用户搜索</label><input id="spotStatKeyword" placeholder="请输入用户 UID 或邮箱"></div>
+          <div class="field"><label>合伙人搜索</label><input id="spotStatKeyword" placeholder="请输入用户 UID 或邮箱"></div>
           <div class="field"><label>代理等级</label><select id="spotStatAgentLevel"><option>全部</option><option>1级</option><option>2级</option></select></div>
           <div class="field"><label>时间范围</label><div class="date-range"><input id="spotStatStart" value="2025年4月1日"><span>至</span><input id="spotStatEnd" value="2025年4月30日"></div></div>
           <div class="filter-actions"><button class="btn" id="spotStatSearch">搜索</button></div>
@@ -879,7 +944,7 @@
         <div class="card table-card">
           <div class="table-scroll">
             <table>
-              <thead><tr><th>交易用户昵称</th><th>UID</th><th>邮箱</th><th>上级代理</th><th>顶级代理</th><th>代理等级</th><th>VIP等级</th><th>佣金</th><th>返佣比例</th><th>操作</th></tr></thead>
+              <thead><tr><th>合伙人昵称</th><th>UID</th><th>邮箱</th><th>上级代理</th><th>顶级代理</th><th>代理等级</th><th>VIP等级</th><th>佣金</th><th>返佣比例</th><th>操作</th></tr></thead>
               <tbody id="spotStatBody"></tbody>
             </table>
           </div>
@@ -938,6 +1003,36 @@
             <div class="card daily-metric"><span>合伙人佣金（USDT）</span><strong id="dailyPartnerUsdt">0.0000</strong><small id="dailyPartnerUsdtNote">按当前筛选汇总</small></div>
             <div class="card daily-metric"><span id="dailyPlatformLabel">平台收益（USDT）</span><strong id="dailyPlatformUsdt">0.0000</strong><small id="dailyPlatformUsdtNote">按当前筛选汇总</small></div>
           </div>
+          <div class="stat-list-grid">
+            <div class="card stat-list-card">
+              <div class="stat-list-head">
+                <div>
+                  <h2>合伙人佣金币对分布</h2>
+                  <p class="sub">按现货交易币对汇总合伙人佣金。</p>
+                </div>
+              </div>
+              <div class="table-scroll">
+                <table class="mini-table">
+                  <thead><tr><th>交易币对</th><th>合伙人佣金</th></tr></thead>
+                  <tbody id="dailyPairCommissionBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card stat-list-card">
+              <div class="stat-list-head">
+                <div>
+                  <h2>平台收益币种组成</h2>
+                  <p class="sub">按手续费币种展示平台收益原币数量，不换算为 USDT。</p>
+                </div>
+              </div>
+              <div class="table-scroll">
+                <table class="mini-table">
+                  <thead><tr><th>手续费币种</th><th>平台收益</th></tr></thead>
+                  <tbody id="dailyPlatformNativeBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
           <div class="chart-grid">
             <div class="card chart-card">
               <div class="chart-head">
@@ -990,6 +1085,107 @@
         </div>
       </section>
 
+      <section id="page-rwaPlatformSummary" class="page" style="margin-top: 18px;">
+        <div class="page-head">
+          <div>
+            <h1>平台RWA申购佣金汇总</h1>
+            <p class="sub">按项目维度统计 RWA 申购总额与合伙人佣金，统计币种统一为 USDT。</p>
+          </div>
+        </div>
+        <div class="card filters three">
+          <div class="field"><label>项目查询</label><select id="rwaPlatformProject"><option>全部</option><option>RT国际船运</option><option>RT深海远航</option><option>RT跨境冷链</option><option>RT新能源仓储</option><option>RT亚洲港口</option></select></div>
+          <div class="field"><label>时间范围</label><div class="date-range"><input id="rwaPlatformStart" value="2026年4月1日"><span>至</span><input id="rwaPlatformEnd" value="2026年4月30日"></div></div>
+          <div class="filter-actions"><button class="btn" id="rwaPlatformSearch">搜索</button><button class="btn secondary" id="rwaPlatformReset">重置</button></div>
+        </div>
+        <div class="daily-insights">
+          <div class="daily-metrics">
+            <div class="card daily-metric"><span>申购总额（USDT）</span><strong id="rwaPlatformAmount">0.0000</strong><small id="rwaPlatformAmountNote">按当前筛选汇总</small></div>
+            <div class="card daily-metric"><span>合伙人佣金（USDT）</span><strong id="rwaPlatformCommission">0.0000</strong><small id="rwaPlatformCommissionNote">按当前筛选汇总</small></div>
+          </div>
+          <div class="chart-grid full-width">
+            <div class="card chart-card">
+              <div class="chart-head">
+                <div>
+                  <h2>每日趋势</h2>
+                  <p class="sub" id="rwaPlatformTrendSub">展示当前筛选下 RWA 申购总额与佣金的 USDT 趋势。</p>
+                </div>
+                <div class="legend"><span><i class="dot"></i>申购总额</span><span><i class="dot amber"></i>佣金</span></div>
+              </div>
+              <div id="rwaPlatformTrendChart"></div>
+            </div>
+          </div>
+          <div class="currency-pie-grid" id="rwaPlatformProjectPieGrid">
+            <div class="card chart-card">
+              <div class="chart-head">
+                <div>
+                  <h2 id="rwaPlatformPrimaryPieTitle">项目申购总额占比</h2>
+                  <p class="sub" id="rwaPlatformPrimaryPieSub">展示各项目申购总额 USDT 占比。</p>
+                </div>
+              </div>
+              <div id="rwaPlatformPrimaryPieChart"></div>
+            </div>
+            <div class="card chart-card" id="rwaPlatformCommissionProjectPieCard">
+              <div class="chart-head">
+                <div>
+                  <h2>项目合伙人佣金占比</h2>
+                  <p class="sub" id="rwaPlatformCommissionProjectPieSub">展示各项目合伙人佣金 USDT 占比。</p>
+                </div>
+              </div>
+              <div id="rwaPlatformCommissionProjectPieChart"></div>
+            </div>
+            <div class="card chart-card" id="rwaPlatformRatioPieCard">
+              <div class="chart-head">
+                <div>
+                  <h2>申购总额与佣金占比</h2>
+                  <p class="sub" id="rwaPlatformRatioPieSub">选择单个项目后展示申购总额与佣金的 USDT 比例。</p>
+                </div>
+              </div>
+              <div id="rwaPlatformRatioPieChart"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>日期</th><th>申购总额（USDT）</th><th>合伙人佣金（USDT）</th></tr></thead>
+              <tbody id="rwaPlatformBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-rwaUserSummary" class="page" style="margin-top: 18px;">
+        <div class="page-head">
+          <div>
+            <h1>用户RWA申购佣金汇总</h1>
+            <p class="sub">按用户与项目维度汇总 RWA 申购总额和佣金，统计币种统一为 USDT。</p>
+          </div>
+        </div>
+        <div class="card ranking-card">
+          <div class="ranking-head">
+            <div>
+              <h2>顶级合伙人佣金排行榜</h2>
+              <p class="sub">根据下方列表的 RWA 申购佣金金额生成排名进度条。</p>
+            </div>
+          </div>
+          <div id="rwaUserRanking" class="ranking-list"></div>
+        </div>
+        <div class="card filters three">
+          <div class="field"><label>项目查询</label><select id="rwaUserProject"><option>全部</option><option>RT国际船运</option><option>RT深海远航</option><option>RT跨境冷链</option><option>RT新能源仓储</option><option>RT亚洲港口</option></select></div>
+          <div class="field"><label>合伙人搜索</label><input id="rwaUserKeyword" placeholder="请输入用户 UID 或邮箱"></div>
+          <div class="field"><label>代理等级</label><select id="rwaUserAgentLevel"><option>全部</option><option>1级</option><option>2级</option></select></div>
+          <div class="filter-actions"><button class="btn" id="rwaUserSearch">搜索</button><button class="btn secondary" id="rwaUserReset">重置</button></div>
+        </div>
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table style="min-width: 1240px;">
+              <thead><tr><th>合伙人昵称</th><th>UID</th><th>邮箱</th><th>项目名称</th><th>项目ID</th><th>上级代理</th><th>顶级代理</th><th>代理等级</th><th>申购总额（USDT）</th><th>佣金（USDT）</th><th>返佣比例</th><th>操作</th></tr></thead>
+              <tbody id="rwaUserBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
       <section id="page-rwaBuy" class="page" style="margin-top: 18px;">
         <div class="page-head">
           <div>
@@ -1010,9 +1206,110 @@
         </div>
         <div class="card table-card">
           <div class="table-scroll">
-            <table style="min-width: 1320px;">
+            <table id="rwaBonusUserTable" style="min-width: 1320px;">
               <thead><tr><th>合伙人UID</th><th>申购用户UID</th><th>项目名称</th><th>项目ID</th><th>申购订单号</th><th>结算批次号</th><th>交易时间</th><th>申购订单金额</th><th>佣金</th><th>返佣比例（级差）</th><th>上级代理</th><th>顶级代理</th><th>佣金状态</th></tr></thead>
               <tbody id="rwaBuyBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-rwaBonusPlatformSummary" class="page" style="margin-top: 18px;">
+        <div class="page-head">
+          <div>
+            <h1>平台RWA分红佣金汇总</h1>
+            <p class="sub">按项目与分红批次维度统计 RWA 分红佣金，RT 与 USDT 分别独立汇总，不合并求和。</p>
+          </div>
+        </div>
+        <div class="card filters three">
+          <div class="field"><label>项目查询</label><select id="rwaBonusPlatformProject"><option>全部</option><option>RT国际船运</option><option>RT深海远航</option><option>RT跨境冷链</option><option>RT新能源仓储</option><option>RT亚洲港口</option></select></div>
+          <div class="field"><label>收益类型</label><select id="rwaBonusPlatformType"><option>全部</option><option>固定收益</option><option>浮动收益</option></select></div>
+          <div class="field"><label>币种</label><select id="rwaBonusPlatformCurrency"><option>全部</option><option>RT</option><option>USDT</option></select></div>
+          <div class="field"><label>分红批次范围</label><div class="date-range"><input id="rwaBonusPlatformStart" value="2026-03"><span>至</span><input id="rwaBonusPlatformEnd" value="2026-04"></div></div>
+          <div class="filter-actions"><button class="btn" id="rwaBonusPlatformSearch">搜索</button><button class="btn secondary" id="rwaBonusPlatformReset">重置</button></div>
+        </div>
+        <div class="daily-insights">
+          <div class="daily-metrics" id="rwaBonusPlatformMetrics"></div>
+          <div class="chart-grid full-width">
+            <div class="card chart-card">
+              <div class="chart-head">
+                <div>
+                  <h2>每月分红趋势</h2>
+                  <p class="sub" id="rwaBonusPlatformTrendSub">展示当前筛选下各分红批次的合伙人佣金趋势。</p>
+                </div>
+              </div>
+              <div id="rwaBonusPlatformTrendChart"></div>
+            </div>
+            <div class="card chart-card" id="rwaBonusPlatformSinglePieCard">
+              <div class="chart-head">
+                <div>
+                  <h2>项目分红佣金占比</h2>
+                  <p class="sub" id="rwaBonusPlatformSinglePieSub">展示各项目分红佣金占比。</p>
+                </div>
+              </div>
+              <div id="rwaBonusPlatformSinglePieChart"></div>
+            </div>
+          </div>
+          <div class="currency-pie-grid" id="rwaBonusPlatformCurrencyPieGrid">
+            <div class="card chart-card">
+              <div class="chart-head">
+                <div>
+                  <h2>项目分红佣金（USDT估值）</h2>
+                  <p class="sub">展示各项目分红佣金的 USDT 估值，从高到低排序。</p>
+                </div>
+              </div>
+              <div id="rwaBonusPlatformBarChart"></div>
+            </div>
+            <div class="card chart-card">
+              <div class="chart-head">
+                <div>
+                  <h2>USDT 项目分红佣金占比</h2>
+                  <p class="sub">展示各项目 USDT 分红佣金占比。</p>
+                </div>
+              </div>
+              <div id="rwaBonusPlatformUsdtPieChart"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card table-card" id="rwaBonusPlatformTableCard">
+          <div class="table-scroll">
+            <table>
+              <thead><tr><th>分红批次</th><th>收益类型</th><th>分红币种</th><th>佣金</th></tr></thead>
+              <tbody id="rwaBonusPlatformBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="page-rwaBonusUserSummary" class="page" style="margin-top: 18px;">
+        <div class="page-head">
+          <div>
+            <h1>用户RWA分红佣金汇总</h1>
+            <p class="sub">按合伙人维度汇总 RWA 分红佣金，全部币种模式下排行榜按 USDT 估值排名。</p>
+          </div>
+        </div>
+        <div class="card ranking-card">
+          <div class="ranking-head">
+            <div>
+              <h2 id="rwaBonusUserRankingTitle">顶级合伙人分红佣金排行榜</h2>
+              <p class="sub">根据下方列表的 RWA 分红佣金金额生成排名进度条。</p>
+            </div>
+          </div>
+          <div id="rwaBonusUserRanking" class="ranking-list"></div>
+        </div>
+        <div class="card filters five">
+          <div class="field"><label>项目查询</label><select id="rwaBonusUserProject"><option>全部</option><option>RT国际船运</option><option>RT深海远航</option><option>RT跨境冷链</option><option>RT新能源仓储</option><option>RT亚洲港口</option></select></div>
+          <div class="field"><label>合伙人搜索</label><input id="rwaBonusUserKeyword" placeholder="请输入用户 UID"></div>
+          <div class="field" id="rwaBonusUserTypeField"><label>收益类型</label><select id="rwaBonusUserType"><option>全部</option><option>固定收益</option><option>浮动收益</option></select></div>
+          <div class="field" id="rwaBonusUserCurrencyField"><label>分红币种筛选</label><select id="rwaBonusUserCurrency"><option>全部</option><option>RT</option><option>USDT</option></select></div>
+          <div class="field"><label>分红批次范围</label><div class="date-range"><input id="rwaBonusUserStart" value="2026-03"><span>至</span><input id="rwaBonusUserEnd" value="2026-04"></div></div>
+          <div class="filter-actions"><button class="btn" id="rwaBonusUserSearch">搜索</button><button class="btn secondary" id="rwaBonusUserReset">重置</button></div>
+        </div>
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table style="min-width: 1320px;">
+              <thead id="rwaBonusUserHead"><tr><th>合伙人昵称</th><th>合伙人UID</th><th>邮箱</th><th>质押用户UID</th><th>项目名称</th><th>项目ID</th><th>分红批次</th><th>结算批次号</th><th>币种</th><th>合伙人权重</th><th>佣金</th><th>收益类型</th><th>佣金状态</th><th>操作</th></tr></thead>
+              <tbody id="rwaBonusUserBody"></tbody>
             </table>
           </div>
         </div>
@@ -1132,26 +1429,44 @@
     ];
 
     const daily = [
-      ["2026-07-02", "SB", "600.0000", "772,237.9232", "9,654.0000"],
-      ["2026-07-03", "USDT", "124,550.1200", "124,550.1200", "1,200.0000"],
-      ["2026-07-04", "SB", "420.5000", "512,044.0000", "6,438.0000"],
-      ["2026-07-05", "USDT", "98,120.4500", "98,120.4500", "950.0000"],
-      ["2026-07-06", "BTC", "0.7660", "47,904.3300", "7,508.5200"],
-      ["2026-07-07", "ETH", "12.8800", "38,120.8800", "4,853.1200"],
-      ["2026-07-08", "BTC", "0.5840", "36,412.5600", "5,742.6400"],
-      ["2026-07-09", "ETH", "9.4200", "27,884.7600", "3,521.1200"],
-      ["2026-07-10", "SB", "510.0000", "621,220.5000", "7,812.0000"],
-      ["2026-07-11", "USDT", "143,880.3400", "143,880.3400", "1,430.0000"],
-      ["2026-07-12", "BTC", "0.4920", "30,897.6000", "4,810.4200"],
-      ["2026-07-13", "ETH", "14.2600", "42,130.0400", "5,368.7200"]
+      ["2026-07-02", "SB", "600.0000", "772,237.9232", "9,654.0000", "7.5000"],
+      ["2026-07-03", "USDT", "124,550.1200", "124,550.1200", "1,200.0000", "1,200.0000"],
+      ["2026-07-04", "SB", "420.5000", "512,044.0000", "6,438.0000", "5.2800"],
+      ["2026-07-05", "USDT", "98,120.4500", "98,120.4500", "950.0000", "950.0000"],
+      ["2026-07-06", "BTC", "0.7660", "47,904.3300", "7,508.5200", "0.1200"],
+      ["2026-07-07", "ETH", "12.8800", "38,120.8800", "4,853.1200", "1.6400"],
+      ["2026-07-08", "BTC", "0.5840", "36,412.5600", "5,742.6400", "0.0920"],
+      ["2026-07-09", "ETH", "9.4200", "27,884.7600", "3,521.1200", "1.1900"],
+      ["2026-07-10", "SB", "510.0000", "621,220.5000", "7,812.0000", "6.3600"],
+      ["2026-07-11", "USDT", "143,880.3400", "143,880.3400", "1,430.0000", "1,430.0000"],
+      ["2026-07-12", "BTC", "0.4920", "30,897.6000", "4,810.4200", "0.0770"],
+      ["2026-07-13", "ETH", "14.2600", "42,130.0400", "5,368.7200", "1.8100"]
     ];
 
     const rwaBuy = [
       ["5345543", "737473434", "RT国际船运", "23772372", "3473477437", "-", "2026-04-01 15:45:23", "5,000", "0.766", "2%", "7383873", "46364634", "待结算"],
-      ["5345543", "891238442", "RT深海远航", "23772375", "-", "-", "2026-04-03 11:20:00", "12,000", "1.840", "2%", "7383873", "46364634", "结算中"],
+      ["5345543", "891238442", "RT深海远航", "23772375", "3473477488", "-", "2026-04-03 11:20:00", "12,000", "1.840", "2%", "7383873", "46364634", "结算中"],
       ["6124551", "901234771", "RT跨境冷链", "23772390", "3473477511", "2069957654951703123", "2026-04-05 09:12:30", "8,500", "1.250", "1.5%", "7412398", "46364634", "已结算"],
       ["5345544", "737473440", "RT新能源仓储", "23772401", "3473477602", "-", "2026-04-06 17:05:11", "3,000", "0.460", "2%", "7383873", "46364634", "待结算"],
       ["5345545", "737473441", "RT亚洲港口", "23772409", "3473477620", "2069957654951704188", "2026-04-07 14:32:56", "18,000", "2.700", "1.5%", "5345543", "46364634", "已结算"]
+    ];
+
+    const rwaPurchaseSummary = [
+      ["2026-04-01", "RT国际船运", "23772372", "5345543", "草莓人", "737473434", "sdsh@gmail.com", "7383873", "46364634", "1级", "5,000.0000", "0.7660", "2%"],
+      ["2026-04-03", "RT深海远航", "23772375", "5345544", "苹果人", "891238442", "apple@gmail.com", "7383873", "46364634", "1级", "12,000.0000", "1.8400", "2%"],
+      ["2026-04-05", "RT跨境冷链", "23772390", "6124551", "香蕉人", "901234771", "banana@gmail.com", "-", "46364634", "1级", "8,500.0000", "1.2500", "1.5%"],
+      ["2026-04-06", "RT新能源仓储", "23772401", "5345546", "葡萄人", "737473440", "grape@gmail.com", "5345545", "46364634", "2级", "3,000.0000", "0.4600", "2%"],
+      ["2026-04-07", "RT亚洲港口", "23772409", "5345547", "芒果人", "737473441", "mango@gmail.com", "5345545", "46364634", "2级", "18,000.0000", "2.7000", "1.5%"],
+      ["2026-04-10", "RT国际船运", "23772372", "5345543", "草莓人", "812349112", "sdsh@gmail.com", "7383873", "46364634", "1级", "9,800.0000", "1.4700", "1.5%"],
+      ["2026-04-12", "RT深海远航", "23772375", "5345545", "香蕉人", "812349113", "banana@gmail.com", "-", "46364634", "1级", "15,600.0000", "2.3400", "1.5%"],
+      ["2026-04-14", "RT跨境冷链", "23772390", "5345544", "苹果人", "812349114", "apple@gmail.com", "7383873", "46364634", "1级", "11,200.0000", "1.6800", "1.5%"],
+      ["2026-04-18", "RT新能源仓储", "23772401", "5345546", "葡萄人", "812349115", "grape@gmail.com", "5345545", "46364634", "2级", "7,400.0000", "1.1100", "1.5%"],
+      ["2026-04-22", "RT亚洲港口", "23772409", "5345547", "芒果人", "812349116", "mango@gmail.com", "5345545", "46364634", "2级", "21,500.0000", "3.2250", "1.5%"],
+      ["2026-04-24", "RT国际船运", "23772372", "5345548", "荔枝人", "812349117", "lychee@gmail.com", "5345543", "46364634", "2级", "13,600.0000", "2.0400", "1.5%"],
+      ["2026-04-25", "RT深海远航", "23772375", "5345549", "橘子人", "812349118", "orange@gmail.com", "5345545", "46364634", "2级", "19,800.0000", "2.9700", "1.5%"],
+      ["2026-04-26", "RT跨境冷链", "23772390", "5345550", "梨子人", "812349119", "pear@gmail.com", "5345544", "46364634", "2级", "16,400.0000", "2.4600", "1.5%"],
+      ["2026-04-27", "RT新能源仓储", "23772401", "5345551", "柠檬人", "812349120", "lemon@gmail.com", "5345546", "46364634", "2级", "10,900.0000", "1.6350", "1.5%"],
+      ["2026-04-28", "RT亚洲港口", "23772409", "5345552", "龙眼人", "812349121", "longan@gmail.com", "5345547", "46364634", "2级", "24,800.0000", "3.7200", "1.5%"]
     ];
 
     const rwaBonus = [
@@ -1161,6 +1476,32 @@
       ["5345543", "737473434", "RT国际船运", "73473643", "2026-05-01", "2026-04", "-", "RT", "5,000", "52,000", "11,000", "0.38", "45", "固定收益", "待结算"],
       ["5345545", "737473441", "RT亚洲港口", "73473726", "2026-05-01", "2026-04", "2069520", "USDT", "20,000", "220,000", "30,000", "0.18", "180", "浮动收益", "已结算"]
     ];
+
+    const rwaProjectUsdtRate = {
+      "RT国际船运": 6.4,
+      "RT深海远航": 5.8,
+      "RT跨境冷链": 7.2,
+      "RT新能源仓储": 6.9,
+      "RT亚洲港口": 6.1
+    };
+
+    const partnerProfiles = {
+      "5345543": { name: "草莓人", email: "sdsh@gmail.com" },
+      "5345544": { name: "苹果人", email: "apple@gmail.com" },
+      "5345545": { name: "香蕉人", email: "banana@gmail.com" },
+      "5345546": { name: "葡萄人", email: "grape@gmail.com" },
+      "5345547": { name: "芒果人", email: "mango@gmail.com" },
+      "6124551": { name: "香蕉人", email: "banana@gmail.com" }
+    };
+
+    function partnerInfo(uid) {
+      return partnerProfiles[uid] || { name: `用户${uid}`, email: `${uid}@gmail.com` };
+    }
+
+    function rwaBonusUsdtValue(row) {
+      if (row[7] === "USDT") return parseAmount(row[12]);
+      return parseAmount(row[12]) * (rwaProjectUsdtRate[row[2]] || 1);
+    }
 
     const chainUp = [
       ["香蕉人", "RT@gmail.com", "237634633", "1", "V1", "合伙人", "60%", "30%"],
@@ -1240,6 +1581,54 @@
       ["2026-07-06", "488", "372", "291", "7,210.0000", "7,210.0000"]
     ];
 
+    const rwaUserDetail = [
+      ["2026-04-01", "5,000.0000", "0.7660"],
+      ["2026-04-05", "8,500.0000", "1.2500"],
+      ["2026-04-10", "9,800.0000", "1.4700"],
+      ["2026-04-14", "11,200.0000", "1.6800"],
+      ["2026-04-22", "21,500.0000", "3.2250"]
+    ];
+
+    const rwaCommissionChain = [
+      ["香蕉人", "RT@gmail.com", "237634633", "合伙人", "5", "15,600.0000", "2.3400"],
+      ["苹果人", "RT@gmail.com", "237634634", "合伙人", "6", "23,200.0000", "3.5200"],
+      ["葡萄人", "RT@gmail.com", "237634635", "合伙人", "6", "7,400.0000", "1.1100"],
+      ["芒果人", "RT@gmail.com", "237634636", "合伙人", "7", "39,500.0000", "5.9250"],
+      ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "7", "14,800.0000", "2.2360"]
+    ];
+
+    const rwaCommissionTree = [
+      {
+        id: "rwa-commission-self",
+        row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "5", "14,800.0000", "2.2360"],
+        children: [
+          { id: "rwa-commission-apple", row: ["苹果人", "apple.agent@gmail.com", "237634638", "合伙人", "6", "23,200.0000", "3.5200"], children: [] },
+          { id: "rwa-commission-grape", row: ["葡萄人", "grape.agent@gmail.com", "237634639", "合伙人", "6", "7,400.0000", "1.1100"], children: [] },
+          { id: "rwa-commission-mango", row: ["芒果人", "mango.agent@gmail.com", "237634646", "合伙人", "7", "39,500.0000", "5.9250"], children: [] },
+          { id: "rwa-commission-banana", row: ["香蕉人", "banana.agent@gmail.com", "237634645", "合伙人", "7", "24,100.0000", "3.5900"], children: [] }
+        ]
+      }
+    ];
+
+    const rwaBonusCommissionTree = [
+      {
+        id: "rwa-bonus-commission-self",
+        row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "5", "8,000", "14,800.0000", "2.2360"],
+        children: [
+          {
+            id: "rwa-bonus-commission-apple",
+            row: ["苹果人", "apple.agent@gmail.com", "237634638", "合伙人", "6", "10,000", "23,200.0000", "3.5200"],
+            children: [
+              { id: "rwa-bonus-commission-lychee", row: ["荔枝人", "lychee.agent@gmail.com", "237634644", "合伙人", "7", "5,200", "8,400.0000", "1.2600"], children: [] }
+            ]
+          },
+          { id: "rwa-bonus-commission-grape", row: ["葡萄人", "grape.agent@gmail.com", "237634639", "合伙人", "6", "6,000", "7,400.0000", "1.1100"], children: [] },
+          { id: "rwa-bonus-commission-mango", row: ["芒果人", "mango.agent@gmail.com", "237634646", "合伙人", "7", "9,600", "39,500.0000", "5.9250"], children: [] },
+          { id: "rwa-bonus-commission-banana", row: ["香蕉人", "banana.agent@gmail.com", "237634645", "合伙人", "7", "12,000", "24,100.0000", "3.5900"], children: [] }
+        ]
+      }
+    ];
+
     const commissionChain = [
       ["香蕉人", "RT@gmail.com", "237634633", "合伙人", "5", "V1", "500.0000", "100.0000"],
       ["苹果人", "RT@gmail.com", "237634634", "合伙人", "6", "V1", "500.0000", "100.0000"],
@@ -1287,6 +1676,17 @@
     let activeDetailMode = "";
     let activeDetailDirection = "up";
     let activeDetailUid = profile.uid;
+    let activeDetailProject = "全部";
+    let activeDetailCurrency = "全部";
+
+    function projectOptions(selected = "全部") {
+      const projects = ["全部", "RT国际船运", "RT深海远航", "RT跨境冷链", "RT新能源仓储", "RT亚洲港口"];
+      return projects.map(project => `<option${project === selected ? " selected" : ""}>${project}</option>`).join("");
+    }
+
+    function currencyOptions(selected = "全部") {
+      return ["全部", "RT", "USDT"].map(currency => `<option${currency === selected ? " selected" : ""}>${currency}</option>`).join("");
+    }
 
     function statusBadge(status) {
       const cls = status.includes("启用") || status === "已结算" ? "green" : status === "结算中" ? "blue" : status === "待结算" ? "amber" : status.includes("停用") ? "gray" : "gray";
@@ -1355,8 +1755,12 @@
       renderSpotDetailTable();
 
       renderDaily(filteredDailyRows());
+      renderRwaPlatformSummary(filteredRwaPurchaseRows("rwaPlatform"));
+      renderRwaUserSummary(filteredRwaPurchaseRows("rwaUser"));
       renderRwaBuy(rwaBuy);
       renderRwaBonus(rwaBonus);
+      renderRwaBonusPlatformSummary(filteredRwaBonusPlatformRows());
+      renderRwaBonusUserSummary(filteredRwaBonusUserRows());
     }
 
     function renderSpotStatRanking(rows = spotStatRowsByTime()) {
@@ -1425,7 +1829,7 @@
         : `<tr><th>日期</th><th>手续费币种</th><th>合伙人佣金（${currencyLabel}）</th><th>合伙人佣金（USDT）</th><th>平台收益（${currencyLabel}）</th></tr>`;
       renderRows("dailyBody", rows, row => {
         if (isAllCurrency) return `<tr><td>${row[0]}</td><td class="mono">${row[3]}</td><td class="mono">${row[4]}</td></tr>`;
-        return `<tr><td>${row[0]}</td><td><span class="badge blue">${row[1]}</span></td><td class="mono">${row[2]}</td><td class="mono">${row[3]}</td><td class="mono">${row[4]}</td></tr>`;
+        return `<tr><td>${row[0]}</td><td><span class="badge blue">${row[1]}</span></td><td class="mono">${row[2]}</td><td class="mono">${row[3]}</td><td class="mono">${row[5]}</td></tr>`;
       });
       renderDailyInsights(rows);
     }
@@ -1464,8 +1868,9 @@
         total.partnerNative += parseAmount(row[2]);
         total.partnerUsdt += parseAmount(row[3]);
         total.platformUsdt += parseAmount(row[4]);
+        total.platformNative += parseAmount(row[5]);
         return total;
-      }, { partnerNative: 0, partnerUsdt: 0, platformUsdt: 0 });
+      }, { partnerNative: 0, partnerUsdt: 0, platformUsdt: 0, platformNative: 0 });
     }
 
     function selectedDailyCurrencyLabel() {
@@ -1484,7 +1889,7 @@
       document.getElementById("dailyPartnerNativeNote").textContent = rows.length ? `合伙人 ${currencyLabel} 佣金合计` : "暂无匹配数据";
       document.getElementById("dailyPlatformLabel").textContent = isAllCurrency ? "平台收益（USDT）" : `平台收益（${currencyLabel}）`;
       document.getElementById("dailyPartnerUsdt").textContent = formatAmount(totals.partnerUsdt);
-      document.getElementById("dailyPlatformUsdt").textContent = formatAmount(totals.platformUsdt);
+      document.getElementById("dailyPlatformUsdt").textContent = formatAmount(isAllCurrency ? totals.platformUsdt : totals.platformNative);
       document.getElementById("dailyPartnerUsdtNote").textContent = rows.length ? (isAllCurrency ? "合伙人佣金 USDT 估值合计" : "合伙人 USDT 佣金合计") : "暂无匹配数据";
       document.getElementById("dailyPlatformUsdtNote").textContent = rows.length ? (isAllCurrency ? "平台收益 USDT 估值合计" : `平台 ${currencyLabel} 收益合计`) : "暂无匹配数据";
       const scopeText = currencyLabel === "全部" ? "全部币种" : currencyLabel;
@@ -1496,6 +1901,7 @@
       }
       renderDailyTrendChart(rows, isAllCurrency);
       renderDailyPieChart(rows, isAllCurrency);
+      renderDailyStatLists(rows);
       if (isAllCurrency) {
         renderCurrencyPieChart("dailyPartnerCurrencyPieChart", rows, 3, "佣金币种占比");
         renderCurrencyPieChart("dailyPlatformCurrencyPieChart", rows, 4, "手续费币种占比");
@@ -1507,7 +1913,7 @@
       rows.forEach(row => {
         const current = grouped.get(row[0]) || { date: row[0], partnerUsdt: 0, platformUsdt: 0 };
         current.partnerUsdt += parseAmount(row[useUsdtValue ? 3 : 2]);
-        current.platformUsdt += parseAmount(row[4]);
+        current.platformUsdt += parseAmount(useUsdtValue ? row[4] : row[5]);
         grouped.set(row[0], current);
       });
       return Array.from(grouped.values()).sort((a, b) => a.date.localeCompare(b.date));
@@ -1576,9 +1982,81 @@
       const totals = dailyTotals(rows);
       const entries = [
         ["合伙人佣金", useUsdtValue ? totals.partnerUsdt : totals.partnerNative],
-        ["平台收益", totals.platformUsdt]
+        ["平台收益", useUsdtValue ? totals.platformUsdt : totals.platformNative]
       ].filter(([, value]) => value > 0);
       renderPieChart(target, entries, "收益占比饼图");
+    }
+
+    function spotPairCommissionTotals(rows) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        const key = `${row[2]}|${row[6]}`;
+        const current = grouped.get(key) || { pair: row[2], currency: row[6], value: 0, count: 0 };
+        current.value += parseAmount(row[8]);
+        current.count += 1;
+        grouped.set(key, current);
+      });
+      return Array.from(grouped.values()).sort((a, b) => b.value - a.value);
+    }
+
+    function platformNativeCurrencyTotals(rows) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        const current = grouped.get(row[1]) || { currency: row[1], value: 0, count: 0 };
+        current.value += parseAmount(row[5]);
+        current.count += 1;
+        grouped.set(row[1], current);
+      });
+      return Array.from(grouped.values()).sort((a, b) => b.value - a.value);
+    }
+
+    function renderPairCommissionRows(rows) {
+      if (!rows.length) {
+        document.getElementById("dailyPairCommissionBody").innerHTML = `<tr><td colspan="2" class="muted">暂无统计数据</td></tr>`;
+        return;
+      }
+      renderRows("dailyPairCommissionBody", rows, row => `
+        <tr>
+          <td>${row.pair}</td>
+          <td class="mono">${formatAmount(row.value)}</td>
+        </tr>
+      `);
+    }
+
+    function renderPlatformNativeRows(rows) {
+      if (!rows.length) {
+        document.getElementById("dailyPlatformNativeBody").innerHTML = `<tr><td colspan="2" class="muted">暂无统计数据</td></tr>`;
+        return;
+      }
+      renderRows("dailyPlatformNativeBody", rows, row => `
+        <tr>
+          <td><span class="badge blue">${row.currency}</span></td>
+          <td class="mono">${formatAmount(row.value)} ${row.currency}</td>
+        </tr>
+      `);
+    }
+
+    function renderDistributionRows(targetId, rows, labelKey, unitResolver) {
+      const total = rows.reduce((sum, row) => sum + row.value, 0);
+      if (!rows.length || total <= 0) {
+        document.getElementById(targetId).innerHTML = `<tr><td colspan="3" class="muted">暂无统计数据</td></tr>`;
+        return;
+      }
+      renderRows(targetId, rows, row => `
+        <tr>
+          <td>${row[labelKey]}</td>
+          <td class="mono">${formatAmount(row.value)} ${unitResolver(row)}</td>
+          <td><strong>${(row.value / total * 100).toFixed(1)}%</strong></td>
+        </tr>
+      `);
+    }
+
+    function renderDailyStatLists(rows) {
+      const selectedCurrency = selectedDailyCurrencyLabel();
+      const pairRows = spotPairCommissionTotals(spotDetail.filter(row => selectedCurrency === "全部" || row[6] === selectedCurrency));
+      renderPairCommissionRows(pairRows);
+      const platformRows = platformNativeCurrencyTotals(rows);
+      renderPlatformNativeRows(platformRows);
     }
 
     function currencyTotals(rows, valueIndex) {
@@ -1629,12 +2107,511 @@
       `;
     }
 
+    function filteredRwaPurchaseRows(scope) {
+      const projectId = scope === "rwaUser" ? "rwaUserProject" : "rwaPlatformProject";
+      const project = document.getElementById(projectId)?.value || "全部";
+      const keyword = document.getElementById("rwaUserKeyword")?.value.trim().toLowerCase() || "";
+      const agentLevel = scope === "rwaUser" ? document.getElementById("rwaUserAgentLevel")?.value || "全部" : "全部";
+      const start = scope === "rwaPlatform" ? parseCnDate(document.getElementById("rwaPlatformStart")?.value || "") : "";
+      const end = scope === "rwaPlatform" ? parseCnDate(document.getElementById("rwaPlatformEnd")?.value || "") : "";
+      return rwaPurchaseSummary.filter(row => {
+        const inProject = project === "全部" || row[1] === project;
+        const inKeyword = scope !== "rwaUser" || !keyword || row[3].includes(keyword) || row[6].toLowerCase().includes(keyword) || row[5].includes(keyword);
+        const inAgentLevel = agentLevel === "全部" || row[9] === agentLevel;
+        const inStart = !start || row[0] >= start;
+        const inEnd = !end || row[0] <= end;
+        return inProject && inKeyword && inAgentLevel && inStart && inEnd;
+      });
+    }
+
+    function projectGroups(rows) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        const key = row[1];
+        const current = grouped.get(key) || { project: row[1], projectId: row[2], orders: 0, amount: 0, commission: 0 };
+        current.orders += 1;
+        current.amount += parseAmount(row[10]);
+        current.commission += parseAmount(row[11]);
+        grouped.set(key, current);
+      });
+      return Array.from(grouped.values()).sort((a, b) => b.amount - a.amount);
+    }
+
+    function rwaDateGroups(rows) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        const current = grouped.get(row[0]) || { date: row[0], orders: 0, amount: 0, commission: 0 };
+        current.orders += 1;
+        current.amount += parseAmount(row[10]);
+        current.commission += parseAmount(row[11]);
+        grouped.set(row[0], current);
+      });
+      return Array.from(grouped.values()).sort((a, b) => a.date.localeCompare(b.date));
+    }
+
+    function userProjectGroups(rows) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        const key = `${row[3]}-${row[1]}`;
+        const current = grouped.get(key) || {
+          name: row[4],
+          uid: row[3],
+          email: row[6],
+          project: row[1],
+          projectId: row[2],
+          parent: row[7],
+          top: row[8],
+          agentLevel: row[9],
+          amount: 0,
+          commission: 0,
+          ratio: row[12]
+        };
+        current.amount += parseAmount(row[10]);
+        current.commission += parseAmount(row[11]);
+        grouped.set(key, current);
+      });
+      return Array.from(grouped.values()).sort((a, b) => b.commission - a.commission);
+    }
+
+    function rwaTotals(rows) {
+      return rows.reduce((total, row) => {
+        total.amount += parseAmount(row[10]);
+        total.commission += parseAmount(row[11]);
+        return total;
+      }, { amount: 0, commission: 0 });
+    }
+
+    function renderRwaPlatformSummary(rows) {
+      const totals = rwaTotals(rows);
+      document.getElementById("rwaPlatformAmount").textContent = formatAmount(totals.amount);
+      document.getElementById("rwaPlatformCommission").textContent = formatAmount(totals.commission);
+      document.getElementById("rwaPlatformAmountNote").textContent = rows.length ? "RWA 申购总额合计" : "暂无匹配数据";
+      document.getElementById("rwaPlatformCommissionNote").textContent = rows.length ? "RWA 申购佣金合计" : "暂无匹配数据";
+      document.getElementById("rwaPlatformTrendSub").textContent = rows.length ? "展示 RWA 申购总额与佣金的 USDT 趋势。" : "暂无匹配数据。";
+      document.getElementById("rwaPlatformRatioPieSub").textContent = rows.length ? "展示申购总额与佣金的 USDT 比例。" : "暂无匹配数据。";
+      renderRows("rwaPlatformBody", rwaDateGroups(rows), item => `
+        <tr>
+          <td>${item.date}</td>
+          <td class="mono">${formatAmount(item.amount)}</td>
+          <td class="mono">${formatAmount(item.commission)}</td>
+        </tr>
+      `);
+      renderRwaTrendChart("rwaPlatformTrendChart", rows);
+      const selectedProject = document.getElementById("rwaPlatformProject")?.value || "全部";
+      const projectMode = selectedProject === "全部";
+      const groups = projectGroups(rows);
+      document.getElementById("rwaPlatformPrimaryPieTitle").textContent = projectMode ? "项目申购总额占比" : "申购总额与佣金占比";
+      document.getElementById("rwaPlatformPrimaryPieSub").textContent = projectMode ? "展示各项目申购总额 USDT 占比。" : "展示申购总额与佣金的 USDT 比例。";
+      document.getElementById("rwaPlatformCommissionProjectPieSub").textContent = rows.length ? "展示各项目合伙人佣金 USDT 占比。" : "暂无匹配数据。";
+      document.getElementById("rwaPlatformRatioPieSub").textContent = rows.length ? "选择单个项目后展示申购总额与佣金的 USDT 比例。" : "暂无匹配数据。";
+      renderPieChart(document.getElementById("rwaPlatformPrimaryPieChart"), projectMode ? groups.map(item => [item.project, item.amount]) : [
+        ["申购总额", totals.amount],
+        ["合伙人佣金", totals.commission]
+      ], projectMode ? "项目申购总额占比" : "申购总额与佣金占比");
+      document.getElementById("rwaPlatformProjectPieGrid").classList.remove("hidden");
+      document.getElementById("rwaPlatformProjectPieGrid").classList.toggle("single", !projectMode);
+      document.getElementById("rwaPlatformCommissionProjectPieCard").classList.toggle("hidden", !projectMode);
+      document.getElementById("rwaPlatformRatioPieCard").classList.add("hidden");
+      if (projectMode) {
+        renderPieChart(document.getElementById("rwaPlatformCommissionProjectPieChart"), groups.map(item => [item.project, item.commission]), "项目合伙人佣金占比");
+        document.getElementById("rwaPlatformRatioPieChart").innerHTML = "";
+      }
+    }
+
+    function renderRwaTrendChart(targetId, rows) {
+      const target = document.getElementById(targetId);
+      if (!rows.length) {
+        target.innerHTML = `<div class="chart-empty">暂无趋势数据</div>`;
+        return;
+      }
+      const grouped = new Map();
+      rows.forEach(row => {
+        const current = grouped.get(row[0]) || { date: row[0], amount: 0, commission: 0 };
+        current.amount += parseAmount(row[10]);
+        current.commission += parseAmount(row[11]);
+        grouped.set(row[0], current);
+      });
+      const dateRows = Array.from(grouped.values()).sort((a, b) => a.date.localeCompare(b.date));
+      const width = 760;
+      const height = 280;
+      const pad = { top: 18, right: 24, bottom: 48, left: 70 };
+      const amountValues = dateRows.map(row => row.amount);
+      const commissionValues = dateRows.map(row => row.commission);
+      const max = Math.max(...amountValues, ...commissionValues, 1);
+      const xStep = dateRows.length > 1 ? (width - pad.left - pad.right) / (dateRows.length - 1) : 0;
+      const y = value => pad.top + (height - pad.top - pad.bottom) * (1 - value / max);
+      const x = index => dateRows.length > 1 ? pad.left + index * xStep : width / 2;
+      const amountPoints = amountValues.map((value, index) => ({ x: x(index), y: y(value), value }));
+      const commissionPoints = commissionValues.map((value, index) => ({ x: x(index), y: y(value), value }));
+      const gridValues = [0, .25, .5, .75, 1].map(ratio => max * ratio);
+      target.innerHTML = `
+        <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="RWA申购走势图">
+          <rect x="0" y="0" width="${width}" height="${height}" fill="#fff"></rect>
+          ${gridValues.map(value => {
+            const gy = y(value);
+            return `<g><line x1="${pad.left}" y1="${gy}" x2="${width - pad.right}" y2="${gy}" stroke="#eef0f3"></line><text x="${pad.left - 10}" y="${gy + 4}" text-anchor="end" fill="#9ca3af" font-size="11">${Math.round(value).toLocaleString("en-US")}</text></g>`;
+          }).join("")}
+          <path d="${linePath(amountPoints)}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+          <path d="${linePath(commissionPoints)}" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+          ${amountPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#2563eb"><title>申购总额 ${formatAmount(point.value)}</title></circle>`).join("")}
+          ${commissionPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#d97706"><title>佣金 ${formatAmount(point.value)}</title></circle>`).join("")}
+          ${dateRows.map((row, index) => `<text x="${x(index)}" y="${height - 18}" text-anchor="middle" fill="#6b7280" font-size="11">${row.date.slice(5)}</text>`).join("")}
+        </svg>
+      `;
+    }
+
+    function renderRwaUserSummary(rows) {
+      const groups = userProjectGroups(rows);
+      renderRows("rwaUserBody", groups, item => `
+        <tr>
+          <td>${item.name}</td>
+          <td class="mono">${uidLink(item.uid)}</td>
+          <td class="mono">${item.email}</td>
+          <td>${item.project}</td>
+          <td class="mono">${item.projectId}</td>
+          <td class="mono">${uidLink(item.parent)}</td>
+          <td class="mono">${uidLink(item.top)}</td>
+          <td>${item.agentLevel}</td>
+          <td class="mono">${formatAmount(item.amount)}</td>
+          <td class="mono">${formatAmount(item.commission)}</td>
+          <td>${item.ratio}</td>
+          <td><div class="row-actions"><button class="link" data-detail="rwaUserDetail" data-rwa-uid="${item.uid}">查看用户详情</button><button class="link" data-detail="rwaCommissionUp" data-rwa-uid="${item.uid}">查看链路详情</button></div></td>
+        </tr>
+      `);
+      renderRwaUserRanking(groups);
+    }
+
+    function renderRwaUserRanking(groups) {
+      const ranking = groups.slice(0, 5);
+      const max = Math.max(...ranking.map(row => row.commission), 1);
+      document.getElementById("rwaUserRanking").innerHTML = ranking.map((row, index) => {
+        const percent = Math.max(4, row.commission / max * 100);
+        return `
+          <div class="ranking-row">
+            <div class="ranking-user"><span class="rank-badge">${index + 1}</span><span>${row.name}</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width: ${percent.toFixed(1)}%"></div></div>
+            <div class="ranking-value">${formatAmount(row.commission)}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
     function renderRwaBuy(rows) {
       renderRows("rwaBuyBody", rows, row => `<tr>${row.map((v, i) => `<td class="${[0, 1, 3, 4, 5, 10, 11].includes(i) ? "mono" : ""}">${i === 12 ? statusBadge(v) : v}</td>`).join("")}</tr>`);
     }
 
     function renderRwaBonus(rows) {
       renderRows("rwaBonusBody", rows, row => `<tr>${row.map((v, i) => `<td class="${[0, 1, 3, 6].includes(i) ? "mono" : ""}">${i === 7 ? `<span class="badge blue">${v}</span>` : i === 14 ? statusBadge(v) : v}</td>`).join("")}</tr>`);
+    }
+
+    function filteredRwaBonusPlatformRows() {
+      const project = document.getElementById("rwaBonusPlatformProject")?.value || "全部";
+      const type = document.getElementById("rwaBonusPlatformType")?.value || "全部";
+      const currency = document.getElementById("rwaBonusPlatformCurrency")?.value || "全部";
+      const start = document.getElementById("rwaBonusPlatformStart")?.value || "";
+      const end = document.getElementById("rwaBonusPlatformEnd")?.value || "";
+      return rwaBonus.filter(row => {
+        const inProject = project === "全部" || row[2] === project;
+        const inType = type === "全部" || row[13] === type;
+        const inCurrency = currency === "全部" || row[7] === currency;
+        const inStart = !start || row[5] >= start;
+        const inEnd = !end || row[5] <= end;
+        return inProject && inType && inCurrency && inStart && inEnd;
+      });
+    }
+
+    function rwaBonusCurrencyGroups(rows) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        const current = grouped.get(row[7]) || { currency: row[7], commission: 0, count: 0 };
+        current.commission += parseAmount(row[12]);
+        current.count += 1;
+        grouped.set(row[7], current);
+      });
+      return Array.from(grouped.values()).sort((a, b) => b.commission - a.commission);
+    }
+
+    function rwaBonusProjectGroups(rows) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        const current = grouped.get(row[2]) || { project: row[2], projectId: row[3], commission: 0, count: 0 };
+        current.commission += parseAmount(row[12]);
+        current.count += 1;
+        grouped.set(row[2], current);
+      });
+      return Array.from(grouped.values()).sort((a, b) => b.commission - a.commission);
+    }
+
+    function rwaBonusProjectUsdtGroups(rows) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        const current = grouped.get(row[2]) || { project: row[2], projectId: row[3], usdtValue: 0, count: 0 };
+        current.usdtValue += rwaBonusUsdtValue(row);
+        current.count += 1;
+        grouped.set(row[2], current);
+      });
+      return Array.from(grouped.values()).sort((a, b) => b.usdtValue - a.usdtValue);
+    }
+
+    function rwaBonusBatchGroups(rows, isAllCurrency) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        const current = grouped.get(row[5]) || { batch: row[5], value: 0 };
+        current.value += isAllCurrency ? rwaBonusUsdtValue(row) : parseAmount(row[12]);
+        grouped.set(row[5], current);
+      });
+      return Array.from(grouped.values()).sort((a, b) => a.batch.localeCompare(b.batch));
+    }
+
+    function rwaBonusPlatformBatchGroups(rows) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        const key = `${row[5]}|${row[13]}|${row[7]}`;
+        const current = grouped.get(key) || { batch: row[5], type: row[13], currency: row[7], count: 0, commission: 0 };
+        current.count += 1;
+        current.commission += parseAmount(row[12]);
+        grouped.set(key, current);
+      });
+      return Array.from(grouped.values()).sort((a, b) => a.batch === b.batch ? a.type.localeCompare(b.type) || a.currency.localeCompare(b.currency) : a.batch.localeCompare(b.batch));
+    }
+
+    function renderRwaBonusPlatformMetrics(rows, isAllCurrency) {
+      const container = document.getElementById("rwaBonusPlatformMetrics");
+      const totalValue = rows.reduce((sum, row) => sum + (isAllCurrency ? rwaBonusUsdtValue(row) : parseAmount(row[12])), 0);
+      const fixedValue = rows.filter(row => row[13] === "固定收益").reduce((sum, row) => sum + (isAllCurrency ? rwaBonusUsdtValue(row) : parseAmount(row[12])), 0);
+      const floatingValue = rows.filter(row => row[13] === "浮动收益").reduce((sum, row) => sum + (isAllCurrency ? rwaBonusUsdtValue(row) : parseAmount(row[12])), 0);
+      const unit = isAllCurrency ? "USDT估值" : (document.getElementById("rwaBonusPlatformCurrency")?.value || "");
+      if (!rows.length) {
+        container.innerHTML = `
+          <div class="card daily-metric"><span>分红佣金合计（${unit}）</span><strong>0.0000</strong><small>暂无匹配数据</small></div>
+          <div class="card daily-metric"><span>固定收益分红统计（${unit}）</span><strong>0.0000</strong><small>暂无匹配数据</small></div>
+          <div class="card daily-metric"><span>浮动收益分红统计（${unit}）</span><strong>0.0000</strong><small>暂无匹配数据</small></div>
+        `;
+        return;
+      }
+      container.innerHTML = `
+        <div class="card daily-metric"><span>分红佣金合计（${unit}）</span><strong>${formatAmount(totalValue)}</strong><small>按当前筛选汇总（${rows.length}笔）</small></div>
+        <div class="card daily-metric"><span>固定收益分红统计（${unit}）</span><strong>${formatAmount(fixedValue)}</strong><small>固定收益佣金汇总</small></div>
+        <div class="card daily-metric"><span>浮动收益分红统计（${unit}）</span><strong>${formatAmount(floatingValue)}</strong><small>浮动收益佣金汇总</small></div>
+      `;
+    }
+
+    function renderRwaBonusPlatformTrendChart(rows, isAllCurrency) {
+      const target = document.getElementById("rwaBonusPlatformTrendChart");
+      const batchRows = rwaBonusBatchGroups(rows, isAllCurrency);
+      if (!batchRows.length) {
+        target.innerHTML = `<div class="chart-empty">暂无趋势数据</div>`;
+        return;
+      }
+      const width = 760;
+      const height = 280;
+      const pad = { top: 18, right: 24, bottom: 48, left: 70 };
+      const values = batchRows.map(row => row.value);
+      const max = Math.max(...values, 1);
+      const xStep = batchRows.length > 1 ? (width - pad.left - pad.right) / (batchRows.length - 1) : 0;
+      const y = value => pad.top + (height - pad.top - pad.bottom) * (1 - value / max);
+      const x = index => batchRows.length > 1 ? pad.left + index * xStep : width / 2;
+      const points = values.map((value, index) => ({ x: x(index), y: y(value), value }));
+      const gridValues = [0, .25, .5, .75, 1].map(ratio => max * ratio);
+      target.innerHTML = `
+        <svg class="line-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="RWA分红佣金趋势图">
+          <rect x="0" y="0" width="${width}" height="${height}" fill="#fff"></rect>
+          ${gridValues.map(value => {
+            const gy = y(value);
+            return `<g><line x1="${pad.left}" y1="${gy}" x2="${width - pad.right}" y2="${gy}" stroke="#eef0f3"></line><text x="${pad.left - 10}" y="${gy + 4}" text-anchor="end" fill="#9ca3af" font-size="11">${Math.round(value).toLocaleString("en-US")}</text></g>`;
+          }).join("")}
+          <path d="${linePath(points)}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+          ${points.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#2563eb"><title>合伙人佣金 ${formatAmount(point.value)}</title></circle>`).join("")}
+          ${batchRows.map((row, index) => `<text x="${x(index)}" y="${height - 18}" text-anchor="middle" fill="#6b7280" font-size="11">${row.batch}</text>`).join("")}
+        </svg>
+      `;
+    }
+
+    function renderRwaBonusPlatformBarChart(rows) {
+      const target = document.getElementById("rwaBonusPlatformBarChart");
+      const groups = rwaBonusProjectUsdtGroups(rows);
+      if (!groups.length) {
+        target.innerHTML = `<div class="chart-empty">暂无占比数据</div>`;
+        return;
+      }
+      const width = 360;
+      const height = 280;
+      const pad = { top: 18, right: 20, bottom: 70, left: 60 };
+      const max = Math.max(...groups.map(g => g.usdtValue), 1);
+      const bandWidth = (width - pad.left - pad.right) / groups.length;
+      const barWidth = Math.min(48, bandWidth * .6);
+      const y = value => pad.top + (height - pad.top - pad.bottom) * (1 - value / max);
+      const gridValues = [0, .25, .5, .75, 1].map(ratio => max * ratio);
+      const colors = ["#2563eb", "#16a34a", "#d97706", "#7c3aed", "#0891b2"];
+      target.innerHTML = `
+        <svg class="bar-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="项目分红佣金USDT估值柱状图">
+          <rect x="0" y="0" width="${width}" height="${height}" fill="#fff"></rect>
+          ${gridValues.map(value => {
+            const gy = y(value);
+            return `<g><line x1="${pad.left}" y1="${gy}" x2="${width - pad.right}" y2="${gy}" stroke="#eef0f3"></line><text x="${pad.left - 8}" y="${gy + 4}" text-anchor="end" fill="#9ca3af" font-size="10">${Math.round(value).toLocaleString("en-US")}</text></g>`;
+          }).join("")}
+          ${groups.map((g, index) => {
+            const bx = pad.left + index * bandWidth + (bandWidth - barWidth) / 2;
+            const by = y(g.usdtValue);
+            const barHeight = height - pad.bottom - by;
+            return `<rect x="${bx}" y="${by}" width="${barWidth}" height="${barHeight}" fill="${colors[index % colors.length]}" rx="3"><title>${g.project} ${formatAmount(g.usdtValue)} USDT</title></rect>`;
+          }).join("")}
+          ${groups.map((g, index) => {
+            const cx = pad.left + index * bandWidth + bandWidth / 2;
+            return `<text x="${cx}" y="${height - pad.bottom + 16}" text-anchor="middle" fill="#6b7280" font-size="10">${g.project}</text>`;
+          }).join("")}
+        </svg>
+      `;
+    }
+
+    function renderRwaBonusPlatformSummary(rows) {
+      const currency = document.getElementById("rwaBonusPlatformCurrency")?.value || "全部";
+      const selectedProject = document.getElementById("rwaBonusPlatformProject")?.value || "全部";
+      const isAll = currency === "全部";
+      const isAllProject = selectedProject === "全部";
+      renderRwaBonusPlatformMetrics(rows, isAll);
+      renderRows("rwaBonusPlatformBody", rwaBonusPlatformBatchGroups(rows), item => `
+        <tr>
+          <td>${item.batch}</td>
+          <td>${item.type}</td>
+          <td><span class="badge blue">${item.currency}</span></td>
+          <td class="mono">${formatAmount(item.commission)}</td>
+        </tr>
+      `);
+      document.getElementById("rwaBonusPlatformTrendSub").textContent = rows.length ? (isAll ? "当前为全部币种，趋势按 USDT 估值折算展示，按分红批次统计。" : `展示 ${currency} 分红佣金按分红批次的趋势。`) : "暂无匹配数据。";
+      renderRwaBonusPlatformTrendChart(rows, isAll);
+
+      document.getElementById("rwaBonusPlatformTableCard").classList.toggle("hidden", isAllProject);
+      document.getElementById("rwaBonusPlatformSinglePieCard").classList.add("hidden");
+      document.getElementById("rwaBonusPlatformCurrencyPieGrid").classList.toggle("hidden", !isAllProject);
+      if (isAllProject) {
+        renderRwaBonusPlatformBarChart(rows);
+        renderPieChart(document.getElementById("rwaBonusPlatformUsdtPieChart"),
+          rwaBonusProjectGroups(rows.filter(r => r[7] === "USDT")).map(g => [g.project, g.commission]), "USDT项目分红佣金占比");
+      }
+    }
+
+    const rwaBonusUserDetail = [
+      ["2026-03", "RT", "10,000", "50"],
+      ["2026-04", "RT", "11,000", "45"],
+      ["2026-03", "USDT", "25,000", "120"]
+    ];
+
+    const rwaBonusCommissionChain = [
+      ["香蕉人", "banana.agent@gmail.com", "237634645", "合伙人", "7", "12,000", "24,100.0000", "3.5900"],
+      ["苹果人", "apple.agent@gmail.com", "237634638", "合伙人", "6", "10,000", "23,200.0000", "3.5200"],
+      ["葡萄人", "grape.agent@gmail.com", "237634639", "合伙人", "6", "6,000", "7,400.0000", "1.1100"],
+      ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "5", "8,000", "14,800.0000", "2.2360"]
+    ];
+
+    function filteredRwaBonusUserRows() {
+      const project = document.getElementById("rwaBonusUserProject")?.value || "全部";
+      const keyword = document.getElementById("rwaBonusUserKeyword")?.value.trim().toLowerCase() || "";
+      const type = document.getElementById("rwaBonusUserType")?.value || "全部";
+      const currency = document.getElementById("rwaBonusUserCurrency")?.value || "全部";
+      const start = document.getElementById("rwaBonusUserStart")?.value || "";
+      const end = document.getElementById("rwaBonusUserEnd")?.value || "";
+      return rwaBonus.filter(row => {
+        const inProject = project === "全部" || row[2] === project;
+        const inKeyword = !keyword || row[0].toLowerCase().includes(keyword);
+        const inType = project === "全部" || type === "全部" || row[13] === type;
+        const inCurrency = project === "全部" || currency === "全部" || row[7] === currency;
+        const inStart = !start || row[5] >= start;
+        const inEnd = !end || row[5] <= end;
+        return inProject && inKeyword && inType && inCurrency && inStart && inEnd;
+      });
+    }
+
+    function rwaBonusUserGroups(rows, isAllCurrency) {
+      const grouped = new Map();
+      rows.forEach(row => {
+        const info = partnerInfo(row[0]);
+        const current = grouped.get(row[0]) || { uid: row[0], name: info.name, email: info.email, value: 0 };
+        current.value += isAllCurrency ? rwaBonusUsdtValue(row) : parseAmount(row[12]);
+        grouped.set(row[0], current);
+      });
+      return Array.from(grouped.values()).sort((a, b) => b.value - a.value).slice(0, 5);
+    }
+
+    function renderRwaBonusUserRanking(rows, isAllCurrency, currency) {
+      const container = document.getElementById("rwaBonusUserRanking");
+      const titleEl = document.getElementById("rwaBonusUserRankingTitle");
+      titleEl.textContent = isAllCurrency ? "顶级合伙人分红佣金排行榜（USDT估值）" : "顶级合伙人分红佣金排行榜";
+      const ranking = rwaBonusUserGroups(rows, isAllCurrency);
+      if (!ranking.length) {
+        container.innerHTML = `<div class="chart-empty">暂无排名数据</div>`;
+        return;
+      }
+      const max = Math.max(...ranking.map(r => r.value), 1);
+      const unit = isAllCurrency ? "USDT" : currency;
+      container.innerHTML = ranking.map((r, index) => {
+        const percent = Math.max(4, r.value / max * 100);
+        return `
+          <div class="ranking-row">
+            <div class="ranking-user"><span class="rank-badge">${index + 1}</span><span>${r.name}</span><span class="mono">${uidLink(r.uid)}</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width: ${percent.toFixed(1)}%"></div></div>
+            <div class="ranking-value">${formatAmount(r.value)} ${unit}</div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderRwaBonusUserSummary(rows) {
+      const selectedProject = document.getElementById("rwaBonusUserProject")?.value || "全部";
+      const isAllProject = selectedProject === "全部";
+      const table = document.getElementById("rwaBonusUserTable");
+      if (table) table.style.minWidth = isAllProject ? "920px" : "1320px";
+      document.getElementById("rwaBonusUserTypeField").classList.toggle("hidden", isAllProject);
+      document.getElementById("rwaBonusUserCurrencyField").classList.toggle("hidden", isAllProject);
+      if (isAllProject) {
+        document.getElementById("rwaBonusUserHead").innerHTML = `<tr><th>合伙人昵称</th><th>合伙人UID</th><th>邮箱</th><th>分红批次</th><th>佣金（汇总USDT估值）</th><th>操作</th></tr>`;
+        const grouped = new Map();
+        rows.forEach(row => {
+          const key = `${row[0]}|${row[5]}`;
+          const info = partnerInfo(row[0]);
+          const current = grouped.get(key) || { uid: row[0], name: info.name, email: info.email, batch: row[5], value: 0 };
+          current.value += rwaBonusUsdtValue(row);
+          grouped.set(key, current);
+        });
+        renderRows("rwaBonusUserBody", Array.from(grouped.values()).sort((a, b) => b.value - a.value), item => `
+          <tr>
+            <td>${item.name}</td>
+            <td class="mono">${uidLink(item.uid)}</td>
+            <td class="mono">${item.email}</td>
+            <td>${item.batch}</td>
+            <td class="mono">${formatAmount(item.value)}</td>
+            <td><div class="row-actions">
+              <button class="link" data-detail="rwaBonusUserDetail" data-rwa-uid="${item.uid}">查看用户详情</button>
+              <button class="link" data-detail="rwaBonusCommissionUp" data-rwa-uid="${item.uid}">查看链路详情</button>
+            </div></td>
+          </tr>
+        `);
+      } else {
+        document.getElementById("rwaBonusUserHead").innerHTML = `<tr><th>合伙人昵称</th><th>合伙人UID</th><th>邮箱</th><th>质押用户UID</th><th>项目名称</th><th>项目ID</th><th>分红批次</th><th>结算批次号</th><th>分红币种</th><th>合伙人权重</th><th>佣金</th><th>收益类型</th><th>佣金状态</th><th>操作</th></tr>`;
+        renderRows("rwaBonusUserBody", rows, row => `
+          <tr>
+            <td>${partnerInfo(row[0]).name}</td>
+            <td class="mono">${uidLink(row[0])}</td>
+            <td class="mono">${partnerInfo(row[0]).email}</td>
+            <td class="mono">${uidLink(row[1])}</td>
+            <td>${row[2]}</td>
+            <td class="mono">${row[3]}</td>
+            <td>${row[5]}</td>
+            <td class="mono">${row[6]}</td>
+            <td><span class="badge blue">${row[7]}</span></td>
+            <td>${row[11]}</td>
+            <td class="mono">${row[12]}</td>
+            <td>${row[13]}</td>
+            <td>${statusBadge(row[14])}</td>
+            <td><div class="row-actions">
+              <button class="link" data-detail="rwaBonusUserDetail" data-rwa-uid="${row[0]}">查看用户详情</button>
+              <button class="link" data-detail="rwaBonusCommissionUp" data-rwa-uid="${row[0]}">查看链路详情</button>
+            </div></td>
+          </tr>
+        `);
+      }
+      const currency = document.getElementById("rwaBonusUserCurrency")?.value || "全部";
+      renderRwaBonusUserRanking(rows, isAllProject || currency === "全部", isAllProject ? "全部" : currency);
     }
 
     function setPage(page) {
@@ -1644,6 +2621,16 @@
     }
 
     function currentProfile(uid = profile.uid) {
+      if (partnerProfiles[uid]) {
+        return {
+          ...profile,
+          name: partnerProfiles[uid].name,
+          uid,
+          email: partnerProfiles[uid].email,
+          identity: "合伙人",
+          level: uid === "5345543" || uid === "5345544" || uid === "5345545" || uid === "6124551" ? "1级" : "2级"
+        };
+      }
       const allRows = [
         ...chainUp,
         ...chainDown,
@@ -1744,6 +2731,10 @@
       return ["代理昵称", "邮箱", "UID", "用户类型", "代理层级", "VIP等级", "贡献佣金", "佣金/手续费减免"];
     }
 
+    function rwaCommissionHeaders() {
+      return ["代理昵称", "邮箱", "UID", "用户类型", "代理层级", "申购订单金额（USDT）", "佣金（USDT）"];
+    }
+
     function renderCommissionUpTable(userType = "全部", keyword = "") {
       const normalized = keyword.trim().toLowerCase();
       const rows = commissionChain.filter(row => {
@@ -1799,6 +2790,141 @@
       }
     }
 
+    function adjustProjectValue(value, project) {
+      if (!project || project === "全部") return value;
+      return formatAmount(parseAmount(value) * 0.62);
+    }
+
+    function projectAdjustedRow(row, project, amountIndex, commissionIndex) {
+      const next = [...row];
+      next[amountIndex] = adjustProjectValue(row[amountIndex], project);
+      next[commissionIndex] = adjustProjectValue(row[commissionIndex], project);
+      return next;
+    }
+
+    function renderRwaCommissionUpTable(userType = "全部", keyword = "", project = "全部") {
+      const normalized = keyword.trim().toLowerCase();
+      const rows = rwaCommissionChain.filter(row => {
+        const matchesType = userType === "全部" || row[3] === userType;
+        const matchesKeyword = !normalized || row[0].toLowerCase().includes(normalized) || row[1].toLowerCase().includes(normalized) || row[2].includes(normalized);
+        return matchesType && matchesKeyword;
+      }).map(row => projectAdjustedRow(row, project, 5, 6));
+      detailTable(rwaCommissionHeaders(), rows, { tree: true, uidIndex: 2, uidMode: "rwaCommission" });
+    }
+
+    function flattenRwaCommission(nodes, depth = 0) {
+      return nodes.flatMap(node => {
+        const current = [{ ...node, depth }];
+        if (!expandedCommissionRows.has(node.id)) return current;
+        return current.concat(flattenRwaCommission(node.children, depth + 1));
+      });
+    }
+
+    function renderRwaCommissionDownTable(userType = "全部", keyword = "", project = "全部") {
+      const normalized = keyword.trim().toLowerCase();
+      const rows = flattenRwaCommission(rwaCommissionTree).filter(item => {
+        const matchesType = userType === "全部" || item.row[3] === userType;
+        const matchesKeyword = !normalized || item.row[0].toLowerCase().includes(normalized) || item.row[1].toLowerCase().includes(normalized) || item.row[2].includes(normalized);
+        return matchesType && matchesKeyword;
+      });
+      const body = rows.map(item => {
+        const hasChildren = item.children.length > 0;
+        const expanded = expandedCommissionRows.has(item.id);
+        const rowClass = item.id === "rwa-commission-self" ? "self-row" : item.depth > 1 ? "child-row" : "";
+        return `
+          <tr class="${rowClass}" style="--indent: ${item.depth * 22}px">
+            ${projectAdjustedRow(item.row, project, 5, 6).map((value, index) => {
+              if (index === 2) return `<td>${uidLink(value, "rwaCommission")}</td>`;
+              if (index !== 0) return `<td>${value}</td>`;
+              const triangle = hasChildren ? `<span class="${expanded ? "tri-down" : "tri-up"}"></span>` : "";
+              return `<td><button class="tree-toggle" ${hasChildren ? `data-toggle-commission="${item.id}"` : "disabled"}>${value}${triangle}</button></td>`;
+            }).join("")}
+          </tr>
+        `;
+      }).join("");
+      document.getElementById("detailTable").innerHTML = `<thead><tr>${rwaCommissionHeaders().map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${body}</tbody>`;
+    }
+
+    function renderRwaCommissionView() {
+      const direction = document.getElementById("commissionDirection")?.value || "up";
+      const userType = document.getElementById("commissionUserType")?.value || "全部";
+      const keyword = document.getElementById("commissionKeyword")?.value || "";
+      const project = document.getElementById("commissionProject")?.value || activeDetailProject || "全部";
+      activeDetailDirection = direction;
+      activeDetailProject = project;
+      if (direction === "down") {
+        renderRwaCommissionDownTable(userType, keyword, project);
+      } else {
+        renderRwaCommissionUpTable(userType, keyword, project);
+      }
+    }
+
+    function rwaBonusCommissionHeaders() {
+      return ["代理昵称", "邮箱", "UID", "用户类型", "代理层级", "合伙人佣金池总数量", "佣金", "合伙人权重"];
+    }
+
+    function bonusAdjustedRow(row, project, currency) {
+      const next = projectAdjustedRow(row, project, 5, 6);
+      if (currency !== "全部") {
+        next[6] = formatAmount(parseAmount(next[6]) * (currency === "RT" ? 0.42 : 0.58));
+      }
+      return next;
+    }
+
+    function renderRwaBonusCommissionUpTable(keyword = "", project = "全部", currency = "全部") {
+      const normalized = keyword.trim().toLowerCase();
+      const rows = rwaBonusCommissionChain.filter(row => {
+        return !normalized || row[0].toLowerCase().includes(normalized) || row[1].toLowerCase().includes(normalized) || row[2].includes(normalized);
+      }).map(row => bonusAdjustedRow(row, project, currency));
+      detailTable(rwaBonusCommissionHeaders(), rows, { uidIndex: 2, uidMode: "rwaBonusCommission" });
+    }
+
+    function flattenRwaBonusCommission(nodes, depth = 0) {
+      return nodes.flatMap(node => {
+        const current = [{ ...node, depth }];
+        if (!expandedCommissionRows.has(node.id)) return current;
+        return current.concat(flattenRwaBonusCommission(node.children, depth + 1));
+      });
+    }
+
+    function renderRwaBonusCommissionDownTable(keyword = "", project = "全部", currency = "全部") {
+      const normalized = keyword.trim().toLowerCase();
+      const rows = flattenRwaBonusCommission(rwaBonusCommissionTree).filter(item => {
+        return !normalized || item.row[0].toLowerCase().includes(normalized) || item.row[1].toLowerCase().includes(normalized) || item.row[2].includes(normalized);
+      });
+      const body = rows.map(item => {
+        const hasChildren = item.children.length > 0;
+        const expanded = expandedCommissionRows.has(item.id);
+        const rowClass = item.id === "rwa-bonus-commission-self" ? "self-row" : item.depth > 1 ? "child-row" : "";
+        return `
+          <tr class="${rowClass}" style="--indent: ${item.depth * 22}px">
+            ${bonusAdjustedRow(item.row, project, currency).map((value, index) => {
+              if (index === 2) return `<td>${uidLink(value, "rwaBonusCommission")}</td>`;
+              if (index !== 0) return `<td>${value}</td>`;
+              const triangle = hasChildren ? `<span class="${expanded ? "tri-down" : "tri-up"}"></span>` : "";
+              return `<td><button class="tree-toggle" ${hasChildren ? `data-toggle-commission="${item.id}"` : "disabled"}>${value}${triangle}</button></td>`;
+            }).join("")}
+          </tr>
+        `;
+      }).join("");
+      document.getElementById("detailTable").innerHTML = `<thead><tr>${rwaBonusCommissionHeaders().map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${body}</tbody>`;
+    }
+
+    function renderRwaBonusCommissionView() {
+      const direction = document.getElementById("commissionDirection")?.value || "up";
+      const keyword = document.getElementById("commissionKeyword")?.value || "";
+      const project = document.getElementById("commissionProject")?.value || activeDetailProject || "全部";
+      const currency = document.getElementById("commissionCurrency")?.value || activeDetailCurrency || "全部";
+      activeDetailDirection = direction;
+      activeDetailProject = project;
+      activeDetailCurrency = currency;
+      if (direction === "down") {
+        renderRwaBonusCommissionDownTable(keyword, project, currency);
+      } else {
+        renderRwaBonusCommissionUpTable(keyword, project, currency);
+      }
+    }
+
     function refreshDetailProfile(uid) {
       activeDetailUid = uid || profile.uid;
       document.getElementById("profile").innerHTML = profileHtml(activeDetailUid);
@@ -1814,7 +2940,48 @@
         renderCommissionView();
         return;
       }
+      if (mode === "rwaCommission") {
+        renderRwaCommissionView();
+        return;
+      }
+      if (mode === "rwaBonusCommission") {
+        renderRwaBonusCommissionView();
+        return;
+      }
       openDetail("userDetail", { uid });
+    }
+
+    function renderRwaUserDetailTable() {
+      const project = document.getElementById("detailRwaProject")?.value || activeDetailProject || "全部";
+      const start = parseCnDate(document.getElementById("detailRwaStart")?.value || "");
+      const end = parseCnDate(document.getElementById("detailRwaEnd")?.value || "");
+      activeDetailProject = project;
+      const rows = rwaPurchaseSummary.filter(row => {
+        const inUser = !activeDetailUid || row[3] === activeDetailUid || row[5] === activeDetailUid;
+        const inProject = project === "全部" || row[1] === project;
+        const inStart = !start || row[0] >= start;
+        const inEnd = !end || row[0] <= end;
+        return inUser && inProject && inStart && inEnd;
+      }).map(row => [row[0], row[1], row[10], row[11]]);
+      detailTable(["日期", "项目名称", "申购订单金额（USDT）", "佣金（USDT）"], rows);
+    }
+
+    function renderRwaBonusUserDetailTable() {
+      const project = document.getElementById("detailRwaBonusProject")?.value || activeDetailProject || "全部";
+      const currency = document.getElementById("detailRwaBonusCurrency")?.value || activeDetailCurrency || "全部";
+      const start = document.getElementById("detailRwaBonusStart")?.value || "";
+      const end = document.getElementById("detailRwaBonusEnd")?.value || "";
+      activeDetailProject = project;
+      activeDetailCurrency = currency;
+      const rows = rwaBonus.filter(row => {
+        const inUser = !activeDetailUid || row[0] === activeDetailUid;
+        const inProject = project === "全部" || row[2] === project;
+        const inCurrency = currency === "全部" || row[7] === currency;
+        const inStart = !start || row[5] >= start;
+        const inEnd = !end || row[5] <= end;
+        return inUser && inProject && inCurrency && inStart && inEnd;
+      }).map(row => [row[5], row[2], row[7], row[10], row[11], row[12]]);
+      detailTable(["分红批次", "项目名称", "币种", "合伙人佣金池总数量", "合伙人权重", "佣金"], rows, { currencyIndex: 2 });
     }
 
     function openDetail(type, context = {}) {
@@ -1822,7 +2989,10 @@
       const title = document.getElementById("detailTitle");
       const sub = document.getElementById("detailSub");
       const filters = document.getElementById("detailFilters");
+      filters.style.gridTemplateColumns = "";
       activeDetailUid = context.uid || profile.uid;
+      activeDetailProject = context.project || (type === "rwaBonusUserDetail" || type === "rwaBonusCommissionUp" ? document.getElementById("rwaBonusUserProject")?.value : document.getElementById("rwaUserProject")?.value) || "全部";
+      activeDetailCurrency = context.currency || (type === "rwaBonusUserDetail" || type === "rwaBonusCommissionUp" ? document.getElementById("rwaBonusUserCurrency")?.value : "全部") || "全部";
       document.getElementById("profile").innerHTML = profileHtml(activeDetailUid);
 
       const chainFilters = `
@@ -1864,6 +3034,31 @@
         detailTable(["日期", "新注册用户数（拉新数）", "新入金用户数", "新首次交易用户", "贡献佣金", "佣金"], userDetail);
       }
 
+      if (type === "rwaUserDetail") {
+        activeDetailMode = "rwaUserDetail";
+        title.textContent = "用户详情";
+        sub.textContent = context.uid ? `当前查看 UID ${context.uid} 的 RWA 申购订单金额与佣金表现。` : "按日期展示该用户 RWA 申购订单金额与佣金表现。";
+        filters.innerHTML = `
+          <div class="field"><label>项目筛选</label><select id="detailRwaProject">${projectOptions(activeDetailProject)}</select></div>
+          <div class="field"><label>时间范围</label><div class="date-range"><input id="detailRwaStart" value="2026年4月1日"><span>至</span><input id="detailRwaEnd" value="2026年4月30日"></div></div>
+          <div></div><button class="btn" id="detailSearch">搜索</button>
+        `;
+        renderRwaUserDetailTable();
+      }
+
+      if (type === "rwaBonusUserDetail") {
+        activeDetailMode = "rwaBonusUserDetail";
+        title.textContent = "用户详情";
+        sub.textContent = context.uid ? `当前查看 UID ${context.uid} 的 RWA 分红佣金表现。` : "按分红批次展示该用户 RWA 分红佣金表现。";
+        filters.innerHTML = `
+          <div class="field"><label>项目筛选</label><select id="detailRwaBonusProject">${projectOptions(activeDetailProject)}</select></div>
+          <div class="field"><label>币种筛选</label><select id="detailRwaBonusCurrency">${currencyOptions(activeDetailCurrency)}</select></div>
+          <div class="field"><label>分红批次范围</label><div class="date-range"><input id="detailRwaBonusStart" value="2026-03"><span>至</span><input id="detailRwaBonusEnd" value="2026-04"></div></div>
+          <button class="btn" id="detailSearch">搜索</button>
+        `;
+        renderRwaBonusUserDetailTable();
+      }
+
       if (type === "commissionUp") {
         activeDetailMode = "commission";
         activeDetailDirection = "up";
@@ -1877,6 +3072,40 @@
         `;
         expandedCommissionRows = new Set(["commission-self"]);
         renderCommissionView();
+      }
+
+      if (type === "rwaCommissionUp") {
+        activeDetailMode = "rwaCommission";
+        activeDetailDirection = "up";
+        title.textContent = "链路佣金详情";
+        sub.textContent = "展示链路上代理的 RWA 申购订单金额与佣金数据。";
+        filters.innerHTML = `
+          <div class="field"><label>搜索代理</label><input id="commissionKeyword" placeholder="请输入 UID 或邮箱地址"></div>
+          <div class="field"><label>列表筛选</label><select id="commissionDirection"><option value="up">仅看上级</option><option value="down">仅看下级</option></select></div>
+          <div class="field"><label>项目筛选</label><select id="commissionProject">${projectOptions(activeDetailProject)}</select></div>
+          <button class="btn" id="commissionSearch">搜索</button>
+        `;
+        document.getElementById("commissionDirection").value = activeDetailDirection;
+        expandedCommissionRows = new Set(["rwa-commission-self"]);
+        renderRwaCommissionView();
+      }
+
+      if (type === "rwaBonusCommissionUp") {
+        activeDetailMode = "rwaBonusCommission";
+        activeDetailDirection = "up";
+        title.textContent = "链路佣金详情";
+        sub.textContent = "展示链路上代理的 RWA 分红佣金数据。";
+        filters.innerHTML = `
+          <div class="field"><label>搜索代理</label><input id="commissionKeyword" placeholder="请输入 UID 或邮箱地址"></div>
+          <div class="field"><label>列表筛选</label><select id="commissionDirection"><option value="up">仅看上级</option><option value="down">仅看下级</option></select></div>
+          <div class="field"><label>项目筛选</label><select id="commissionProject">${projectOptions(activeDetailProject)}</select></div>
+          <div class="field"><label>币种筛选</label><select id="commissionCurrency">${currencyOptions(activeDetailCurrency)}</select></div>
+          <button class="btn" id="commissionSearch">搜索</button>
+        `;
+        filters.style.gridTemplateColumns = "1.2fr 1fr 1fr 1fr auto";
+        document.getElementById("commissionDirection").value = activeDetailDirection;
+        expandedCommissionRows = new Set(["rwa-bonus-commission-self"]);
+        renderRwaBonusCommissionView();
       }
 
       modal.classList.add("active");
@@ -1899,7 +3128,13 @@
         } else {
           expandedCommissionRows.add(id);
         }
-        renderCommissionView();
+        if (activeDetailMode === "rwaBonusCommission") {
+          renderRwaBonusCommissionView();
+        } else if (activeDetailMode === "rwaCommission") {
+          renderRwaCommissionView();
+        } else {
+          renderCommissionView();
+        }
         return;
       }
 
@@ -1920,7 +3155,7 @@
       if (page) setPage(page.dataset.page);
 
       const detail = event.target.closest("[data-detail]");
-      if (detail) openDetail(detail.dataset.detail);
+      if (detail) openDetail(detail.dataset.detail, { uid: detail.dataset.rwaUid });
 
       const form = event.target.closest("[data-modal]");
       if (form) openForm(form.dataset.modal);
@@ -1955,15 +3190,37 @@
       }
 
       if (event.target.id === "commissionSearch") {
-        renderCommissionView();
+        if (activeDetailMode === "rwaBonusCommission") {
+          renderRwaBonusCommissionView();
+        } else if (activeDetailMode === "rwaCommission") {
+          renderRwaCommissionView();
+        } else {
+          renderCommissionView();
+        }
+      }
+
+      if (event.target.id === "detailSearch") {
+        if (activeDetailMode === "rwaUserDetail") {
+          renderRwaUserDetailTable();
+        } else if (activeDetailMode === "rwaBonusUserDetail") {
+          renderRwaBonusUserDetailTable();
+        }
       }
     });
 
     document.addEventListener("change", event => {
-      if (["commissionDirection", "commissionUserType"].includes(event.target.id)) {
+      if (["commissionDirection", "commissionUserType", "commissionProject", "commissionCurrency"].includes(event.target.id)) {
         const direction = document.getElementById("commissionDirection")?.value || "up";
-        document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的贡献佣金与手续费减免数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上级代理的贡献佣金与佣金/手续费减免数据。";
-        renderCommissionView();
+        if (activeDetailMode === "rwaBonusCommission") {
+          document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的 RWA 分红佣金数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上代理的 RWA 分红佣金数据。";
+          renderRwaBonusCommissionView();
+        } else if (activeDetailMode === "rwaCommission") {
+          document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的 RWA 申购订单金额与佣金数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上代理的 RWA 申购订单金额与佣金数据。";
+          renderRwaCommissionView();
+        } else {
+          document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的贡献佣金与手续费减免数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上级代理的贡献佣金与佣金/手续费减免数据。";
+          renderCommissionView();
+        }
       }
 
       if (["userStatusFilter", "userTypeFilter"].includes(event.target.id)) {
@@ -1976,6 +3233,14 @@
 
       if (event.target.id === "spotStatAgentLevel") {
         renderSpotStatTable(filteredSpotStatRows());
+      }
+
+      if (["detailRwaProject", "detailRwaBonusProject", "detailRwaBonusCurrency"].includes(event.target.id)) {
+        if (activeDetailMode === "rwaUserDetail") {
+          renderRwaUserDetailTable();
+        } else if (activeDetailMode === "rwaBonusUserDetail") {
+          renderRwaBonusUserDetailTable();
+        }
       }
 
       if (event.target.id === "chainDirection") {
@@ -2000,6 +3265,28 @@
       document.getElementById("dailyStart").value = "2026年7月1日";
       document.getElementById("dailyEnd").value = "2026年7月31日";
       renderDaily(filteredDailyRows());
+    });
+
+    document.getElementById("rwaPlatformSearch").addEventListener("click", () => {
+      renderRwaPlatformSummary(filteredRwaPurchaseRows("rwaPlatform"));
+    });
+
+    document.getElementById("rwaPlatformReset").addEventListener("click", () => {
+      document.getElementById("rwaPlatformProject").value = "全部";
+      document.getElementById("rwaPlatformStart").value = "2026年4月1日";
+      document.getElementById("rwaPlatformEnd").value = "2026年4月30日";
+      renderRwaPlatformSummary(filteredRwaPurchaseRows("rwaPlatform"));
+    });
+
+    document.getElementById("rwaUserSearch").addEventListener("click", () => {
+      renderRwaUserSummary(filteredRwaPurchaseRows("rwaUser"));
+    });
+
+    document.getElementById("rwaUserReset").addEventListener("click", () => {
+      document.getElementById("rwaUserProject").value = "全部";
+      document.getElementById("rwaUserKeyword").value = "";
+      document.getElementById("rwaUserAgentLevel").value = "全部";
+      renderRwaUserSummary(filteredRwaPurchaseRows("rwaUser"));
     });
 
     document.getElementById("rwaBuySearch").addEventListener("click", () => {
@@ -2028,6 +3315,33 @@
       document.getElementById("rwaBonusCurrency").value = "全部";
       document.getElementById("rwaBonusStatus").value = "全部";
       renderRwaBonus(rwaBonus);
+    });
+
+    document.getElementById("rwaBonusPlatformSearch").addEventListener("click", () => {
+      renderRwaBonusPlatformSummary(filteredRwaBonusPlatformRows());
+    });
+
+    document.getElementById("rwaBonusPlatformReset").addEventListener("click", () => {
+      document.getElementById("rwaBonusPlatformProject").value = "全部";
+      document.getElementById("rwaBonusPlatformType").value = "全部";
+      document.getElementById("rwaBonusPlatformCurrency").value = "全部";
+      document.getElementById("rwaBonusPlatformStart").value = "2026-03";
+      document.getElementById("rwaBonusPlatformEnd").value = "2026-04";
+      renderRwaBonusPlatformSummary(filteredRwaBonusPlatformRows());
+    });
+
+    document.getElementById("rwaBonusUserSearch").addEventListener("click", () => {
+      renderRwaBonusUserSummary(filteredRwaBonusUserRows());
+    });
+
+    document.getElementById("rwaBonusUserReset").addEventListener("click", () => {
+      document.getElementById("rwaBonusUserProject").value = "全部";
+      document.getElementById("rwaBonusUserKeyword").value = "";
+      document.getElementById("rwaBonusUserType").value = "全部";
+      document.getElementById("rwaBonusUserCurrency").value = "全部";
+      document.getElementById("rwaBonusUserStart").value = "2026-03";
+      document.getElementById("rwaBonusUserEnd").value = "2026-04";
+      renderRwaBonusUserSummary(filteredRwaBonusUserRows());
     });
 
     renderMainTables();
