@@ -412,6 +412,13 @@
       font-weight: 800;
     }
 
+    .daily-metric .metric-title {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
     .daily-metric strong {
       display: block;
       margin-top: 8px;
@@ -425,6 +432,34 @@
       margin-top: 6px;
       color: var(--muted);
       font-size: 11px;
+    }
+
+    .inline-note {
+      display: inline;
+      margin-left: 8px;
+      color: #dc2626;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
+    .daily-metric .inline-note {
+      display: inline;
+      margin: 0 0 0 8px;
+      color: #dc2626;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    th .inline-note {
+      display: inline;
+      margin: 0 0 0 8px;
+      max-width: none;
+      color: #dc2626;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
     }
 
     .chart-grid {
@@ -935,7 +970,7 @@
           <div class="ranking-head">
             <div>
               <h2>顶级合伙人排行榜</h2>
-              <p class="sub">根据顶级合伙人佣金金额生成排名进度条。</p>
+              <p class="sub">根据顶级合伙人实到佣金金额生成排名进度条。</p>
             </div>
           </div>
           <div id="spotStatRanking" class="ranking-list"></div>
@@ -948,7 +983,7 @@
         <div class="card table-card">
           <div class="table-scroll">
             <table>
-              <thead><tr><th>合伙人昵称</th><th>UID</th><th>邮箱</th><th>上级代理</th><th>顶级代理</th><th>代理等级</th><th>VIP等级</th><th>佣金</th><th>返佣比例</th><th>操作</th></tr></thead>
+              <thead><tr><th>合伙人昵称</th><th>UID</th><th>邮箱</th><th>上级代理</th><th>顶级代理</th><th>代理等级</th><th>VIP等级</th><th>实到佣金</th><th>未结算佣金</th><th>返佣比例</th><th>操作</th></tr></thead>
               <tbody id="spotStatBody"></tbody>
             </table>
           </div>
@@ -1003,21 +1038,21 @@
         </div>
         <div class="daily-insights">
           <div class="daily-metrics summary-only" id="dailyMetrics">
-            <div class="card daily-metric is-hidden" id="dailyPartnerNativeCard"><span id="dailyPartnerNativeLabel">合伙人佣金</span><strong id="dailyPartnerNative">0.0000</strong><small id="dailyPartnerNativeNote">按当前筛选汇总</small></div>
-            <div class="card daily-metric"><span>合伙人佣金（USDT）</span><strong id="dailyPartnerUsdt">0.0000</strong><small id="dailyPartnerUsdtNote">按当前筛选汇总</small></div>
-            <div class="card daily-metric"><span id="dailyPlatformLabel">平台收益（USDT）</span><strong id="dailyPlatformUsdt">0.0000</strong><small id="dailyPlatformUsdtNote">按当前筛选汇总</small></div>
+            <div class="card daily-metric is-hidden" id="dailyPartnerNativeCard"><div class="metric-title" id="dailyPartnerNativeLabel">合伙人佣金</div><strong id="dailyPartnerNative">0.0000</strong><small id="dailyPartnerNativeNote">按当前筛选汇总</small></div>
+            <div class="card daily-metric"><div class="metric-title" id="dailyPartnerUsdtLabel">合伙人佣金（USDT）</div><strong id="dailyPartnerUsdt">0.0000</strong><small id="dailyPartnerUsdtNote">按当前筛选汇总</small></div>
+            <div class="card daily-metric"><div class="metric-title" id="dailyPlatformLabel">平台收益（USDT）</div><strong id="dailyPlatformUsdt">0.0000</strong><small id="dailyPlatformUsdtNote">按当前筛选汇总</small></div>
           </div>
           <div class="stat-list-grid" id="dailyStatListGrid">
             <div class="card stat-list-card">
               <div class="stat-list-head">
                 <div>
-                  <h2>合伙人佣金币对分布</h2>
+                  <h2>合伙人佣金币对分布 <span class="inline-note">*包含已结算实发佣金和未结算佣金</span></h2>
                   <p class="sub">按现货交易币对汇总合伙人佣金。</p>
                 </div>
               </div>
               <div class="table-scroll">
                 <table class="mini-table">
-                  <thead><tr><th>交易币对</th><th>合伙人佣金</th></tr></thead>
+                  <thead><tr><th>交易币对</th><th>合伙人佣金（USDT估值）</th></tr></thead>
                   <tbody id="dailyPairCommissionBody"></tbody>
                 </table>
               </div>
@@ -1044,7 +1079,7 @@
                   <h2>每日趋势</h2>
                   <p class="sub" id="dailyTrendSub">展示当前筛选下合伙人佣金与平台收益的 USDT 估值趋势。</p>
                 </div>
-                <div class="legend"><span><i class="dot"></i>合伙人佣金</span><span><i class="dot amber"></i>平台收益</span></div>
+                <div class="legend"><span><i class="dot"></i><span id="dailyLegendPartner">合伙人佣金</span></span><span><i class="dot amber"></i><span id="dailyLegendPlatform">平台收益</span></span></div>
               </div>
               <div id="dailyTrendChart"></div>
             </div>
@@ -1062,7 +1097,7 @@
             <div class="card chart-card">
               <div class="chart-head">
                 <div>
-                  <h2>佣金币种占比</h2>
+                  <h2>佣金币种占比 <span class="inline-note">*此处为根据实时价格USDT估值的占比图。</span></h2>
                   <p class="sub" id="dailyPartnerCurrencyPieSub">展示各手续费币种对应的合伙人佣金 USDT 估值占比。</p>
                 </div>
               </div>
@@ -1071,7 +1106,7 @@
             <div class="card chart-card">
               <div class="chart-head">
                 <div>
-                  <h2>手续费币种占比</h2>
+                  <h2>手续费币种占比 <span class="inline-note">*此处为根据实时价格USDT估值的占比图。</span></h2>
                   <p class="sub" id="dailyPlatformCurrencyPieSub">展示各手续费币种对应的平台收益 USDT 估值占比。</p>
                 </div>
               </div>
@@ -1417,11 +1452,11 @@
     ];
 
     const spotStat = [
-      ["草莓人", "5345543", "sdsh@gmail.com", "7383873", "46364634", "1级", "V4", "60,045.766", "20%", "128", "76", "53", "2025-04-03"],
-      ["苹果人", "5345544", "apple@gmail.com", "7383873", "46364634", "1级", "V3", "32,450.120", "18%", "96", "58", "41", "2025-04-08"],
-      ["香蕉人", "5345545", "banana@gmail.com", "-", "46364634", "1级", "V5", "88,903.001", "30%", "156", "92", "67", "2025-04-16"],
-      ["葡萄人", "5345546", "grape@gmail.com", "5345545", "46364634", "2级", "V2", "12,402.700", "12%", "43", "24", "18", "2025-04-21"],
-      ["芒果人", "5345547", "mango@gmail.com", "5345545", "46364634", "2级", "V2", "9,880.430", "10%", "38", "21", "15", "2025-04-26"]
+      ["草莓人", "5345543", "sdsh@gmail.com", "7383873", "46364634", "1级", "V4", "60,045.766", "20%", "128", "76", "53", "2025-04-03", "3,280.000"],
+      ["苹果人", "5345544", "apple@gmail.com", "7383873", "46364634", "1级", "V3", "32,450.120", "18%", "96", "58", "41", "2025-04-08", "1,920.000"],
+      ["香蕉人", "5345545", "banana@gmail.com", "-", "46364634", "1级", "V5", "88,903.001", "30%", "156", "92", "67", "2025-04-16", "4,560.500"],
+      ["葡萄人", "5345546", "grape@gmail.com", "5345545", "46364634", "2级", "V2", "12,402.700", "12%", "43", "24", "18", "2025-04-21", "820.000"],
+      ["芒果人", "5345547", "mango@gmail.com", "5345545", "46364634", "2级", "V2", "9,880.430", "10%", "38", "21", "15", "2025-04-26", "640.000"]
     ];
 
     const spotDetail = [
@@ -1578,11 +1613,11 @@
     ];
 
     const userDetail = [
-      ["2026-07-02", "500", "400", "300", "7,500.0000", "7,500.0000"],
-      ["2026-07-03", "460", "360", "288", "6,920.0000", "6,920.0000"],
-      ["2026-07-04", "520", "415", "310", "8,110.0000", "8,110.0000"],
-      ["2026-07-05", "505", "390", "302", "7,880.0000", "7,880.0000"],
-      ["2026-07-06", "488", "372", "291", "7,210.0000", "7,210.0000"]
+      ["2026-07-02", "500", "400", "300", "7,500.0000", "7,500.0000", "480.0000"],
+      ["2026-07-03", "460", "360", "288", "6,920.0000", "6,920.0000", "420.0000"],
+      ["2026-07-04", "520", "415", "310", "8,110.0000", "8,110.0000", "536.0000"],
+      ["2026-07-05", "505", "390", "302", "7,880.0000", "7,880.0000", "460.0000"],
+      ["2026-07-06", "488", "372", "291", "7,210.0000", "7,210.0000", "390.0000"]
     ];
 
     const rwaUserDetail = [
@@ -1634,44 +1669,44 @@
     ];
 
     const commissionChain = [
-      ["香蕉人", "RT@gmail.com", "237634633", "合伙人", "5", "V1", "500.0000", "100.0000"],
-      ["苹果人", "RT@gmail.com", "237634634", "合伙人", "6", "V1", "500.0000", "100.0000"],
-      ["葡萄人", "RT@gmail.com", "237634635", "合伙人", "6", "V1", "500.0000", "100.0000"],
-      ["芒果人", "RT@gmail.com", "237634636", "合伙人", "7", "V1", "500.0000", "100.0000"],
-      ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "7", "V1", "500.0000", "100.0000"]
+      ["香蕉人", "RT@gmail.com", "237634633", "合伙人", "5", "V1", "500.0000", "60.0000", "100.0000"],
+      ["苹果人", "RT@gmail.com", "237634634", "合伙人", "6", "V1", "500.0000", "72.0000", "100.0000"],
+      ["葡萄人", "RT@gmail.com", "237634635", "合伙人", "6", "V1", "500.0000", "68.0000", "100.0000"],
+      ["芒果人", "RT@gmail.com", "237634636", "合伙人", "7", "V1", "500.0000", "81.0000", "100.0000"],
+      ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "7", "V1", "500.0000", "90.0000", "100.0000"]
     ];
 
     const commissionTree = [
       {
         id: "commission-self",
-        row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "5", "V1", "1,250.0000", "100.0000"],
+        row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "5", "V1", "1,250.0000", "150.0000", "100.0000"],
         children: [
           {
             id: "commission-apple",
-            row: ["苹果人", "apple.agent@gmail.com", "237634638", "合伙人", "6", "V1", "820.0000", "80.0000"],
+            row: ["苹果人", "apple.agent@gmail.com", "237634638", "合伙人", "6", "V1", "820.0000", "96.0000", "80.0000"],
             children: [
-              { id: "commission-lychee", row: ["荔枝人", "lychee.agent@gmail.com", "237634644", "合伙人", "7", "V2", "360.0000", "60.0000"], children: [] },
-              { id: "commission-longan", row: ["龙眼人", "longan.direct@gmail.com", "237634645", "直客", "7", "V1", "0.0000", "45.0000"], children: [] }
+              { id: "commission-lychee", row: ["荔枝人", "lychee.agent@gmail.com", "237634644", "合伙人", "7", "V2", "360.0000", "42.0000", "60.0000"], children: [] },
+              { id: "commission-longan", row: ["龙眼人", "longan.direct@gmail.com", "237634645", "直客", "7", "V1", "0.0000", "12.0000", "45.0000"], children: [] }
             ]
           },
           {
             id: "commission-grape",
-            row: ["葡萄人", "grape.agent@gmail.com", "237634639", "合伙人", "6", "V1", "620.0000", "70.0000"],
+            row: ["葡萄人", "grape.agent@gmail.com", "237634639", "合伙人", "6", "V1", "620.0000", "76.0000", "70.0000"],
             children: [
-              { id: "commission-mango", row: ["芒果人", "mango.agent@gmail.com", "237634646", "合伙人", "7", "V1", "280.0000", "50.0000"], children: [] },
-              { id: "commission-melon", row: ["哈密瓜人", "melon.direct@gmail.com", "237634647", "直客", "7", "V1", "0.0000", "38.0000"], children: [] }
+              { id: "commission-mango", row: ["芒果人", "mango.agent@gmail.com", "237634646", "合伙人", "7", "V1", "280.0000", "35.0000", "50.0000"], children: [] },
+              { id: "commission-melon", row: ["哈密瓜人", "melon.direct@gmail.com", "237634647", "直客", "7", "V1", "0.0000", "10.0000", "38.0000"], children: [] }
             ]
           },
           {
             id: "commission-orange",
-            row: ["橘子人", "orange.agent@gmail.com", "237634640", "合伙人", "6", "V1", "540.0000", "68.0000"],
+            row: ["橘子人", "orange.agent@gmail.com", "237634640", "合伙人", "6", "V1", "540.0000", "64.0000", "68.0000"],
             children: [
-              { id: "commission-pear", row: ["梨子人", "pear.direct@gmail.com", "237634648", "直客", "7", "V1", "0.0000", "42.0000"], children: [] },
-              { id: "commission-lemon", row: ["柠檬人", "lemon.direct@gmail.com", "237634649", "直客", "7", "V1", "0.0000", "35.0000"], children: [] }
+              { id: "commission-pear", row: ["梨子人", "pear.direct@gmail.com", "237634648", "直客", "7", "V1", "0.0000", "9.0000", "42.0000"], children: [] },
+              { id: "commission-lemon", row: ["柠檬人", "lemon.direct@gmail.com", "237634649", "直客", "7", "V1", "0.0000", "8.0000", "35.0000"], children: [] }
             ]
           },
-          { id: "commission-sky", row: ["空中人", "sky.direct@gmail.com", "237634641", "直客", "6", "V1", "0.0000", "30.0000"], children: [] },
-          { id: "commission-direct-orange", row: ["橙子人", "direct-orange@gmail.com", "237634642", "直客", "6", "V1", "0.0000", "25.0000"], children: [] }
+          { id: "commission-sky", row: ["空中人", "sky.direct@gmail.com", "237634641", "直客", "6", "V1", "0.0000", "7.0000", "30.0000"], children: [] },
+          { id: "commission-direct-orange", row: ["橙子人", "direct-orange@gmail.com", "237634642", "直客", "6", "V1", "0.0000", "6.0000", "25.0000"], children: [] }
         ]
       }
     ];
@@ -1696,6 +1731,13 @@
       const cls = status.includes("启用") || status === "已结算" ? "green" : status === "结算中" ? "blue" : status === "待结算" ? "amber" : status.includes("停用") ? "gray" : "gray";
       return `<span class="badge ${cls}">${status}</span>`;
     }
+
+    function infoTip(text) {
+      return `<span class="inline-note">*${text}</span>`;
+    }
+
+    const partnerCommissionTip = "包含已结算实发佣金和未结算佣金";
+    const platformValueTip = "平台收益实际为各币种手续费收益汇总并以实时价格计算得来，是估算值。";
 
     function renderRows(id, rows, map) {
       document.getElementById(id).innerHTML = rows.map(map).join("");
@@ -1740,7 +1782,16 @@
     function renderSpotStatTable(rows = filteredSpotStatRows()) {
       renderRows("spotStatBody", rows, row => `
         <tr>
-          ${row.slice(0, 9).map((v, i) => `<td class="${[1, 2, 3, 4].includes(i) ? "mono" : ""}">${i === 3 || i === 4 ? uidLink(v) : v}</td>`).join("")}
+          <td>${row[0]}</td>
+          <td class="mono">${row[1]}</td>
+          <td class="mono">${row[2]}</td>
+          <td class="mono">${uidLink(row[3])}</td>
+          <td class="mono">${uidLink(row[4])}</td>
+          <td>${row[5]}</td>
+          <td>${row[6]}</td>
+          <td class="mono">${row[7]}</td>
+          <td class="mono">${row[13]}</td>
+          <td>${row[8]}</td>
           <td><div class="row-actions"><button class="link" data-detail="userDetail">查看用户详情</button><button class="link" data-detail="commissionUp">查看链路详情</button></div></td>
         </tr>
       `);
@@ -1829,8 +1880,8 @@
       const currencyLabel = selectedDailyCurrencyLabel();
       const isAllCurrency = currencyLabel === "全部";
       document.getElementById("dailyHead").innerHTML = isAllCurrency
-        ? `<tr><th>日期</th><th>合伙人佣金（USDT估值）</th><th>平台收益（USDT估值）</th></tr>`
-        : `<tr><th>日期</th><th>手续费币种</th><th>合伙人佣金（${currencyLabel}）</th><th>合伙人佣金（USDT）</th><th>平台收益（${currencyLabel}）</th></tr>`;
+        ? `<tr><th>日期</th><th>合伙人佣金（USDT估值）${infoTip(partnerCommissionTip)}</th><th>平台收益（USDT估值）${infoTip(platformValueTip)}</th></tr>`
+        : `<tr><th>日期</th><th>手续费币种</th><th>合伙人佣金（${currencyLabel}）</th><th>合伙人佣金（USDT）${infoTip(partnerCommissionTip)}</th><th>平台收益（${currencyLabel}）</th></tr>`;
       renderRows("dailyBody", rows, row => {
         if (isAllCurrency) return `<tr><td>${row[0]}</td><td class="mono">${row[3]}</td><td class="mono">${row[4]}</td></tr>`;
         return `<tr><td>${row[0]}</td><td><span class="badge blue">${row[1]}</span></td><td class="mono">${row[2]}</td><td class="mono">${row[3]}</td><td class="mono">${row[5]}</td></tr>`;
@@ -1893,11 +1944,14 @@
       document.getElementById("dailyPartnerNative").textContent = formatAmount(totals.partnerNative);
       document.getElementById("dailyPartnerNativeNote").textContent = rows.length ? `合伙人 ${currencyLabel} 佣金合计` : "暂无匹配数据";
       document.getElementById("dailyPlatformLabel").textContent = isAllCurrency ? "平台收益（USDT）" : `平台收益（${currencyLabel}）`;
-      document.getElementById("dailyPartnerUsdt").textContent = formatAmount(totals.partnerUsdt);
+      document.getElementById("dailyPartnerUsdtLabel").innerHTML = `合伙人佣金（USDT）${infoTip(partnerCommissionTip)}`;
+      document.getElementById("dailyPartnerUsdt").textContent = `${formatAmount(totals.partnerUsdt)} USDT`;
       document.getElementById("dailyPlatformUsdt").textContent = formatAmount(isAllCurrency ? totals.platformUsdt : totals.platformNative);
       document.getElementById("dailyPartnerUsdtNote").textContent = rows.length ? (isAllCurrency ? "合伙人佣金 USDT 估值合计" : "合伙人 USDT 佣金合计") : "暂无匹配数据";
       document.getElementById("dailyPlatformUsdtNote").textContent = rows.length ? (isAllCurrency ? "平台收益 USDT 估值合计" : `平台 ${currencyLabel} 收益合计`) : "暂无匹配数据";
       const scopeText = currencyLabel === "全部" ? "全部币种" : currencyLabel;
+      document.getElementById("dailyLegendPartner").textContent = isAllCurrency ? "合伙人佣金（USDT估值）" : `合伙人佣金（${currencyLabel}）`;
+      document.getElementById("dailyLegendPlatform").textContent = isAllCurrency ? "平台收益（USDT估值）" : `平台收益（${currencyLabel}）`;
       document.getElementById("dailyTrendSub").textContent = rows.length ? (isAllCurrency ? "展示全部币种的合伙人佣金与平台收益 USDT 估值趋势。" : `展示 ${scopeText} 的合伙人佣金与平台收益随日期变化。`) : "暂无匹配数据。";
       document.getElementById("dailyPieSub").textContent = rows.length ? (isAllCurrency ? "展示合伙人佣金与平台收益的 USDT 估值占比。" : `展示 ${scopeText} 合伙人佣金与平台收益占比。`) : "暂无匹配数据。";
       if (isAllCurrency) {
@@ -1985,9 +2039,11 @@
       }
 
       const totals = dailyTotals(rows);
+      const currencyLabel = selectedDailyCurrencyLabel();
+      const suffix = useUsdtValue ? "（USDT估值）" : `（${currencyLabel}）`;
       const entries = [
-        ["合伙人佣金", useUsdtValue ? totals.partnerUsdt : totals.partnerNative],
-        ["平台收益", useUsdtValue ? totals.platformUsdt : totals.platformNative]
+        [`合伙人佣金${suffix}`, useUsdtValue ? totals.partnerUsdt : totals.partnerNative],
+        [`平台收益${suffix}`, useUsdtValue ? totals.platformUsdt : totals.platformNative]
       ].filter(([, value]) => value > 0);
       renderPieChart(target, entries, "收益占比饼图");
     }
@@ -2023,7 +2079,7 @@
       renderRows("dailyPairCommissionBody", rows, row => `
         <tr>
           <td>${row.pair}</td>
-          <td class="mono">${formatAmount(row.value)}</td>
+          <td class="mono">${formatAmount(row.value)} USDT</td>
         </tr>
       `);
     }
@@ -2733,7 +2789,7 @@
     }
 
     function commissionHeaders() {
-      return ["代理昵称", "邮箱", "UID", "用户类型", "代理层级", "VIP等级", "贡献佣金", "实到佣金/手续费减免"];
+      return ["代理昵称", "邮箱", "UID", "用户类型", "代理层级", "VIP等级", "贡献佣金", "未结算佣金", "实到佣金/手续费减免"];
     }
 
     function rwaCommissionHeaders() {
@@ -3036,7 +3092,7 @@
         title.textContent = "用户详情";
         sub.textContent = context.uid ? `当前查看 UID ${context.uid} 的拉新、入金、首次交易和佣金表现。` : "按日期展示该用户拉新、入金、首次交易和佣金表现。";
         filters.innerHTML = `<div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div><div></div><div></div><button class="btn">搜索</button>`;
-        detailTable(["日期", "新注册用户数（拉新数）", "新入金用户数", "新首次交易用户", "贡献佣金", "实到佣金"], userDetail);
+        detailTable(["日期", "新注册用户数（拉新数）", "新入金用户数", "新首次交易用户", "贡献佣金", "实到佣金", "未结算佣金"], userDetail);
       }
 
       if (type === "rwaUserDetail") {
