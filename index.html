@@ -918,7 +918,7 @@
         <div class="page-head">
           <div>
             <h1>合伙人现货佣金汇总</h1>
-            <p class="sub">按合伙人现货交易维度汇总累计实到佣金，可继续查看用户详情与链路佣金详情。</p>
+            <p class="sub">按合伙人现货交易维度汇总累计佣金，可继续查看用户详情与链路佣金详情。</p>
           </div>
         </div>
         <div class="card filters three">
@@ -935,7 +935,7 @@
           <div class="ranking-head">
             <div>
               <h2>顶级合伙人排行榜</h2>
-              <p class="sub">根据顶级合伙人实到佣金金额生成排名进度条。</p>
+              <p class="sub">根据顶级合伙人佣金金额生成排名进度条。</p>
             </div>
           </div>
           <div id="spotStatRanking" class="ranking-list"></div>
@@ -948,7 +948,7 @@
         <div class="card table-card">
           <div class="table-scroll">
             <table>
-              <thead><tr><th>合伙人昵称</th><th>UID</th><th>邮箱</th><th>上级代理</th><th>顶级代理</th><th>代理等级</th><th>VIP等级</th><th>实到佣金</th><th>返佣比例</th><th>操作</th></tr></thead>
+              <thead><tr><th>合伙人昵称</th><th>UID</th><th>邮箱</th><th>上级代理</th><th>顶级代理</th><th>代理等级</th><th>VIP等级</th><th>佣金</th><th>返佣比例</th><th>操作</th></tr></thead>
               <tbody id="spotStatBody"></tbody>
             </table>
           </div>
@@ -993,7 +993,7 @@
         <div class="page-head">
           <div>
             <h1>平台现货佣金汇总</h1>
-            <p class="sub">按日期和手续费币种统计现货交易实到佣金与平台收益。</p>
+            <p class="sub">按日期和手续费币种统计现货交易佣金与平台收益。</p>
           </div>
         </div>
         <div class="card filters three">
@@ -1003,21 +1003,21 @@
         </div>
         <div class="daily-insights">
           <div class="daily-metrics summary-only" id="dailyMetrics">
-            <div class="card daily-metric is-hidden" id="dailyPartnerNativeCard"><span id="dailyPartnerNativeLabel">合伙人实到佣金</span><strong id="dailyPartnerNative">0.0000</strong><small id="dailyPartnerNativeNote">按当前筛选汇总</small></div>
-            <div class="card daily-metric"><span>合伙人实到佣金（USDT）</span><strong id="dailyPartnerUsdt">0.0000</strong><small id="dailyPartnerUsdtNote">按当前筛选汇总</small></div>
+            <div class="card daily-metric is-hidden" id="dailyPartnerNativeCard"><span id="dailyPartnerNativeLabel">合伙人佣金</span><strong id="dailyPartnerNative">0.0000</strong><small id="dailyPartnerNativeNote">按当前筛选汇总</small></div>
+            <div class="card daily-metric"><span>合伙人佣金（USDT）</span><strong id="dailyPartnerUsdt">0.0000</strong><small id="dailyPartnerUsdtNote">按当前筛选汇总</small></div>
             <div class="card daily-metric"><span id="dailyPlatformLabel">平台收益（USDT）</span><strong id="dailyPlatformUsdt">0.0000</strong><small id="dailyPlatformUsdtNote">按当前筛选汇总</small></div>
           </div>
           <div class="stat-list-grid" id="dailyStatListGrid">
             <div class="card stat-list-card">
               <div class="stat-list-head">
                 <div>
-                  <h2>合伙人实到佣金币对分布</h2>
-                  <p class="sub">按现货交易币对汇总合伙人实到佣金。</p>
+                  <h2>合伙人佣金币对分布</h2>
+                  <p class="sub">按现货交易币对汇总合伙人佣金。</p>
                 </div>
               </div>
               <div class="table-scroll">
                 <table class="mini-table">
-                  <thead><tr><th>交易币对</th><th>合伙人实到佣金</th></tr></thead>
+                  <thead><tr><th>交易币对</th><th>合伙人佣金</th></tr></thead>
                   <tbody id="dailyPairCommissionBody"></tbody>
                 </table>
               </div>
@@ -1042,9 +1042,9 @@
               <div class="chart-head">
                 <div>
                   <h2>每日趋势</h2>
-                  <p class="sub" id="dailyTrendSub">展示当前筛选下合伙人实到佣金与平台收益的 USDT 估值趋势。</p>
+                  <p class="sub" id="dailyTrendSub">展示当前筛选下合伙人佣金与平台收益的 USDT 估值趋势。</p>
                 </div>
-                <div class="legend"><span><i class="dot"></i>合伙人实到佣金</span><span><i class="dot amber"></i>平台收益</span></div>
+                <div class="legend"><span><i class="dot"></i>合伙人佣金</span><span><i class="dot amber"></i>平台收益</span></div>
               </div>
               <div id="dailyTrendChart"></div>
             </div>
@@ -1052,7 +1052,7 @@
               <div class="chart-head">
                 <div>
                   <h2>收益占比</h2>
-                  <p class="sub" id="dailyPieSub">展示合伙人实到佣金与平台收益的 USDT 估值占比。</p>
+                  <p class="sub" id="dailyPieSub">展示合伙人佣金与平台收益的 USDT 估值占比。</p>
                 </div>
               </div>
               <div id="dailyPieChart"></div>
@@ -1063,7 +1063,7 @@
               <div class="chart-head">
                 <div>
                   <h2>佣金币种占比</h2>
-                  <p class="sub" id="dailyPartnerCurrencyPieSub">展示各手续费币种对应的合伙人实到佣金 USDT 估值占比。</p>
+                  <p class="sub" id="dailyPartnerCurrencyPieSub">展示各手续费币种对应的合伙人佣金 USDT 估值占比。</p>
                 </div>
               </div>
               <div id="dailyPartnerCurrencyPieChart"></div>
@@ -1082,7 +1082,7 @@
         <div class="card table-card">
           <div class="table-scroll">
             <table>
-              <thead id="dailyHead"><tr><th>日期</th><th>合伙人实到佣金（USDT估值）</th><th>平台收益（USDT估值）</th></tr></thead>
+              <thead id="dailyHead"><tr><th>日期</th><th>合伙人佣金（USDT估值）</th><th>平台收益（USDT估值）</th></tr></thead>
               <tbody id="dailyBody"></tbody>
             </table>
           </div>
@@ -1740,7 +1740,7 @@
     function renderSpotStatTable(rows = filteredSpotStatRows()) {
       renderRows("spotStatBody", rows, row => `
         <tr>
-          ${row.slice(0, 9).map((v, i) => `<td class="${[1, 2, 3, 4].includes(i) ? "mono" : ""}">${i === 1 || i === 3 || i === 4 ? uidLink(v) : v}</td>`).join("")}
+          ${row.slice(0, 9).map((v, i) => `<td class="${[1, 2, 3, 4].includes(i) ? "mono" : ""}">${i === 3 || i === 4 ? uidLink(v) : v}</td>`).join("")}
           <td><div class="row-actions"><button class="link" data-detail="userDetail">查看用户详情</button><button class="link" data-detail="commissionUp">查看链路详情</button></div></td>
         </tr>
       `);
@@ -1829,8 +1829,8 @@
       const currencyLabel = selectedDailyCurrencyLabel();
       const isAllCurrency = currencyLabel === "全部";
       document.getElementById("dailyHead").innerHTML = isAllCurrency
-        ? `<tr><th>日期</th><th>合伙人实到佣金（USDT估值）</th><th>平台收益（USDT估值）</th></tr>`
-        : `<tr><th>日期</th><th>手续费币种</th><th>合伙人实到佣金（${currencyLabel}）</th><th>合伙人实到佣金（USDT）</th><th>平台收益（${currencyLabel}）</th></tr>`;
+        ? `<tr><th>日期</th><th>合伙人佣金（USDT估值）</th><th>平台收益（USDT估值）</th></tr>`
+        : `<tr><th>日期</th><th>手续费币种</th><th>合伙人佣金（${currencyLabel}）</th><th>合伙人佣金（USDT）</th><th>平台收益（${currencyLabel}）</th></tr>`;
       renderRows("dailyBody", rows, row => {
         if (isAllCurrency) return `<tr><td>${row[0]}</td><td class="mono">${row[3]}</td><td class="mono">${row[4]}</td></tr>`;
         return `<tr><td>${row[0]}</td><td><span class="badge blue">${row[1]}</span></td><td class="mono">${row[2]}</td><td class="mono">${row[3]}</td><td class="mono">${row[5]}</td></tr>`;
@@ -1889,19 +1889,19 @@
       document.getElementById("dailyPartnerNativeCard").classList.toggle("is-hidden", isAllCurrency);
       document.getElementById("dailyStatListGrid").classList.toggle("is-hidden", !isAllCurrency);
       document.getElementById("dailyCurrencyPieGrid").classList.toggle("is-hidden", !isAllCurrency);
-      document.getElementById("dailyPartnerNativeLabel").textContent = `合伙人实到佣金（${currencyLabel}）`;
+      document.getElementById("dailyPartnerNativeLabel").textContent = `合伙人佣金（${currencyLabel}）`;
       document.getElementById("dailyPartnerNative").textContent = formatAmount(totals.partnerNative);
-      document.getElementById("dailyPartnerNativeNote").textContent = rows.length ? `合伙人 ${currencyLabel} 实到佣金合计` : "暂无匹配数据";
+      document.getElementById("dailyPartnerNativeNote").textContent = rows.length ? `合伙人 ${currencyLabel} 佣金合计` : "暂无匹配数据";
       document.getElementById("dailyPlatformLabel").textContent = isAllCurrency ? "平台收益（USDT）" : `平台收益（${currencyLabel}）`;
       document.getElementById("dailyPartnerUsdt").textContent = formatAmount(totals.partnerUsdt);
       document.getElementById("dailyPlatformUsdt").textContent = formatAmount(isAllCurrency ? totals.platformUsdt : totals.platformNative);
-      document.getElementById("dailyPartnerUsdtNote").textContent = rows.length ? (isAllCurrency ? "合伙人实到佣金 USDT 估值合计" : "合伙人 USDT 实到佣金合计") : "暂无匹配数据";
+      document.getElementById("dailyPartnerUsdtNote").textContent = rows.length ? (isAllCurrency ? "合伙人佣金 USDT 估值合计" : "合伙人 USDT 佣金合计") : "暂无匹配数据";
       document.getElementById("dailyPlatformUsdtNote").textContent = rows.length ? (isAllCurrency ? "平台收益 USDT 估值合计" : `平台 ${currencyLabel} 收益合计`) : "暂无匹配数据";
       const scopeText = currencyLabel === "全部" ? "全部币种" : currencyLabel;
-      document.getElementById("dailyTrendSub").textContent = rows.length ? (isAllCurrency ? "展示全部币种的合伙人实到佣金与平台收益 USDT 估值趋势。" : `展示 ${scopeText} 的合伙人实到佣金与平台收益随日期变化。`) : "暂无匹配数据。";
-      document.getElementById("dailyPieSub").textContent = rows.length ? (isAllCurrency ? "展示合伙人实到佣金与平台收益的 USDT 估值占比。" : `展示 ${scopeText} 合伙人实到佣金与平台收益占比。`) : "暂无匹配数据。";
+      document.getElementById("dailyTrendSub").textContent = rows.length ? (isAllCurrency ? "展示全部币种的合伙人佣金与平台收益 USDT 估值趋势。" : `展示 ${scopeText} 的合伙人佣金与平台收益随日期变化。`) : "暂无匹配数据。";
+      document.getElementById("dailyPieSub").textContent = rows.length ? (isAllCurrency ? "展示合伙人佣金与平台收益的 USDT 估值占比。" : `展示 ${scopeText} 合伙人佣金与平台收益占比。`) : "暂无匹配数据。";
       if (isAllCurrency) {
-        document.getElementById("dailyPartnerCurrencyPieSub").textContent = rows.length ? "展示各手续费币种对应的合伙人实到佣金 USDT 估值占比。" : "暂无匹配数据。";
+        document.getElementById("dailyPartnerCurrencyPieSub").textContent = rows.length ? "展示各手续费币种对应的合伙人佣金 USDT 估值占比。" : "暂无匹配数据。";
         document.getElementById("dailyPlatformCurrencyPieSub").textContent = rows.length ? "展示各手续费币种对应的平台收益 USDT 估值占比。" : "暂无匹配数据。";
       }
       renderDailyTrendChart(rows, isAllCurrency);
@@ -1958,7 +1958,7 @@
           }).join("")}
           <path d="${linePath(partnerPoints)}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
           <path d="${linePath(platformPoints)}" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-          ${partnerPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#2563eb"><title>合伙人实到佣金 ${formatAmount(point.value)}</title></circle>`).join("")}
+          ${partnerPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#2563eb"><title>合伙人佣金 ${formatAmount(point.value)}</title></circle>`).join("")}
           ${platformPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#d97706"><title>平台收益 ${formatAmount(point.value)}</title></circle>`).join("")}
           ${dateRows.map((row, index) => `<text x="${x(index)}" y="${height - 18}" text-anchor="middle" fill="#6b7280" font-size="11">${row.date.slice(5)}</text>`).join("")}
         </svg>
@@ -1986,7 +1986,7 @@
 
       const totals = dailyTotals(rows);
       const entries = [
-        ["合伙人实到佣金", useUsdtValue ? totals.partnerUsdt : totals.partnerNative],
+        ["合伙人佣金", useUsdtValue ? totals.partnerUsdt : totals.partnerNative],
         ["平台收益", useUsdtValue ? totals.platformUsdt : totals.platformNative]
       ].filter(([, value]) => value > 0);
       renderPieChart(target, entries, "收益占比饼图");
@@ -2733,7 +2733,7 @@
     }
 
     function commissionHeaders() {
-      return ["代理昵称", "邮箱", "UID", "用户类型", "代理层级", "VIP等级", "贡献实到佣金", "实到佣金/手续费减免"];
+      return ["代理昵称", "邮箱", "UID", "用户类型", "代理层级", "VIP等级", "贡献佣金", "实到佣金/手续费减免"];
     }
 
     function rwaCommissionHeaders() {
@@ -3034,9 +3034,9 @@
       if (type === "userDetail") {
         activeDetailMode = "userDetail";
         title.textContent = "用户详情";
-        sub.textContent = context.uid ? `当前查看 UID ${context.uid} 的拉新、入金、首次交易和实到佣金表现。` : "按日期展示该用户拉新、入金、首次交易和实到佣金表现。";
+        sub.textContent = context.uid ? `当前查看 UID ${context.uid} 的拉新、入金、首次交易和佣金表现。` : "按日期展示该用户拉新、入金、首次交易和佣金表现。";
         filters.innerHTML = `<div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div><div></div><div></div><button class="btn">搜索</button>`;
-        detailTable(["日期", "新注册用户数（拉新数）", "新入金用户数", "新首次交易用户", "贡献实到佣金", "实到佣金"], userDetail);
+        detailTable(["日期", "新注册用户数（拉新数）", "新入金用户数", "新首次交易用户", "贡献佣金", "实到佣金"], userDetail);
       }
 
       if (type === "rwaUserDetail") {
@@ -3068,7 +3068,7 @@
         activeDetailMode = "commission";
         activeDetailDirection = "up";
         title.textContent = "链路佣金详情";
-        sub.textContent = "展示链路上代理的贡献实到佣金与实到佣金/手续费减免数据。";
+        sub.textContent = "展示链路上代理的贡献佣金与实到佣金/手续费减免数据。";
         filters.innerHTML = `
           <div class="field"><label>搜索代理</label><input id="commissionKeyword" placeholder="请输入 UID 或邮箱地址"></div>
           <div class="field"><label>列表筛选</label><select id="commissionDirection"><option value="up">仅看上级</option><option value="down">仅看下级</option></select></div>
@@ -3227,7 +3227,7 @@
           document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的 RWA 申购订单金额与佣金数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上代理的 RWA 申购订单金额与佣金数据。";
           renderRwaCommissionView();
         } else {
-          document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的贡献实到佣金与实到佣金/手续费减免数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上级代理的贡献实到佣金与实到佣金/手续费减免数据。";
+          document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的贡献佣金与实到佣金/手续费减免数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上级代理的贡献佣金与实到佣金/手续费减免数据。";
           renderCommissionView();
         }
       }
