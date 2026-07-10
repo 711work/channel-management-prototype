@@ -970,7 +970,7 @@
           <div class="ranking-head">
             <div>
               <h2>顶级合伙人排行榜</h2>
-              <p class="sub">根据顶级合伙人实到佣金金额生成排名进度条。</p>
+              <p class="sub">根据顶级合伙人已结算佣金加未结算佣金金额生成排名进度条。</p>
             </div>
           </div>
           <div id="spotStatRanking" class="ranking-list"></div>
@@ -1819,22 +1819,23 @@
     }
 
     function renderSpotStatRanking(rows = spotStatRowsByTime()) {
+      const rankingAmount = row => parseAmount(row[7]) + parseAmount(row[13]);
       const ranking = [...rows]
         .filter(row => row[5] === "1级")
-        .sort((a, b) => parseAmount(b[7]) - parseAmount(a[7]))
+        .sort((a, b) => rankingAmount(b) - rankingAmount(a))
         .slice(0, 5);
       if (!ranking.length) {
         document.getElementById("spotStatRanking").innerHTML = `<div class="chart-empty">暂无顶级合伙人排名数据</div>`;
       } else {
-      const max = Math.max(...ranking.map(row => parseAmount(row[7])), 1);
+      const max = Math.max(...ranking.map(row => rankingAmount(row)), 1);
       document.getElementById("spotStatRanking").innerHTML = ranking.map((row, index) => {
-        const amount = parseAmount(row[7]);
+        const amount = rankingAmount(row);
         const percent = Math.max(4, amount / max * 100);
         return `
           <div class="ranking-row">
             <div class="ranking-user"><span class="rank-badge">${index + 1}</span><span>${row[0]}</span></div>
             <div class="progress-track"><div class="progress-fill" style="width: ${percent.toFixed(1)}%"></div></div>
-            <div class="ranking-value">${row[7]}</div>
+            <div class="ranking-value">${formatAmount(amount, 3)}</div>
           </div>
         `;
       }).join("");
