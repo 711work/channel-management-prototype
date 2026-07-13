@@ -113,6 +113,10 @@
       text-transform: uppercase;
     }
 
+    .nav + .sidebar-title {
+      margin-top: 26px;
+    }
+
     .nav {
       display: grid;
       gap: 4px;
@@ -1115,8 +1119,6 @@
       <div class="sidebar-title">渠道管理</div>
       <nav class="nav" id="nav">
         <button class="active" data-page="users">合伙人用户管理</button>
-        <button data-page="promotion">运营推广分析</button>
-        <button data-page="platformRevenue">平台收益分析</button>
         <button data-page="daily">平台现货佣金汇总</button>
         <button data-page="spotStat">合伙人现货佣金汇总</button>
         <button data-page="spotDetail">现货交易佣金明细</button>
@@ -1126,6 +1128,11 @@
         <button class="hidden" data-page="rwaBonusPlatformSummary">平台RWA分红佣金汇总</button>
         <button class="hidden" data-page="rwaBonusUserSummary">用户RWA分红佣金汇总</button>
         <button data-page="rwaBonus">RWA分红佣金明细</button>
+      </nav>
+      <div class="sidebar-title">运营管理</div>
+      <nav class="nav">
+        <button data-page="promotion">运营推广分析</button>
+        <button data-page="platformRevenue">平台收益分析</button>
       </nav>
     </aside>
 
@@ -3642,7 +3649,7 @@
         title.textContent = "用户详情";
         sub.textContent = context.uid ? `当前查看 UID ${context.uid} 的拉新、入金、首次交易和佣金表现。` : "按日期展示该用户拉新、入金、首次交易和佣金表现。";
         filters.innerHTML = `<div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div><div></div><div></div><button class="btn">搜索</button>`;
-        detailTable(["日期", "新注册用户数（拉新数）", "新入金用户数", "新首次交易用户", "贡献佣金", "佣金"], userDetail.map(row => row.slice(0, 6)));
+        detailTable(["日期", "贡献佣金", "佣金"], userDetail.map(row => [row[0], row[4], row[5]]));
       }
 
       if (type === "rwaUserDetail") {
