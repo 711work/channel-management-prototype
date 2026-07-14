@@ -1814,6 +1814,14 @@
             </div>
           </div>
         </div>
+        <div class="card table-card" id="dailyTableCard">
+          <div class="table-scroll">
+            <table>
+              <thead id="dailyHead"></thead>
+              <tbody id="dailyBody"></tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <section id="page-rwaPlatformSummary" class="page" style="margin-top: 18px;">
@@ -2654,6 +2662,7 @@
       const isAllCurrency = currencyLabel === "全部";
       const dailyHead = document.getElementById("dailyHead");
       const dailyBody = document.getElementById("dailyBody");
+      document.getElementById("dailyTableCard")?.classList.toggle("is-hidden", isAllCurrency);
       if (dailyHead && dailyBody) {
         dailyHead.innerHTML = isAllCurrency
           ? `<tr><th>日期</th><th>合伙人佣金（USDT估值）${infoTip(partnerCommissionTip)}</th></tr>`
