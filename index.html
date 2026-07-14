@@ -551,7 +551,7 @@
 
     .promotion-grid {
       display: grid;
-      grid-template-columns: minmax(420px, 1fr) minmax(420px, 1fr);
+      grid-template-columns: minmax(560px, 1.15fr) minmax(420px, .85fr);
       gap: 16px;
     }
 
@@ -638,6 +638,184 @@
       border-color: #93c5fd;
       background: #eff6ff;
       color: #2563eb;
+    }
+
+    .source-comparison {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .metric-comparison-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .metric-comparison-card {
+      padding: 18px;
+    }
+
+    .metric-comparison-card h2 {
+      margin: 0;
+      color: #111827;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .metric-dimension {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .metric-dimension small {
+      flex: 0 0 auto;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .metric-source-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .metric-source {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft-2);
+    }
+
+    .metric-source.channel {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+    }
+
+    .metric-source.organic {
+      border-color: #fed7aa;
+      background: #fff7ed;
+    }
+
+    .metric-source span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .metric-source strong {
+      display: block;
+      margin-top: 8px;
+      color: #111827;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .metric-source small {
+      display: block;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .formula-note {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      border-color: #bfdbfe;
+      background: #eff6ff;
+    }
+
+    .formula-note strong {
+      color: #1d4ed8;
+      font-size: 13px;
+    }
+
+    .formula-note span,
+    .formula-copy {
+      color: #374151;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .formula-list {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .source-card {
+      padding: 20px;
+    }
+
+    .source-card h2 {
+      margin: 0 0 16px;
+      color: #111827;
+      font-size: 16px;
+    }
+
+    .source-metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(120px, 1fr));
+      gap: 14px;
+    }
+
+    .source-metric {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--soft-2);
+    }
+
+    .source-metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .source-metric strong {
+      display: block;
+      margin-top: 8px;
+      color: #111827;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .dual-funnel {
+      display: grid;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .funnel-block h3 {
+      margin: 0 0 12px;
+      color: #111827;
+      font-size: 14px;
+    }
+
+    .funnel-block .funnel-flow {
+      margin-top: 0;
+    }
+
+    .funnel-block .funnel-step {
+      min-height: 92px;
+    }
+
+    .funnel-block .funnel-step strong {
+      font-size: 24px;
     }
 
     .comparison-table {
@@ -1184,7 +1362,7 @@
         </div>
         <div class="card filters three">
           <div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div>
-          <div></div>
+          <div class="field"><label>时区</label><select id="channelPromotionTimezone"><option>UTC+8</option><option>UTC+0</option></select></div>
           <div class="filter-actions"><button class="btn">搜索</button></div>
         </div>
         <div class="promotion-metrics">
@@ -1234,6 +1412,19 @@
             </svg>
           </div>
         </div>
+        <div class="card table-card">
+          <div class="table-scroll">
+            <table style="min-width: 1380px;">
+              <thead>
+                <tr>
+                  <th>合伙人昵称</th><th>UID</th><th>邮箱</th><th>上级代理</th><th>顶级代理</th><th>代理等级</th><th>VIP等级</th>
+                  <th>新增注册数</th><th>新增入金人数</th><th>新增首次交易数</th><th>新增代理数</th><th>操作</th>
+                </tr>
+              </thead>
+              <tbody id="channelPromotionBody"></tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
       <section id="page-promotion" class="page" style="margin-top: 18px;">
@@ -1245,49 +1436,111 @@
         </div>
         <div class="card filters three">
           <div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div>
-          <div></div>
+          <div class="field"><label>时区</label><select id="promotionTimezone"><option>UTC+8</option><option>UTC+0</option></select></div>
           <div class="filter-actions"><button class="btn">搜索</button></div>
         </div>
-        <div class="promotion-metrics">
-          <div class="card promotion-card"><span>新增注册用户</span><strong>461</strong></div>
-          <div class="card promotion-card"><span>新增入金用户</span><strong>271</strong></div>
-          <div class="card promotion-card"><span>新增首次交易用户</span><strong>194</strong></div>
-          <div class="card promotion-card"><span>新增有效代理</span><strong>38</strong></div>
-          <div class="card promotion-card"><span>新增入金金额</span><strong>356,890</strong></div>
-          <div class="card promotion-card"><span>新增交易额</span><strong>8.93M</strong></div>
-          <div class="card promotion-card"><span>新增佣金</span><strong>32,880</strong></div>
+        <div class="metric-comparison-grid">
+          <div class="card metric-comparison-card">
+            <div class="metric-dimension"><h2>新增注册用户</h2><small>渠道 vs 自然</small></div>
+            <div class="metric-source-grid">
+              <div class="metric-source channel"><span>渠道用户</span><strong>461</strong><small>合伙人链路拉新</small></div>
+              <div class="metric-source organic"><span>自然用户</span><strong>318</strong><small>非渠道归因注册</small></div>
+            </div>
+          </div>
+          <div class="card metric-comparison-card">
+            <div class="metric-dimension"><h2>新增入金用户</h2><small>渠道 vs 自然</small></div>
+            <div class="metric-source-grid">
+              <div class="metric-source channel"><span>渠道用户</span><strong>271</strong><small>注册后完成入金</small></div>
+              <div class="metric-source organic"><span>自然用户</span><strong>184</strong><small>自然来源完成入金</small></div>
+            </div>
+          </div>
+          <div class="card metric-comparison-card">
+            <div class="metric-dimension"><h2>新增首次交易用户</h2><small>渠道 vs 自然</small></div>
+            <div class="metric-source-grid">
+              <div class="metric-source channel"><span>渠道用户</span><strong>194</strong><small>入金后完成首笔交易</small></div>
+              <div class="metric-source organic"><span>自然用户</span><strong>126</strong><small>自然来源首笔交易</small></div>
+            </div>
+          </div>
+          <div class="card metric-comparison-card">
+            <div class="metric-dimension"><h2>新增入金金额</h2><small>渠道 vs 自然</small></div>
+            <div class="metric-source-grid">
+              <div class="metric-source channel"><span>渠道用户</span><strong>356,890</strong><small>USDT 估值口径</small></div>
+              <div class="metric-source organic"><span>自然用户</span><strong>215,640</strong><small>USDT 估值口径</small></div>
+            </div>
+          </div>
+          <div class="card metric-comparison-card">
+            <div class="metric-dimension"><h2>新增交易额</h2><small>渠道 vs 自然</small></div>
+            <div class="metric-source-grid">
+              <div class="metric-source channel"><span>渠道用户</span><strong>8.93M</strong><small>统计期现货成交额</small></div>
+              <div class="metric-source organic"><span>自然用户</span><strong>5.24M</strong><small>统计期现货成交额</small></div>
+            </div>
+          </div>
+          <div class="card metric-comparison-card">
+            <div class="metric-dimension"><h2>新增佣金</h2><small>渠道 vs 自然</small></div>
+            <div class="metric-source-grid">
+              <div class="metric-source channel"><span>渠道用户</span><strong>32,880</strong><small>渠道用户产生佣金</small></div>
+              <div class="metric-source organic"><span>自然用户</span><strong>18,420</strong><small>自然用户产生佣金</small></div>
+            </div>
+          </div>
         </div>
         <div class="promotion-grid">
           <div class="card promotion-panel">
             <h2>推广转化漏斗</h2>
-            <p class="sub">查看从注册到完成首次交易的关键流失节点。</p>
-            <div class="funnel-flow">
-              <div class="funnel-step blue">新增注册<strong>461</strong></div>
-              <div class="funnel-arrow">→</div>
-              <div class="funnel-step cyan">完成KYC<strong>382</strong></div>
-              <div class="funnel-arrow">→</div>
-              <div class="funnel-step green">新增入金<strong>271</strong></div>
-              <div class="funnel-arrow">→</div>
-              <div class="funnel-step orange">首次交易<strong>194</strong></div>
-            </div>
-            <div class="conversion-grid">
-              <div class="conversion-card">注册→KYC<strong>82.9%</strong></div>
-              <div class="conversion-card">KYC→入金<strong>70.9%</strong></div>
-              <div class="conversion-card">入金→交易<strong>71.6%</strong></div>
+            <p class="sub">对比渠道用户与自然流量从注册到完成首次交易的关键流失节点。</p>
+            <div class="dual-funnel">
+              <div class="funnel-block">
+                <h3>渠道用户</h3>
+                <div class="funnel-flow">
+                  <div class="funnel-step blue">新增注册<strong>461</strong></div>
+                  <div class="funnel-arrow">→</div>
+                  <div class="funnel-step cyan">完成KYC<strong>382</strong></div>
+                  <div class="funnel-arrow">→</div>
+                  <div class="funnel-step green">新增入金<strong>271</strong></div>
+                  <div class="funnel-arrow">→</div>
+                  <div class="funnel-step orange">首次交易<strong>194</strong></div>
+                </div>
+                <div class="conversion-grid">
+                  <div class="conversion-card">注册→KYC<strong>82.9%</strong></div>
+                  <div class="conversion-card">KYC→入金<strong>70.9%</strong></div>
+                  <div class="conversion-card">入金→交易<strong>71.6%</strong></div>
+                </div>
+              </div>
+              <div class="funnel-block">
+                <h3>自然流量</h3>
+                <div class="funnel-flow">
+                  <div class="funnel-step blue">新增注册<strong>318</strong></div>
+                  <div class="funnel-arrow">→</div>
+                  <div class="funnel-step cyan">完成KYC<strong>246</strong></div>
+                  <div class="funnel-arrow">→</div>
+                  <div class="funnel-step green">新增入金<strong>184</strong></div>
+                  <div class="funnel-arrow">→</div>
+                  <div class="funnel-step orange">首次交易<strong>126</strong></div>
+                </div>
+                <div class="conversion-grid">
+                  <div class="conversion-card">注册→KYC<strong>77.4%</strong></div>
+                  <div class="conversion-card">KYC→入金<strong>74.8%</strong></div>
+                  <div class="conversion-card">入金→交易<strong>68.5%</strong></div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="card promotion-panel">
             <h2>推广趋势</h2>
-            <p class="sub">支持切换注册、入金、交易、佣金趋势。</p>
+            <p class="sub">渠道用户与自然流量两条趋势线，支持切换注册、入金、交易、佣金趋势。</p>
             <div class="segmented"><button class="active">注册</button><button>入金</button><button>交易</button><button>佣金</button></div>
+            <div class="legend" style="margin-top: 12px;"><span><i class="dot"></i>渠道用户</span><span><i class="dot amber"></i>自然流量</span></div>
             <svg class="line-chart" viewBox="0 0 620 260" role="img" aria-label="运营推广趋势图">
               <line x1="42" y1="206" x2="590" y2="206" stroke="#e5e7eb"></line>
               <line x1="42" y1="156" x2="590" y2="156" stroke="#e5e7eb"></line>
               <line x1="42" y1="106" x2="590" y2="106" stroke="#e5e7eb"></line>
               <line x1="42" y1="56" x2="590" y2="56" stroke="#e5e7eb"></line>
               <path d="M 52 172 L 120 148 L 188 158 L 256 116 L 324 128 L 392 86 L 460 96 L 528 62 L 586 74" fill="none" stroke="#2563eb" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M 52 190 L 120 172 L 188 178 L 256 142 L 324 150 L 392 124 L 460 132 L 528 104 L 586 112" fill="none" stroke="#d97706" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
               <g fill="#2563eb">
                 <circle cx="52" cy="172" r="5"></circle><circle cx="120" cy="148" r="5"></circle><circle cx="188" cy="158" r="5"></circle><circle cx="256" cy="116" r="5"></circle><circle cx="324" cy="128" r="5"></circle><circle cx="392" cy="86" r="5"></circle><circle cx="460" cy="96" r="5"></circle><circle cx="528" cy="62" r="5"></circle><circle cx="586" cy="74" r="5"></circle>
+              </g>
+              <g fill="#d97706">
+                <circle cx="52" cy="190" r="5"></circle><circle cx="120" cy="172" r="5"></circle><circle cx="188" cy="178" r="5"></circle><circle cx="256" cy="142" r="5"></circle><circle cx="324" cy="150" r="5"></circle><circle cx="392" cy="124" r="5"></circle><circle cx="460" cy="132" r="5"></circle><circle cx="528" cy="104" r="5"></circle><circle cx="586" cy="112" r="5"></circle>
               </g>
               <g fill="#94a3b8" font-size="11">
                 <text x="42" y="230">04-01</text><text x="178" y="230">04-08</text><text x="314" y="230">04-15</text><text x="450" y="230">04-22</text><text x="552" y="230">04-30</text>
@@ -1301,28 +1554,39 @@
         <div class="page-head">
           <div>
             <h1>平台收益分析</h1>
-            <p class="sub">按手续费币种和时间统计平台收益，并对比渠道用户与自然流量贡献。</p>
+            <p class="sub">按手续费币种和时间统计平台收益，并对比渠道用户与自然用户贡献。</p>
           </div>
         </div>
-        <div class="card filters three">
+        <div class="card filters">
           <div class="field"><label>手续费币种搜索</label><select id="platformRevenueCurrency"><option>全部</option><option>SB</option><option>USDT</option><option>BTC</option><option>ETH</option></select></div>
           <div class="field"><label>时间范围</label><div class="date-range"><input id="platformRevenueStart" value="2026年7月1日"><span>至</span><input id="platformRevenueEnd" value="2026年7月31日"></div></div>
+          <div class="field"><label>时区</label><select id="platformRevenueTimezone"><option>UTC+8</option><option>UTC+0</option></select></div>
           <div class="filter-actions"><button class="btn" id="platformRevenueSearch">搜索</button><button class="btn secondary" id="platformRevenueReset">重置</button></div>
+        </div>
+        <div class="card formula-note">
+          <strong>计算口径</strong>
+          <div class="formula-copy">
+            <ul class="formula-list">
+              <li>单币种平台收益 = 该币种交易手续费 - 该币种用户佣金，收益按实际手续费币种储存。</li>
+              <li>渠道用户平台收益 = 渠道用户交易手续费 - 渠道用户佣金；自然用户平台收益 = 自然用户交易手续费 - 自然用户佣金。</li>
+              <li>选择全部币种时，平台收益（USDT估值） = Σ（各币种平台收益 × 对应币种实时 USDT 价格）。</li>
+            </ul>
+          </div>
         </div>
         <div class="daily-insights">
           <div class="daily-metrics" id="platformRevenueMetrics">
-            <div class="card daily-metric"><span id="platformRevenueTotalLabel">平台收益（USDT估值）</span><strong id="platformRevenueTotal">0.0000</strong><small id="platformRevenueTotalNote">渠道用户 + 自然流量</small></div>
+            <div class="card daily-metric"><span id="platformRevenueTotalLabel">平台收益（USDT估值）</span><strong id="platformRevenueTotal">0.0000</strong><small id="platformRevenueTotalNote">渠道用户 + 自然用户</small></div>
             <div class="card daily-metric"><span id="platformRevenueChannelLabel">渠道用户平台收益（USDT估值）</span><strong id="platformRevenueChannel">0.0000</strong><small id="platformRevenueChannelNote">按当前筛选汇总</small></div>
-            <div class="card daily-metric"><span id="platformRevenueOrganicLabel">自然流量平台收益（USDT估值）</span><strong id="platformRevenueOrganic">0.0000</strong><small id="platformRevenueOrganicNote">按当前筛选汇总</small></div>
+            <div class="card daily-metric"><span id="platformRevenueOrganicLabel">自然用户平台收益（USDT估值）</span><strong id="platformRevenueOrganic">0.0000</strong><small id="platformRevenueOrganicNote">按当前筛选汇总</small></div>
           </div>
           <div class="chart-grid">
             <div class="card chart-card">
               <div class="chart-head">
                 <div>
                   <h2>平台收益趋势</h2>
-                  <p class="sub" id="platformRevenueTrendSub">展示渠道用户与自然流量的平台收益趋势。</p>
+                  <p class="sub" id="platformRevenueTrendSub">展示渠道用户与自然用户的平台收益趋势。</p>
                 </div>
-                <div class="legend"><span><i class="dot"></i>渠道用户</span><span><i class="dot amber"></i>自然流量</span></div>
+                <div class="legend"><span><i class="dot"></i>渠道用户</span><span><i class="dot amber"></i>自然用户</span></div>
               </div>
               <div id="platformRevenueTrendChart"></div>
             </div>
@@ -1330,7 +1594,7 @@
               <div class="chart-head">
                 <div>
                   <h2>来源收益占比</h2>
-                  <p class="sub" id="platformRevenuePieSub">展示渠道用户与自然流量收益占比。</p>
+                  <p class="sub" id="platformRevenuePieSub">展示渠道用户与自然用户收益占比。</p>
                 </div>
               </div>
               <div id="platformRevenueSourcePie"></div>
@@ -1349,8 +1613,8 @@
             <div class="card chart-card">
               <div class="chart-head">
                 <div>
-                  <h2>自然流量收益币种占比</h2>
-                  <p class="sub">全部币种下按 USDT 估值展示自然流量各币种平台收益占比。</p>
+                  <h2>自然用户收益币种占比</h2>
+                  <p class="sub">全部币种下按 USDT 估值展示自然用户各币种平台收益占比。</p>
                 </div>
               </div>
               <div id="platformRevenueOrganicCurrencyPie"></div>
@@ -1359,12 +1623,12 @@
               <div class="stat-list-head">
                 <div>
                   <h2>来源收益明细</h2>
-                  <p class="sub">按手续费币种拆分渠道用户与自然流量收益。</p>
+                  <p class="sub">按手续费币种拆分渠道用户与自然用户收益。</p>
                 </div>
               </div>
               <div class="table-scroll">
                 <table class="mini-table">
-                  <thead><tr><th>手续费币种</th><th>渠道用户</th><th>自然流量</th><th>合计</th></tr></thead>
+                  <thead><tr><th>手续费币种</th><th>渠道用户</th><th>自然用户</th><th>合计</th></tr></thead>
                   <tbody id="platformRevenueCurrencyBody"></tbody>
                 </table>
               </div>
@@ -2260,6 +2524,46 @@
       renderSpotStatRanking(spotStatRowsByTime());
     }
 
+    function promotionMetricsForUid(uid) {
+      const agentCountMap = {
+        "5345543": 12,
+        "5345544": 8,
+        "5345545": 15,
+        "5345546": 4,
+        "5345547": 3
+      };
+      const row = spotStat.find(item => item[1] === uid);
+      if (row) return [row[9], row[10], row[11], String(agentCountMap[uid] || 2)];
+      const seed = Number(String(uid).slice(-2)) || 7;
+      return [String(seed * 3 + 24), String(seed * 2 + 12), String(seed + 8), String(seed % 6 + 1)];
+    }
+
+    function channelPromotionRows() {
+      return spotStat.map(row => {
+        const metrics = promotionMetricsForUid(row[1]);
+        return [row[0], row[1], row[2], row[3], row[4], row[5], row[6], ...metrics];
+      });
+    }
+
+    function renderChannelPromotionTable(rows = channelPromotionRows()) {
+      renderRows("channelPromotionBody", rows, row => `
+        <tr>
+          <td>${row[0]}</td>
+          <td class="mono">${row[1]}</td>
+          <td class="mono">${row[2]}</td>
+          <td class="mono">${uidLink(row[3])}</td>
+          <td class="mono">${uidLink(row[4])}</td>
+          <td>${row[5]}</td>
+          <td>${row[6]}</td>
+          <td class="mono">${row[7]}</td>
+          <td class="mono">${row[8]}</td>
+          <td class="mono">${row[9]}</td>
+          <td class="mono">${row[10]}</td>
+          <td><div class="row-actions"><button class="link" data-detail="channelPromotionUserDetail" data-rwa-uid="${row[1]}">查看用户详情</button><button class="link" data-detail="channelPromotionChainUp" data-rwa-uid="${row[1]}">查看链路详情</button></div></td>
+        </tr>
+      `);
+    }
+
     function renderSpotDetailTable(rows = spotDetail) {
       renderRows("spotDetailBody", rows, row => `
         <tr>
@@ -2272,6 +2576,7 @@
 
     function renderMainTables() {
       renderUsers();
+      renderChannelPromotionTable();
       renderSpotStatTable();
       renderSpotDetailTable();
 
@@ -2512,7 +2817,7 @@
           <path d="${linePath(channelPoints)}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
           <path d="${linePath(organicPoints)}" fill="none" stroke="#d97706" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
           ${channelPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#2563eb"><title>渠道用户 ${formatAmount(point.value)}</title></circle>`).join("")}
-          ${organicPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#d97706"><title>自然流量 ${formatAmount(point.value)}</title></circle>`).join("")}
+          ${organicPoints.map(point => `<circle cx="${point.x}" cy="${point.y}" r="4" fill="#d97706"><title>自然用户 ${formatAmount(point.value)}</title></circle>`).join("")}
           ${dateRows.map((row, index) => `<text x="${x(index).toFixed(1)}" y="${height - 14}" text-anchor="middle" fill="#94a3b8" font-size="11">${row.date.slice(5)}</text>`).join("")}
         </svg>
       `;
@@ -2533,7 +2838,7 @@
         <tr><td><span class="badge blue">${item.currency}</span></td><td class="mono">${formatAmount(item.channel)}</td><td class="mono">${formatAmount(item.organic)}</td><td class="mono">${formatAmount(item.channel + item.organic)}</td></tr>
       `);
       renderPieChart(document.getElementById("platformRevenueChannelCurrencyPie"), groups.map(item => [item.currency, item.channel]), "渠道用户收益币种占比");
-      renderPieChart(document.getElementById("platformRevenueOrganicCurrencyPie"), groups.map(item => [item.currency, item.organic]), "自然流量收益币种占比");
+      renderPieChart(document.getElementById("platformRevenueOrganicCurrencyPie"), groups.map(item => [item.currency, item.organic]), "自然用户收益币种占比");
     }
 
     function renderPlatformRevenue(rows) {
@@ -2544,21 +2849,21 @@
       document.getElementById("platformRevenueCurrencyGrid").classList.toggle("is-hidden", !isAllCurrency);
       document.getElementById("platformRevenueTotalLabel").textContent = isAllCurrency ? "平台收益（USDT估值）" : `平台收益（${currencyLabel}）`;
       document.getElementById("platformRevenueChannelLabel").textContent = isAllCurrency ? "渠道用户平台收益（USDT估值）" : `渠道用户平台收益（${currencyLabel}）`;
-      document.getElementById("platformRevenueOrganicLabel").textContent = isAllCurrency ? "自然流量平台收益（USDT估值）" : `自然流量平台收益（${currencyLabel}）`;
+      document.getElementById("platformRevenueOrganicLabel").textContent = isAllCurrency ? "自然用户平台收益（USDT估值）" : `自然用户平台收益（${currencyLabel}）`;
       document.getElementById("platformRevenueTotal").textContent = formatAmount(totals.channel + totals.organic);
       document.getElementById("platformRevenueChannel").textContent = formatAmount(totals.channel);
       document.getElementById("platformRevenueOrganic").textContent = formatAmount(totals.organic);
-      document.getElementById("platformRevenueTotalNote").textContent = rows.length ? `渠道用户 + 自然流量，${unit}` : "暂无匹配数据";
-      document.getElementById("platformRevenueChannelNote").textContent = rows.length ? `渠道用户来源，${unit}` : "暂无匹配数据";
-      document.getElementById("platformRevenueOrganicNote").textContent = rows.length ? `自然流量来源，${unit}` : "暂无匹配数据";
-      document.getElementById("platformRevenueTrendSub").textContent = rows.length ? `展示${isAllCurrency ? "全部币种 USDT 估值" : currencyLabel}下渠道用户与自然流量的平台收益趋势。` : "暂无匹配数据。";
-      document.getElementById("platformRevenuePieSub").textContent = rows.length ? `展示${isAllCurrency ? "USDT 估值" : currencyLabel}口径下渠道用户与自然流量收益占比。` : "暂无匹配数据。";
+      document.getElementById("platformRevenueTotalNote").textContent = rows.length ? `交易手续费 - 用户佣金，${unit}` : "暂无匹配数据";
+      document.getElementById("platformRevenueChannelNote").textContent = rows.length ? `渠道用户来源，${isAllCurrency ? "折算USDT估值" : `${currencyLabel}原币`}` : "暂无匹配数据";
+      document.getElementById("platformRevenueOrganicNote").textContent = rows.length ? `自然用户来源，${isAllCurrency ? "折算USDT估值" : `${currencyLabel}原币`}` : "暂无匹配数据";
+      document.getElementById("platformRevenueTrendSub").textContent = rows.length ? `平台收益 = 交易手续费 - 用户佣金；${isAllCurrency ? "全部币种按实时价格折算为 USDT 估值" : `按${currencyLabel}原币`}展示趋势。` : "暂无匹配数据。";
+      document.getElementById("platformRevenuePieSub").textContent = rows.length ? `展示${isAllCurrency ? "USDT 估值" : `${currencyLabel}原币`}口径下渠道用户与自然用户收益占比。` : "暂无匹配数据。";
       const revenueHead = document.getElementById("platformRevenueHead");
       const revenueBody = document.getElementById("platformRevenueBody");
       if (revenueHead && revenueBody) {
         revenueHead.innerHTML = isAllCurrency
-          ? `<tr><th>日期</th><th>渠道用户平台收益（USDT估值）</th><th>自然流量平台收益（USDT估值）</th><th>平台收益合计（USDT估值）</th></tr>`
-          : `<tr><th>日期</th><th>手续费币种</th><th>渠道用户平台收益（${currencyLabel}）</th><th>自然流量平台收益（${currencyLabel}）</th><th>平台收益合计（${currencyLabel}）</th></tr>`;
+          ? `<tr><th>日期</th><th>渠道用户平台收益（USDT估值）</th><th>自然用户平台收益（USDT估值）</th><th>平台收益合计（USDT估值）</th></tr>`
+          : `<tr><th>日期</th><th>手续费币种</th><th>渠道用户平台收益（${currencyLabel}）</th><th>自然用户平台收益（${currencyLabel}）</th><th>平台收益合计（${currencyLabel}）</th></tr>`;
         const tableRows = isAllCurrency ? platformRevenueRowsByDate(rows, true) : rows;
         renderRows("platformRevenueBody", tableRows, row => {
           if (isAllCurrency) {
@@ -2570,7 +2875,7 @@
         });
       }
       renderPlatformRevenueTrendChart(rows, isAllCurrency);
-      renderPieChart(document.getElementById("platformRevenueSourcePie"), [["渠道用户", totals.channel], ["自然流量", totals.organic]], "来源收益占比");
+      renderPieChart(document.getElementById("platformRevenueSourcePie"), [["渠道用户", totals.channel], ["自然用户", totals.organic]], "来源收益占比");
       if (isAllCurrency) renderPlatformRevenueCurrencyRows(rows, true);
     }
 
@@ -3462,6 +3767,72 @@
       }
     }
 
+    function channelPromotionDetailRows(uid = activeDetailUid) {
+      const seed = (Number(String(uid).slice(-2)) || 7) % 5;
+      return userDetail.map((row, index) => [
+        row[0],
+        String(Math.max(0, parseAmount(row[1]) - seed * 8 - index * 9)),
+        String(Math.max(0, parseAmount(row[2]) - seed * 6 - index * 7)),
+        String(Math.max(0, parseAmount(row[3]) - seed * 4 - index * 5)),
+        String(Math.max(1, 18 - index * 2 - seed))
+      ]);
+    }
+
+    function channelPromotionHeaders() {
+      return ["代理昵称", "邮箱", "UID", "用户类型", "代理层级", "VIP等级", "新增注册数", "新增入金人数", "新增首次交易数", "新增代理数"];
+    }
+
+    function channelPromotionDisplayRow(row) {
+      return [row[0], row[1], row[2], row[3], row[4], row[5], ...promotionMetricsForUid(row[2])];
+    }
+
+    function renderChannelPromotionChainUpTable(userType = "全部", keyword = "") {
+      const normalized = keyword.trim().toLowerCase();
+      const rows = commissionChain.filter(row => {
+        const matchesType = userType === "全部" || row[3] === userType;
+        const matchesKeyword = !normalized || row[0].toLowerCase().includes(normalized) || row[1].toLowerCase().includes(normalized) || row[2].includes(normalized);
+        return matchesType && matchesKeyword;
+      });
+      detailTable(channelPromotionHeaders(), rows.map(channelPromotionDisplayRow), { tree: true, uidIndex: 2, uidMode: "channelPromotionChain" });
+    }
+
+    function renderChannelPromotionChainDownTable(userType = "全部", keyword = "") {
+      const normalized = keyword.trim().toLowerCase();
+      const rows = flattenCommission(commissionTree).filter(item => {
+        const matchesType = userType === "全部" || item.row[3] === userType;
+        const matchesKeyword = !normalized || item.row[0].toLowerCase().includes(normalized) || item.row[1].toLowerCase().includes(normalized) || item.row[2].includes(normalized);
+        return matchesType && matchesKeyword;
+      });
+      const body = rows.map(item => {
+        const hasChildren = item.children.length > 0;
+        const expanded = expandedCommissionRows.has(item.id);
+        const rowClass = item.id === "commission-self" ? "self-row" : item.depth > 1 ? "child-row" : "";
+        return `
+          <tr class="${rowClass}" style="--indent: ${item.depth * 22}px">
+            ${channelPromotionDisplayRow(item.row).map((value, index) => {
+              if (index === 2) return `<td>${uidLink(value, "channelPromotionChain")}</td>`;
+              if (index !== 0) return `<td>${value}</td>`;
+              const triangle = hasChildren ? `<span class="${expanded ? "tri-down" : "tri-up"}"></span>` : "";
+              return `<td><button class="tree-toggle" ${hasChildren ? `data-toggle-commission="${item.id}"` : "disabled"}>${value}${triangle}</button></td>`;
+            }).join("")}
+          </tr>
+        `;
+      }).join("");
+      document.getElementById("detailTable").innerHTML = `<thead><tr>${channelPromotionHeaders().map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${body}</tbody>`;
+    }
+
+    function renderChannelPromotionChainView() {
+      const direction = document.getElementById("commissionDirection")?.value || "up";
+      const userType = document.getElementById("commissionUserType")?.value || "全部";
+      const keyword = document.getElementById("commissionKeyword")?.value || "";
+      activeDetailDirection = direction;
+      if (direction === "down") {
+        renderChannelPromotionChainDownTable(userType, keyword);
+      } else {
+        renderChannelPromotionChainUpTable(userType, keyword);
+      }
+    }
+
     function adjustProjectValue(value, project) {
       if (!project || project === "全部") return value;
       return formatAmount(parseAmount(value) * 0.62);
@@ -3612,6 +3983,10 @@
         renderCommissionView();
         return;
       }
+      if (mode === "channelPromotionChain") {
+        renderChannelPromotionChainView();
+        return;
+      }
       if (mode === "rwaCommission") {
         renderRwaCommissionView();
         return;
@@ -3706,6 +4081,14 @@
         detailTable(["日期", "贡献佣金", "佣金"], userDetail.map(row => [row[0], row[4], row[5]]));
       }
 
+      if (type === "channelPromotionUserDetail") {
+        activeDetailMode = "channelPromotionUserDetail";
+        title.textContent = "用户详情";
+        sub.textContent = context.uid ? `当前查看 UID ${context.uid} 的新增注册、入金、首次交易和代理表现。` : "按日期展示该用户推广转化表现。";
+        filters.innerHTML = `<div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div><div></div><div></div><button class="btn">搜索</button>`;
+        detailTable(["日期", "新增注册数", "新增入金人数", "新增首次交易数", "新增代理数"], channelPromotionDetailRows(activeDetailUid));
+      }
+
       if (type === "rwaUserDetail") {
         activeDetailMode = "rwaUserDetail";
         title.textContent = "用户详情";
@@ -3744,6 +4127,21 @@
         `;
         expandedCommissionRows = new Set(["commission-self"]);
         renderCommissionView();
+      }
+
+      if (type === "channelPromotionChainUp") {
+        activeDetailMode = "channelPromotionChain";
+        activeDetailDirection = "up";
+        title.textContent = "链路推广详情";
+        sub.textContent = "展示链路上代理的新增注册、入金、首次交易和新增代理数据。";
+        filters.innerHTML = `
+          <div class="field"><label>搜索代理</label><input id="commissionKeyword" placeholder="请输入 UID 或邮箱地址"></div>
+          <div class="field"><label>列表筛选</label><select id="commissionDirection"><option value="up">仅看上级</option><option value="down">仅看下级</option></select></div>
+          <div class="field"><label>用户类型</label><select id="commissionUserType"><option>全部</option><option>合伙人</option><option>直客</option></select></div>
+          <button class="btn" id="commissionSearch">搜索</button>
+        `;
+        expandedCommissionRows = new Set(["commission-self"]);
+        renderChannelPromotionChainView();
       }
 
       if (type === "rwaCommissionUp") {
@@ -3816,6 +4214,8 @@
           renderRwaBonusCommissionView();
         } else if (activeDetailMode === "rwaCommission") {
           renderRwaCommissionView();
+        } else if (activeDetailMode === "channelPromotionChain") {
+          renderChannelPromotionChainView();
         } else {
           renderCommissionView();
         }
@@ -3882,6 +4282,8 @@
           renderRwaBonusCommissionView();
         } else if (activeDetailMode === "rwaCommission") {
           renderRwaCommissionView();
+        } else if (activeDetailMode === "channelPromotionChain") {
+          renderChannelPromotionChainView();
         } else {
           renderCommissionView();
         }
@@ -3905,6 +4307,9 @@
         } else if (activeDetailMode === "rwaCommission") {
           document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的 RWA 申购订单金额与佣金数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上代理的 RWA 申购订单金额与佣金数据。";
           renderRwaCommissionView();
+        } else if (activeDetailMode === "channelPromotionChain") {
+          document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的新增注册、入金、首次交易和新增代理数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上级代理的新增注册、入金、首次交易和新增代理数据。";
+          renderChannelPromotionChainView();
         } else {
           document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的贡献佣金与佣金/手续费减免数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上级代理的贡献佣金与佣金/手续费减免数据。";
           renderCommissionView();
