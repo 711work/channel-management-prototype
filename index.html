@@ -1663,7 +1663,7 @@
         <div class="card ranking-card">
           <div class="ranking-head">
             <div>
-              <h2>顶级合伙人排行榜</h2>
+              <h2>顶级合伙人排行榜 <span class="inline-note">*包含已结算实发佣金和未结算佣金</span></h2>
               <p class="sub">根据顶级合伙人已结算佣金加未结算佣金金额生成排名进度条。</p>
             </div>
           </div>
@@ -1776,7 +1776,7 @@
             <div class="card chart-card">
               <div class="chart-head">
                 <div>
-                  <h2>每日趋势</h2>
+                  <h2>每日趋势 <span class="inline-note">*包含已结算实发佣金和未结算佣金</span></h2>
                   <p class="sub" id="dailyTrendSub">展示当前筛选下合伙人佣金与平台收益的 USDT 估值趋势。</p>
                 </div>
                 <div class="legend"><span><i class="dot"></i><span id="dailyLegendPartner">合伙人佣金</span></span><span><i class="dot amber"></i><span id="dailyLegendPlatform">平台收益</span></span></div>
@@ -3714,7 +3714,7 @@
     }
 
     function commissionHeaders() {
-      return ["代理昵称", "邮箱", "UID", "用户类型", "代理层级", "VIP等级", "贡献佣金", "佣金/手续费减免"];
+      return ["代理昵称", "邮箱", "UID", "用户类型", "代理层级", "VIP等级", "贡献佣金", `佣金/手续费减免 ${infoTip(partnerCommissionTip)}`];
     }
 
     function rwaCommissionHeaders() {
@@ -4087,7 +4087,7 @@
         title.textContent = "用户详情";
         sub.textContent = context.uid ? `当前查看 UID ${context.uid} 的拉新、入金、首次交易和佣金表现。` : "按日期展示该用户拉新、入金、首次交易和佣金表现。";
         filters.innerHTML = `<div class="field"><label>时间范围</label><div class="date-range"><input value="2025年4月1日"><span>至</span><input value="2025年4月30日"></div></div><div></div><div></div><button class="btn">搜索</button>`;
-        detailTable(["日期", "贡献佣金", "佣金"], userDetail.map(row => [row[0], row[4], row[5]]));
+        detailTable(["日期", "贡献佣金", `佣金 ${infoTip(partnerCommissionTip)}`], userDetail.map(row => [row[0], row[4], row[5]]));
       }
 
       if (type === "channelPromotionUserDetail") {
