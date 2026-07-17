@@ -1661,8 +1661,8 @@
           <div class="summary-card"><span>新首次交易用户数</span><strong id="spotFirstTradeUsers">0</strong></div>
         </div>
         <div class="card ranking-card">
-          <div class="ranking-head">
-            <div>
+            <div class="ranking-head">
+              <div>
               <h2>顶级合伙人排行榜 <span class="inline-note">*包含已结算实发佣金和未结算佣金</span></h2>
               <p class="sub">根据顶级合伙人已结算佣金加未结算佣金金额生成排名进度条。</p>
             </div>
@@ -2338,6 +2338,73 @@
     ];
 
     let expandedChainRows = new Set(["self"]);
+    let expandedChainUpRows = new Set();
+
+    const chainUpTree = [
+      {
+        id: "up-banana",
+        row: ["香蕉人", "RT@gmail.com", "237634633", "1", "V1", "合伙人", "60%", "30%"],
+        children: [
+          {
+            id: "up-banana-apple",
+            row: ["苹果人", "RT@gmail.com", "237634634", "2", "V1", "合伙人", "40%", "30%"],
+            children: [
+              { id: "up-banana-apple-direct", row: ["木瓜直客", "papaya@gmail.com", "237634660", "3", "V1", "直客", "12%", "-"], children: [] },
+              { id: "up-banana-apple-agent", row: ["番石榴人", "guava@gmail.com", "237634661", "3", "V1", "合伙人", "18%", "20%"], children: [] }
+            ]
+          },
+          { id: "up-banana-direct", row: ["菠萝直客", "pineapple@gmail.com", "237634662", "2", "V1", "直客", "10%", "-"], children: [] }
+        ]
+      },
+      {
+        id: "up-apple",
+        row: ["苹果人", "RT@gmail.com", "237634634", "2", "V1", "合伙人", "40%", "30%"],
+        children: [
+          {
+            id: "up-apple-grape",
+            row: ["葡萄人", "RT@gmail.com", "237634635", "3", "V1", "合伙人", "30%", "30%"],
+            children: [
+              { id: "up-apple-grape-agent", row: ["蓝莓人", "blueberry@gmail.com", "237634663", "4", "V1", "合伙人", "22%", "25%"], children: [] },
+              { id: "up-apple-grape-direct", row: ["蜜桃直客", "peach-agent@gmail.com", "237634664", "4", "V1", "直客", "8%", "-"], children: [] }
+            ]
+          },
+          { id: "up-apple-direct", row: ["柚子直客", "pomelo@gmail.com", "237634665", "3", "V1", "直客", "9%", "-"], children: [] }
+        ]
+      },
+      {
+        id: "up-grape",
+        row: ["葡萄人", "RT@gmail.com", "237634635", "3", "V1", "合伙人", "30%", "30%"],
+        children: [
+          {
+            id: "up-grape-mango",
+            row: ["芒果人", "RT@gmail.com", "237634636", "4", "V1", "合伙人", "30%", "30%"],
+            children: [
+              { id: "up-grape-mango-direct", row: ["樱桃直客", "cherry@gmail.com", "237634666", "5", "V1", "直客", "10%", "-"], children: [] },
+              { id: "up-grape-mango-agent", row: ["杨桃人", "starfruit@gmail.com", "237634667", "5", "V1", "合伙人", "18%", "20%"], children: [] }
+            ]
+          }
+        ]
+      },
+      {
+        id: "up-mango",
+        row: ["芒果人", "RT@gmail.com", "237634636", "4", "V1", "合伙人", "30%", "30%"],
+        children: [
+          {
+            id: "up-mango-strawberry",
+            row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "5", "V1", "合伙人", "30%", "30%"],
+            children: [
+              { id: "up-mango-strawberry-agent", row: ["苹果人", "RT@gmail.com", "237634638", "6", "V1", "合伙人", "40%", "30%"], children: [] },
+              { id: "up-mango-strawberry-direct", row: ["芒果直客", "mango-direct@gmail.com", "237634668", "6", "V1", "直客", "10%", "-"], children: [] }
+            ]
+          }
+        ]
+      },
+      {
+        id: "up-strawberry",
+        row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "5", "V1", "合伙人", "30%", "30%"],
+        children: chainTree[0].children
+      }
+    ];
 
     const inviteLinks = [
       ["2026/07/03 11:30:57", "返佣30", "www.etz/join/626.com", "634747", "合伙人链接", "30%", "2026/07/06 11:30:57", "启用中"],
@@ -2447,6 +2514,74 @@
     ];
 
     let expandedCommissionRows = new Set(["commission-self"]);
+    let expandedCommissionUpRows = new Set();
+
+    const commissionUpTree = [
+      {
+        id: "commission-up-banana",
+        row: ["香蕉人", "RT@gmail.com", "237634633", "合伙人", "5", "V1", "500.0000", "60.0000", "100.0000"],
+        children: [
+          {
+            id: "commission-up-banana-apple",
+            row: ["苹果人", "RT@gmail.com", "237634634", "合伙人", "6", "V1", "420.0000", "52.0000", "82.0000"],
+            children: [
+              { id: "commission-up-banana-apple-direct", row: ["木瓜直客", "papaya@gmail.com", "237634660", "直客", "7", "V1", "0.0000", "18.0000", "36.0000"], children: [] },
+              { id: "commission-up-banana-apple-agent", row: ["番石榴人", "guava@gmail.com", "237634661", "合伙人", "7", "V1", "180.0000", "22.0000", "44.0000"], children: [] }
+            ]
+          },
+          { id: "commission-up-banana-direct", row: ["菠萝直客", "pineapple@gmail.com", "237634662", "直客", "6", "V1", "0.0000", "16.0000", "32.0000"], children: [] }
+        ]
+      },
+      {
+        id: "commission-up-apple",
+        row: ["苹果人", "RT@gmail.com", "237634634", "合伙人", "6", "V1", "500.0000", "72.0000", "100.0000"],
+        children: [
+          {
+            id: "commission-up-apple-grape",
+            row: ["葡萄人", "RT@gmail.com", "237634635", "合伙人", "7", "V1", "360.0000", "48.0000", "76.0000"],
+            children: [
+              { id: "commission-up-apple-grape-agent", row: ["蓝莓人", "blueberry@gmail.com", "237634663", "合伙人", "8", "V1", "120.0000", "18.0000", "36.0000"], children: [] },
+              { id: "commission-up-apple-grape-direct", row: ["蜜桃直客", "peach-agent@gmail.com", "237634664", "直客", "8", "V1", "0.0000", "12.0000", "24.0000"], children: [] }
+            ]
+          },
+          { id: "commission-up-apple-direct", row: ["柚子直客", "pomelo@gmail.com", "237634665", "直客", "7", "V1", "0.0000", "14.0000", "28.0000"], children: [] }
+        ]
+      },
+      {
+        id: "commission-up-grape",
+        row: ["葡萄人", "RT@gmail.com", "237634635", "合伙人", "6", "V1", "500.0000", "68.0000", "100.0000"],
+        children: [
+          {
+            id: "commission-up-grape-mango",
+            row: ["芒果人", "RT@gmail.com", "237634636", "合伙人", "7", "V1", "300.0000", "42.0000", "70.0000"],
+            children: [
+              { id: "commission-up-grape-mango-direct", row: ["樱桃直客", "cherry@gmail.com", "237634666", "直客", "8", "V1", "0.0000", "11.0000", "22.0000"], children: [] },
+              { id: "commission-up-grape-mango-agent", row: ["杨桃人", "starfruit@gmail.com", "237634667", "合伙人", "8", "V1", "96.0000", "15.0000", "30.0000"], children: [] }
+            ]
+          }
+        ]
+      },
+      {
+        id: "commission-up-mango",
+        row: ["芒果人", "RT@gmail.com", "237634636", "合伙人", "7", "V1", "500.0000", "81.0000", "100.0000"],
+        children: [
+          {
+            id: "commission-up-mango-strawberry",
+            row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "8", "V1", "260.0000", "38.0000", "64.0000"],
+            children: [
+              { id: "commission-up-mango-strawberry-agent", row: ["苹果人", "apple.agent@gmail.com", "237634638", "合伙人", "9", "V1", "110.0000", "16.0000", "32.0000"], children: [] },
+              { id: "commission-up-mango-strawberry-direct", row: ["芒果直客", "mango-direct@gmail.com", "237634668", "直客", "9", "V1", "0.0000", "9.0000", "18.0000"], children: [] }
+            ]
+          }
+        ]
+      },
+      {
+        id: "commission-up-strawberry",
+        row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "7", "V1", "500.0000", "90.0000", "100.0000"],
+        children: commissionTree[0].children
+      }
+    ];
+
     let activeDetailMode = "";
     let activeDetailDirection = "up";
     let activeDetailUid = profile.uid;
@@ -3669,8 +3804,32 @@
       return ["代理昵称", "邮箱", "UID", "代理层级", "VIP等级", "用户类型", "现货返佣/手续费减免比例", "RWA返佣比例"];
     }
 
+    function flattenChainUp(nodes, depth = 0) {
+      return nodes.flatMap(node => {
+        const current = [{ ...node, depth }];
+        if (!expandedChainUpRows.has(node.id)) return current;
+        return current.concat(flattenChainUp(node.children, depth + 1));
+      });
+    }
+
     function renderChainUpTable() {
-      detailTable(chainHeaders(), chainUp, { tree: true, uidIndex: 2, uidMode: "chain" });
+      const rows = flattenChainUp(chainUpTree);
+      const body = rows.map(item => {
+        const hasChildren = item.children.length > 0;
+        const expanded = expandedChainUpRows.has(item.id);
+        const rowClass = item.depth > 0 ? "child-row" : "";
+        return `
+          <tr class="${rowClass}" style="--indent: ${item.depth * 22}px">
+            ${item.row.map((value, index) => {
+              if (index === 2) return `<td>${uidLink(value, "chain")}</td>`;
+              if (index !== 0) return `<td>${value}</td>`;
+              const triangle = hasChildren ? `<span class="${expanded ? "tri-down" : "tri-up"}"></span>` : "";
+              return `<td><button class="tree-toggle" ${hasChildren ? `data-toggle-chain-up="${item.id}"` : "disabled"}>${value}${triangle}</button></td>`;
+            }).join("")}
+          </tr>
+        `;
+      }).join("");
+      document.getElementById("detailTable").innerHTML = `<thead><tr>${chainHeaders().map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${body}</tbody>`;
     }
 
     function flattenChain(nodes, depth = 0) {
@@ -3721,14 +3880,37 @@
       return ["代理昵称", "邮箱", "UID", "用户类型", "代理层级", "申购订单金额（USDT）", "佣金（USDT）"];
     }
 
+    function flattenCommissionUp(nodes, depth = 0) {
+      return nodes.flatMap(node => {
+        const current = [{ ...node, depth }];
+        if (!expandedCommissionUpRows.has(node.id)) return current;
+        return current.concat(flattenCommissionUp(node.children, depth + 1));
+      });
+    }
+
     function renderCommissionUpTable(userType = "全部", keyword = "") {
       const normalized = keyword.trim().toLowerCase();
-      const rows = commissionChain.filter(row => {
-        const matchesType = userType === "全部" || row[3] === userType;
-        const matchesKeyword = !normalized || row[0].toLowerCase().includes(normalized) || row[1].toLowerCase().includes(normalized) || row[2].includes(normalized);
+      const rows = flattenCommissionUp(commissionUpTree).filter(item => {
+        const matchesType = userType === "全部" || item.row[3] === userType;
+        const matchesKeyword = !normalized || item.row[0].toLowerCase().includes(normalized) || item.row[1].toLowerCase().includes(normalized) || item.row[2].includes(normalized);
         return matchesType && matchesKeyword;
       });
-      detailTable(commissionHeaders(), rows.map(commissionDisplayRow), { tree: true, uidIndex: 2, uidMode: "commission" });
+      const body = rows.map(item => {
+        const hasChildren = item.children.length > 0;
+        const expanded = expandedCommissionUpRows.has(item.id);
+        const rowClass = item.depth > 0 ? "child-row" : "";
+        return `
+          <tr class="${rowClass}" style="--indent: ${item.depth * 22}px">
+            ${commissionDisplayRow(item.row).map((value, index) => {
+              if (index === 2) return `<td>${uidLink(value, "commission")}</td>`;
+              if (index !== 0) return `<td>${value}</td>`;
+              const triangle = hasChildren ? `<span class="${expanded ? "tri-down" : "tri-up"}"></span>` : "";
+              return `<td><button class="tree-toggle" ${hasChildren ? `data-toggle-commission-up="${item.id}"` : "disabled"}>${value}${triangle}</button></td>`;
+            }).join("")}
+          </tr>
+        `;
+      }).join("");
+      document.getElementById("detailTable").innerHTML = `<thead><tr>${commissionHeaders().map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${body}</tbody>`;
     }
 
     function flattenCommission(nodes, depth = 0) {
@@ -4062,11 +4244,12 @@
         activeDetailMode = "chain";
         activeDetailDirection = type === "chainDown" ? "down" : "up";
         title.textContent = "代理链路详情";
-        sub.textContent = type === "chainUp" ? "当前展示仅看上级链路。" : "当前展示仅看下级链路。";
+        sub.textContent = type === "chainUp" ? "当前展示仅看上级链路。点击带三角的合伙人可展开查看其下级用户。" : "当前展示仅看下级链路。点击带三角的用户可平铺展开/收起下级用户。";
         filters.innerHTML = chainFilters;
         document.getElementById("chainDirection").value = activeDetailDirection;
         document.getElementById("chainUserType").value = "全部";
         expandedChainRows = new Set(["self"]);
+        expandedChainUpRows = new Set();
         renderChainView(activeDetailDirection);
       }
 
@@ -4127,7 +4310,7 @@
         activeDetailMode = "commission";
         activeDetailDirection = "up";
         title.textContent = "链路佣金详情";
-        sub.textContent = "展示链路上代理的贡献佣金与佣金/手续费减免数据。";
+        sub.textContent = "展示链路上代理的贡献佣金与佣金/手续费减免数据。点击带三角的合伙人可展开查看其下级用户。";
         filters.innerHTML = `
           <div class="field"><label>搜索代理</label><input id="commissionKeyword" placeholder="请输入 UID 或邮箱地址"></div>
           <div class="field"><label>列表筛选</label><select id="commissionDirection"><option value="up">仅看上级</option><option value="down">仅看下级</option></select></div>
@@ -4135,6 +4318,7 @@
           <button class="btn" id="commissionSearch">搜索</button>
         `;
         expandedCommissionRows = new Set(["commission-self"]);
+        expandedCommissionUpRows = new Set();
         renderCommissionView();
       }
 
@@ -4231,6 +4415,21 @@
         return;
       }
 
+      const commissionUpToggle = event.target.closest("[data-toggle-commission-up]");
+      if (commissionUpToggle) {
+        const id = commissionUpToggle.dataset.toggleCommissionUp;
+        if (expandedCommissionUpRows.has(id)) {
+          expandedCommissionUpRows.delete(id);
+        } else {
+          expandedCommissionUpRows.add(id);
+        }
+        renderCommissionUpTable(
+          document.getElementById("commissionUserType")?.value || "全部",
+          document.getElementById("commissionKeyword")?.value || ""
+        );
+        return;
+      }
+
       const chainToggle = event.target.closest("[data-toggle-chain]");
       if (chainToggle) {
         const id = chainToggle.dataset.toggleChain;
@@ -4241,6 +4440,18 @@
         }
         const userType = document.getElementById("chainUserType")?.value || "全部";
         renderChainDownTable(userType);
+        return;
+      }
+
+      const chainUpToggle = event.target.closest("[data-toggle-chain-up]");
+      if (chainUpToggle) {
+        const id = chainUpToggle.dataset.toggleChainUp;
+        if (expandedChainUpRows.has(id)) {
+          expandedChainUpRows.delete(id);
+        } else {
+          expandedChainUpRows.add(id);
+        }
+        renderChainUpTable();
         return;
       }
 
@@ -4320,7 +4531,7 @@
           document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的新增注册、入金、首次交易和新增代理数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上级代理的新增注册、入金、首次交易和新增代理数据。";
           renderChannelPromotionChainView();
         } else {
-          document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的贡献佣金与佣金/手续费减免数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上级代理的贡献佣金与佣金/手续费减免数据。";
+          document.getElementById("detailSub").textContent = direction === "down" ? "展示链路下级代理、合伙人及直客的贡献佣金与佣金/手续费减免数据。点击带三角的用户可平铺展开/收起下级用户。" : "展示链路上级代理的贡献佣金与佣金/手续费减免数据。点击带三角的合伙人可展开查看其下级用户。";
           renderCommissionView();
         }
       }
@@ -4348,7 +4559,7 @@
       if (event.target.id === "chainDirection") {
         const userType = document.getElementById("chainUserType")?.value || "全部";
         const direction = event.target.value;
-        document.getElementById("detailSub").textContent = direction === "down" ? "当前展示仅看下级链路。点击带三角的用户可平铺展开/收起下级用户。" : "当前展示仅看上级链路。";
+        document.getElementById("detailSub").textContent = direction === "down" ? "当前展示仅看下级链路。点击带三角的用户可平铺展开/收起下级用户。" : "当前展示仅看上级链路。点击带三角的合伙人可展开查看其下级用户。";
         renderChainView(direction, userType);
       }
 
