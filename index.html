@@ -2471,11 +2471,11 @@
     ];
 
     const commissionChain = [
-      ["香蕉人", "RT@gmail.com", "237634633", "合伙人", "5", "V1", "500.0000", "60.0000", "100.0000"],
-      ["苹果人", "RT@gmail.com", "237634634", "合伙人", "6", "V1", "500.0000", "72.0000", "100.0000"],
-      ["葡萄人", "RT@gmail.com", "237634635", "合伙人", "6", "V1", "500.0000", "68.0000", "100.0000"],
-      ["芒果人", "RT@gmail.com", "237634636", "合伙人", "7", "V1", "500.0000", "81.0000", "100.0000"],
-      ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "7", "V1", "500.0000", "90.0000", "100.0000"]
+      ["香蕉人", "RT@gmail.com", "237634633", "合伙人", "1", "V1", "500.0000", "60.0000", "100.0000"],
+      ["苹果人", "RT@gmail.com", "237634634", "合伙人", "2", "V1", "500.0000", "72.0000", "100.0000"],
+      ["葡萄人", "RT@gmail.com", "237634635", "合伙人", "3", "V1", "500.0000", "68.0000", "100.0000"],
+      ["芒果人", "RT@gmail.com", "237634636", "合伙人", "4", "V1", "500.0000", "81.0000", "100.0000"],
+      ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "5", "V1", "500.0000", "90.0000", "100.0000"]
     ];
 
     const commissionTree = [
@@ -2519,65 +2519,65 @@
     const commissionUpTree = [
       {
         id: "commission-up-banana",
-        row: ["香蕉人", "RT@gmail.com", "237634633", "合伙人", "5", "V1", "500.0000", "60.0000", "100.0000"],
+        row: ["香蕉人", "RT@gmail.com", "237634633", "合伙人", "1", "V1", "500.0000", "60.0000", "100.0000"],
         children: [
           {
             id: "commission-up-banana-apple",
-            row: ["苹果人", "RT@gmail.com", "237634634", "合伙人", "6", "V1", "420.0000", "52.0000", "82.0000"],
+            row: ["苹果人", "RT@gmail.com", "237634634", "合伙人", "2", "V1", "420.0000", "52.0000", "82.0000"],
             children: [
-              { id: "commission-up-banana-apple-direct", row: ["木瓜直客", "papaya@gmail.com", "237634660", "直客", "7", "V1", "0.0000", "18.0000", "36.0000"], children: [] },
-              { id: "commission-up-banana-apple-agent", row: ["番石榴人", "guava@gmail.com", "237634661", "合伙人", "7", "V1", "180.0000", "22.0000", "44.0000"], children: [] }
+              { id: "commission-up-banana-apple-direct", row: ["木瓜直客", "papaya@gmail.com", "237634660", "直客", "3", "V1", "0.0000", "18.0000", "36.0000"], children: [] },
+              { id: "commission-up-banana-apple-agent", row: ["番石榴人", "guava@gmail.com", "237634661", "合伙人", "3", "V1", "180.0000", "22.0000", "44.0000"], children: [] }
             ]
           },
-          { id: "commission-up-banana-direct", row: ["菠萝直客", "pineapple@gmail.com", "237634662", "直客", "6", "V1", "0.0000", "16.0000", "32.0000"], children: [] }
+          { id: "commission-up-banana-direct", row: ["菠萝直客", "pineapple@gmail.com", "237634662", "直客", "2", "V1", "0.0000", "16.0000", "32.0000"], children: [] }
         ]
       },
       {
         id: "commission-up-apple",
-        row: ["苹果人", "RT@gmail.com", "237634634", "合伙人", "6", "V1", "500.0000", "72.0000", "100.0000"],
+        row: ["苹果人", "RT@gmail.com", "237634634", "合伙人", "2", "V1", "500.0000", "72.0000", "100.0000"],
         children: [
           {
             id: "commission-up-apple-grape",
-            row: ["葡萄人", "RT@gmail.com", "237634635", "合伙人", "7", "V1", "360.0000", "48.0000", "76.0000"],
+            row: ["葡萄人", "RT@gmail.com", "237634635", "合伙人", "3", "V1", "360.0000", "48.0000", "76.0000"],
             children: [
-              { id: "commission-up-apple-grape-agent", row: ["蓝莓人", "blueberry@gmail.com", "237634663", "合伙人", "8", "V1", "120.0000", "18.0000", "36.0000"], children: [] },
-              { id: "commission-up-apple-grape-direct", row: ["蜜桃直客", "peach-agent@gmail.com", "237634664", "直客", "8", "V1", "0.0000", "12.0000", "24.0000"], children: [] }
+              { id: "commission-up-apple-grape-agent", row: ["蓝莓人", "blueberry@gmail.com", "237634663", "合伙人", "4", "V1", "120.0000", "18.0000", "36.0000"], children: [] },
+              { id: "commission-up-apple-grape-direct", row: ["蜜桃直客", "peach-agent@gmail.com", "237634664", "直客", "4", "V1", "0.0000", "12.0000", "24.0000"], children: [] }
             ]
           },
-          { id: "commission-up-apple-direct", row: ["柚子直客", "pomelo@gmail.com", "237634665", "直客", "7", "V1", "0.0000", "14.0000", "28.0000"], children: [] }
+          { id: "commission-up-apple-direct", row: ["柚子直客", "pomelo@gmail.com", "237634665", "直客", "3", "V1", "0.0000", "14.0000", "28.0000"], children: [] }
         ]
       },
       {
         id: "commission-up-grape",
-        row: ["葡萄人", "RT@gmail.com", "237634635", "合伙人", "6", "V1", "500.0000", "68.0000", "100.0000"],
+        row: ["葡萄人", "RT@gmail.com", "237634635", "合伙人", "3", "V1", "500.0000", "68.0000", "100.0000"],
         children: [
           {
             id: "commission-up-grape-mango",
-            row: ["芒果人", "RT@gmail.com", "237634636", "合伙人", "7", "V1", "300.0000", "42.0000", "70.0000"],
+            row: ["芒果人", "RT@gmail.com", "237634636", "合伙人", "4", "V1", "300.0000", "42.0000", "70.0000"],
             children: [
-              { id: "commission-up-grape-mango-direct", row: ["樱桃直客", "cherry@gmail.com", "237634666", "直客", "8", "V1", "0.0000", "11.0000", "22.0000"], children: [] },
-              { id: "commission-up-grape-mango-agent", row: ["杨桃人", "starfruit@gmail.com", "237634667", "合伙人", "8", "V1", "96.0000", "15.0000", "30.0000"], children: [] }
+              { id: "commission-up-grape-mango-direct", row: ["樱桃直客", "cherry@gmail.com", "237634666", "直客", "5", "V1", "0.0000", "11.0000", "22.0000"], children: [] },
+              { id: "commission-up-grape-mango-agent", row: ["杨桃人", "starfruit@gmail.com", "237634667", "合伙人", "5", "V1", "96.0000", "15.0000", "30.0000"], children: [] }
             ]
           }
         ]
       },
       {
         id: "commission-up-mango",
-        row: ["芒果人", "RT@gmail.com", "237634636", "合伙人", "7", "V1", "500.0000", "81.0000", "100.0000"],
+        row: ["芒果人", "RT@gmail.com", "237634636", "合伙人", "4", "V1", "500.0000", "81.0000", "100.0000"],
         children: [
           {
             id: "commission-up-mango-strawberry",
-            row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "8", "V1", "260.0000", "38.0000", "64.0000"],
+            row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "5", "V1", "260.0000", "38.0000", "64.0000"],
             children: [
-              { id: "commission-up-mango-strawberry-agent", row: ["苹果人", "apple.agent@gmail.com", "237634638", "合伙人", "9", "V1", "110.0000", "16.0000", "32.0000"], children: [] },
-              { id: "commission-up-mango-strawberry-direct", row: ["芒果直客", "mango-direct@gmail.com", "237634668", "直客", "9", "V1", "0.0000", "9.0000", "18.0000"], children: [] }
+              { id: "commission-up-mango-strawberry-agent", row: ["苹果人", "apple.agent@gmail.com", "237634638", "合伙人", "6", "V1", "110.0000", "16.0000", "32.0000"], children: [] },
+              { id: "commission-up-mango-strawberry-direct", row: ["芒果直客", "mango-direct@gmail.com", "237634668", "直客", "6", "V1", "0.0000", "9.0000", "18.0000"], children: [] }
             ]
           }
         ]
       },
       {
         id: "commission-up-strawberry",
-        row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "7", "V1", "500.0000", "90.0000", "100.0000"],
+        row: ["草莓人（本ID）", "RT@gmail.com", "237634637", "合伙人", "5", "V1", "500.0000", "90.0000", "100.0000"],
         children: commissionTree[0].children
       }
     ];
